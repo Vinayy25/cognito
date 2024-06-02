@@ -8,19 +8,26 @@ import whisper
 from dotenv import load_dotenv
 import os
 
+from groq import Groq
 
 
 
 
 import numpy as np
 app = FastAPI()
-
+load_dotenv()
 # Initialize the model
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 whisper_model = whisper.load_model("base")
 
+groq_client = Groq(
+    # This is the default and can be omitted
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
+
+
 # Initialize OpenAI client
-load_dotenv()
+
 
 openai = OpenAI(
     api_key=  os.getenv("KRUTRIM_API_KEY"),
@@ -92,15 +99,27 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": str(e)})
     
-
-async def transcribe_audio(file_path):
-    # Load the audio file
-    audio = whisper.Audio.from_file(file_path)
-
-    # Transcribe the audio
-    text = await audio.transcribe()
-
-    return text
+@app.post("/groq/chat", response_model=ChatResponse)
+def groq_chat(message: str):
+    try:
+        # Generate chat completion using GROQ model
+       groq_chat_completion = groq_client.chat.completions.create(
+         messages=[
+        {
+            "role": "system",
+            "content": "you are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": message,
+        }
+             ],
+             model="gemma-7b-it",
+       )
+       
+       return ChatResponse(response=groq_chat_completion.choices[0].message.content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":
