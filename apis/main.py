@@ -5,6 +5,8 @@ from fastapi.responses import JSONResponse
 from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 import whisper 
+from dotenv import load_dotenv
+import os
 
 
 
@@ -18,8 +20,10 @@ model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 whisper_model = whisper.load_model("base")
 
 # Initialize OpenAI client
+load_dotenv()
+
 openai = OpenAI(
-    api_key="jdOrLM192Qsw1HxWHUgo_byH-OS",
+    api_key=  os.getenv("KRUTRIM_API_KEY"),
     base_url="https://cloud.olakrutrim.com/v1",
 )
 class AudioInput(BaseModel):
