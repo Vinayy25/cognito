@@ -1,0 +1,619 @@
+[32mINFO[0m:     [10-06-2024 13:50:26] Set chroma_server_nofile to 65535
+[32mINFO[0m:     [10-06-2024 13:50:26] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component System
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component OpenTelemetryClient
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component SqliteDB
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component QuotaEnforcer
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component Posthog
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component LocalSegmentManager
+[36mDEBUG[0m:    [10-06-2024 13:50:26] Starting component SegmentAPI
+[32mINFO[0m:     [10-06-2024 13:50:27] Started server process [[36m2029660[0m]
+[32mINFO[0m:     [10-06-2024 13:50:27] Waiting for application startup.
+[32mINFO[0m:     [10-06-2024 13:50:27] Application startup complete.
+[32mINFO[0m:     [10-06-2024 13:50:27] Uvicorn running on [1mhttp://localhost:8000[0m (Press CTRL+C to quit)
+[32mINFO[0m:     [10-06-2024 13:50:35] ::1:34412 - "GET / HTTP/1.1" 404
+[32mINFO[0m:     [10-06-2024 13:50:35] ::1:34412 - "GET /favicon.ico HTTP/1.1" 404
+[32mINFO[0m:     [10-06-2024 13:50:43] ::1:34412 - "GET /docs HTTP/1.1" 200
+[32mINFO[0m:     [10-06-2024 13:50:44] ::1:34412 - "GET /openapi.json HTTP/1.1" 200
+[31mERROR[0m:    [10-06-2024 13:52:14] Input is a zero-length, empty document: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 78, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/usr/lib64/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 92, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 299, in app
+    raise e
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 130, in wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 442, in create_database
+    await to_thread.run_sync(
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2144, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 426, in process_create_database
+    db = CreateDatabase.model_validate(orjson.loads(raw_body))
+                                       ^^^^^^^^^^^^^^^^^^^^^^
+orjson.JSONDecodeError: Input is a zero-length, empty document: line 1 column 1 (char 0)
+[32mINFO[0m:     [10-06-2024 13:52:14] ::1:57266 - "POST /api/v1/databases?tenant=vinay_tenant HTTP/1.1" 500
+[31mERROR[0m:    [10-06-2024 13:52:28] Input is a zero-length, empty document: line 1 column 1 (char 0)
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 78, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/usr/lib64/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 92, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 299, in app
+    raise e
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 130, in wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 442, in create_database
+    await to_thread.run_sync(
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2144, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 426, in process_create_database
+    db = CreateDatabase.model_validate(orjson.loads(raw_body))
+                                       ^^^^^^^^^^^^^^^^^^^^^^
+orjson.JSONDecodeError: Input is a zero-length, empty document: line 1 column 1 (char 0)
+[32mINFO[0m:     [10-06-2024 13:52:28] ::1:57266 - "POST /api/v1/databases?tenant=tenent_string HTTP/1.1" 500
+[31mERROR[0m:    [10-06-2024 13:52:53] Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 78, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/usr/lib64/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 92, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 299, in app
+    raise e
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 130, in wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 926, in reset
+    await to_thread.run_sync(
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2144, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/api/segment.py", line 787, in reset
+    self._system.reset_state()
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/config.py", line 434, in reset_state
+    raise ValueError(
+ValueError: Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+[32mINFO[0m:     [10-06-2024 13:52:53] ::1:57266 - "POST /api/v1/reset HTTP/1.1" 500
+[32mINFO[0m:     [10-06-2024 13:56:18] ::1:42478 - "GET /api/v1/heartbeat HTTP/1.1" 200
+[31mERROR[0m:    [10-06-2024 14:01:12] Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 78, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/usr/lib64/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 92, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 299, in app
+    raise e
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 130, in wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 926, in reset
+    await to_thread.run_sync(
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2144, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/api/segment.py", line 787, in reset
+    self._system.reset_state()
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/config.py", line 434, in reset_state
+    raise ValueError(
+ValueError: Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+[32mINFO[0m:     [10-06-2024 14:01:12] ::1:50004 - "POST /api/v1/reset HTTP/1.1" 500
+[32mINFO[0m:     [10-06-2024 14:01:16] ::1:50004 - "GET /docs HTTP/1.1" 200
+[32mINFO[0m:     [10-06-2024 14:01:16] ::1:50004 - "GET /openapi.json HTTP/1.1" 200
+[31mERROR[0m:    [10-06-2024 14:01:20] Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 78, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/usr/lib64/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 92, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 299, in app
+    raise e
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 130, in wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 926, in reset
+    await to_thread.run_sync(
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2144, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/api/segment.py", line 787, in reset
+    self._system.reset_state()
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/config.py", line 434, in reset_state
+    raise ValueError(
+ValueError: Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+[32mINFO[0m:     [10-06-2024 14:01:20] ::1:50004 - "POST /api/v1/reset HTTP/1.1" 500
+[32mINFO[0m:     [10-06-2024 14:01:24] Shutting down
+[32mINFO[0m:     [10-06-2024 14:01:24] Waiting for application shutdown.
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component System
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component SegmentAPI
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component LocalSegmentManager
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component Posthog
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component QuotaEnforcer
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component SqliteDB
+[36mDEBUG[0m:    [10-06-2024 14:01:24] Stopping component OpenTelemetryClient
+[32mINFO[0m:     [10-06-2024 14:01:24] Application shutdown complete.
+[32mINFO[0m:     [10-06-2024 14:01:24] Finished server process [[36m2029660[0m]
+[32mINFO[0m:     [10-06-2024 14:01:27] Set chroma_server_nofile to 65535
+[32mINFO[0m:     [10-06-2024 14:01:27] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component System
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component OpenTelemetryClient
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component SqliteDB
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component QuotaEnforcer
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component Posthog
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component LocalSegmentManager
+[36mDEBUG[0m:    [10-06-2024 14:01:27] Starting component SegmentAPI
+[32mINFO[0m:     [10-06-2024 14:01:27] Started server process [[36m2049373[0m]
+[32mINFO[0m:     [10-06-2024 14:01:27] Waiting for application startup.
+[32mINFO[0m:     [10-06-2024 14:01:27] Application startup complete.
+[32mINFO[0m:     [10-06-2024 14:01:27] Uvicorn running on [1mhttp://localhost:8000[0m (Press CTRL+C to quit)
+[32mINFO[0m:     [10-06-2024 14:01:31] ::1:33730 - "GET /docs HTTP/1.1" 200
+[32mINFO[0m:     [10-06-2024 14:01:31] ::1:33730 - "GET /openapi.json HTTP/1.1" 200
+[31mERROR[0m:    [10-06-2024 14:01:34] Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 97, in receive
+    return self.receive_nowait()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 92, in receive_nowait
+    raise WouldBlock
+anyio.WouldBlock
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 159, in call_next
+    message = await recv_stream.receive()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/streams/memory.py", line 112, in receive
+    raise EndOfStream
+anyio.EndOfStream
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 78, in catch_exceptions_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 189, in __call__
+    with collapse_excgroups():
+  File "/usr/lib64/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_utils.py", line 93, in collapse_excgroups
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 191, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 92, in check_http_version_middleware
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 165, in call_next
+    raise app_exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/base.py", line 151, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 758, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 778, in app
+    await route.handle(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 299, in handle
+    await self.app(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 79, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 64, in wrapped_app
+    raise exc
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/vinay/.local/lib/python3.12/site-packages/starlette/routing.py", line 74, in app
+    response = await func(request)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 299, in app
+    raise e
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 294, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/fastapi/routing.py", line 191, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/telemetry/opentelemetry/__init__.py", line 130, in wrapper
+    return await f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/server/fastapi/__init__.py", line 926, in reset
+    await to_thread.run_sync(
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/to_thread.py", line 56, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2144, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 851, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/api/segment.py", line 787, in reset
+    self._system.reset_state()
+  File "/home/vinay/.local/lib/python3.12/site-packages/chromadb/config.py", line 434, in reset_state
+    raise ValueError(
+ValueError: Resetting is not allowed by this configuration (to enable it, set `allow_reset` to `True` in your Settings() or include `ALLOW_RESET=TRUE` in your environment variables)
+[32mINFO[0m:     [10-06-2024 14:01:34] ::1:33730 - "POST /api/v1/reset HTTP/1.1" 500
+[32mINFO[0m:     [10-06-2024 14:09:43] Shutting down
+[32mINFO[0m:     [10-06-2024 14:09:43] Waiting for application shutdown.
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component System
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component SegmentAPI
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component LocalSegmentManager
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component Posthog
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component QuotaEnforcer
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component SqliteDB
+[36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component OpenTelemetryClient
+[32mINFO[0m:     [10-06-2024 14:09:43] Application shutdown complete.
+[32mINFO[0m:     [10-06-2024 14:09:43] Finished server process [[36m2049373[0m]

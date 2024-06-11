@@ -2,5 +2,10 @@ apis/__pycache__
 apis/myvenv/
 apis/uploads/
 .env
+chroma_data/
+readme
+chroma.log
+chroma_db/
+
 
 

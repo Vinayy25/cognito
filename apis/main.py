@@ -7,14 +7,12 @@ from openai import OpenAI
 import whisper 
 from dotenv import load_dotenv
 import os
-
 from groq import Groq
-
-
-
-
 import numpy as np
+
+
 app = FastAPI()
+
 load_dotenv()
 # Initialize the model
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
@@ -36,7 +34,7 @@ openai = OpenAI(
 class AudioInput(BaseModel):
     audio_file: UploadFile
 class EmbeddingRequest(BaseModel):
-    sentences: List[str]
+    sentences: str
 
 class EmbeddingResponse(BaseModel):
     embeddings: List[List[float]]
@@ -51,33 +49,38 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
-@app.post("/embeddings", response_model=EmbeddingResponse)
-async def get_embeddings(request: EmbeddingRequest):
+@app.post("/embeddings/")
+async def get_embeddings(request: str):
     try:
-        # Generate embeddings
-        embeddings = model.encode(request.sentences, show_progress_bar=True)
+        # Generate embeddings   
+        embeddings = model.encode([request], show_progress_bar=True)
         return EmbeddingResponse(embeddings=embeddings.tolist())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
-async def krutrim_chat(message: str):
+async def krutrim_chat(message: str, systemMessage : str ):
     try:
-        # Generate chat completion using Krutrim model
+        # Generate chat completion using Krutrim m  odel
         chat_completion = openai.chat.completions.create(
+       
+            
     model="Meta-Llama-3-8B-Instruct",
     messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "system", "content": systemMessage},
         {"role": "user", "content": message} 
     ]
 )     
     
         return ChatResponse(response=chat_completion.choices[0].message.content)
-    
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) 
     
 
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 
 @app.post("/transcribe/")
@@ -88,8 +91,7 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
         file_path = f"uploads/{audio_file.filename}"
         with open(file_path, "wb") as audio:
             content = await audio_file.read()
-            audio.write(content) 
-       
+            audio.write(content)
 
         # Call the transcription function with the file path
         transcription = whisper_model.transcribe(file_path)
@@ -122,6 +124,12 @@ def groq_chat(message: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# @app.post('/prompt/chat')
+# def prompt_chat():
+#     return chat()
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+
