@@ -617,3 +617,260 @@ ValueError: Resetting is not allowed by this configuration (to enable it, set `a
 [36mDEBUG[0m:    [10-06-2024 14:09:43] Stopping component OpenTelemetryClient
 [32mINFO[0m:     [10-06-2024 14:09:43] Application shutdown complete.
 [32mINFO[0m:     [10-06-2024 14:09:43] Finished server process [[36m2049373[0m]
+[32mINFO[0m:     [11-06-2024 14:51:30] Set chroma_server_nofile to 65535
+[32mINFO[0m:     [11-06-2024 14:51:30] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component System
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component OpenTelemetryClient
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component SqliteDB
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component QuotaEnforcer
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component Posthog
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component LocalSegmentManager
+[36mDEBUG[0m:    [11-06-2024 14:51:30] Starting component SegmentAPI
+[32mINFO[0m:     [11-06-2024 14:51:30] Started server process [[36m79118[0m]
+[32mINFO[0m:     [11-06-2024 14:51:30] Waiting for application startup.
+[32mINFO[0m:     [11-06-2024 14:51:30] Application startup complete.
+[32mINFO[0m:     [11-06-2024 14:51:30] Uvicorn running on [1mhttp://localhost:3000[0m (Press CTRL+C to quit)
+[32mINFO[0m:     [11-06-2024 14:51:37] ::1:46706 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:51:37] ::1:46706 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:51:37] ::1:46710 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:51:45] ::1:46710 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[36mDEBUG[0m:    [11-06-2024 14:51:45] Starting component PersistentLocalHnswSegment
+[32mINFO[0m:     [11-06-2024 14:51:45] ::1:46710 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 14:51:45] ::1:46710 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:52:10] ::1:37242 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:52:10] ::1:37242 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:52:10] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 14:52:10] ::1:37246 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:52:23] ::1:37246 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 14:52:23] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 14:52:23] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 14:52:23] ::1:37246 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 14:52:23] ::1:37246 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 14:52:25] ::1:37246 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:07:25] ::1:55172 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:07:25] ::1:55172 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:07:25] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:07:25] ::1:55176 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:07:37] ::1:55176 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:07:37] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:07:37] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:07:37] ::1:55176 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:07:37] ::1:55176 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:07:39] ::1:55176 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:08:57] ::1:54390 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:08:57] ::1:54390 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:08:57] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:08:57] ::1:54392 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:09:07] ::1:54392 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:09:07] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:09:07] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:09:07] ::1:54392 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:09:07] ::1:54392 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:09:08] ::1:54392 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:10:23] ::1:36436 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:10:23] ::1:36436 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:10:23] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:10:23] ::1:36444 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:10:34] ::1:36444 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:10:34] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:10:34] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:10:34] ::1:36444 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:10:34] ::1:36444 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:10:36] ::1:36444 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:11:41] ::1:32984 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:11:41] ::1:32984 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:11:41] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:11:41] ::1:32998 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:10] ::1:59918 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:10] ::1:59918 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:10] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:12:10] ::1:59922 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:23] ::1:59922 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:12:23] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:12:23] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:12:23] ::1:59922 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:12:23] ::1:59922 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:25] ::1:59922 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:50] ::1:58368 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:50] ::1:58368 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:12:50] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:12:50] ::1:58378 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:13:00] ::1:58378 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:13:00] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:13:00] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:13:00] ::1:58378 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:13:00] ::1:58378 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:13:02] ::1:58378 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:14:20] ::1:45766 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:14:20] ::1:45766 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:14:20] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:14:20] ::1:45780 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:14:34] ::1:45780 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:14:34] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:14:34] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:14:34] ::1:45780 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:14:34] ::1:45780 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:14:36] ::1:45780 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:15:16] ::1:57490 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:15:16] ::1:57490 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:15:16] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:15:16] ::1:57500 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:15:33] ::1:57500 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:15:33] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:15:33] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:15:33] ::1:57500 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:15:33] ::1:57500 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:15:35] ::1:57500 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:16:19] ::1:47502 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:16:19] ::1:47502 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:16:19] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:16:19] ::1:47510 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:16:28] ::1:47510 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:16:28] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:16:28] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:16:28] ::1:47510 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:16:28] ::1:47510 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:16:30] ::1:47510 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:19:52] ::1:59622 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:19:52] ::1:59622 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:19:52] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:19:52] ::1:59626 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:30:18] ::1:42928 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:30:18] ::1:42928 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:30:18] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:30:18] ::1:42944 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:30:45] ::1:42944 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:30:45] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:30:45] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:30:45] ::1:42944 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:30:45] ::1:42944 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:30:46] ::1:42944 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:03] ::1:41420 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:03] ::1:41420 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:03] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:38:03] ::1:41436 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:14] ::1:41436 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:38:14] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:38:14] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:38:14] ::1:41436 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:38:14] ::1:41436 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:15] ::1:41436 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:48] ::1:35146 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:48] ::1:35146 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:38:48] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:38:48] ::1:35158 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:39:08] ::1:35158 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:39:08] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:39:08] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:39:08] ::1:35158 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:39:08] ::1:35158 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:39:09] ::1:35158 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:39:47] ::1:49478 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:39:47] ::1:49478 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:39:47] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:39:47] ::1:49490 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:39:55] ::1:49490 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:39:55] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:39:55] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:39:55] ::1:49490 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:39:55] ::1:49490 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:40:22] ::1:46234 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:40:22] ::1:46234 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:40:22] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:40:22] ::1:46246 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:40:34] ::1:46246 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:40:34] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:40:34] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:40:34] ::1:46246 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:40:34] ::1:46246 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:40:35] ::1:46246 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:41:50] ::1:57800 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:41:50] ::1:57800 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:41:50] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:41:50] ::1:57812 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:41:56] ::1:57812 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:41:56] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:41:56] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:41:56] ::1:57812 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:41:56] ::1:57812 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:41:58] ::1:57812 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:42:50] ::1:46992 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:42:50] ::1:46992 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:42:50] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:42:50] ::1:47000 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:42:56] ::1:47000 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:42:56] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:42:56] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:42:56] ::1:47000 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:42:56] ::1:47000 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:42:58] ::1:47000 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:43:40] ::1:39462 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:43:40] ::1:39462 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:43:40] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 15:43:40] ::1:39464 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:43:50] ::1:39464 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 15:43:50] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 15:43:50] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 15:43:50] ::1:39464 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 15:43:50] ::1:39464 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 15:43:52] ::1:39464 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:05:25] ::1:42298 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:05:25] ::1:42298 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:05:25] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 16:05:25] ::1:42304 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:05:33] ::1:42304 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 16:05:33] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 16:05:33] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 16:05:33] ::1:42304 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 16:05:33] ::1:42304 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:05:35] ::1:42304 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:07:28] ::1:49178 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:07:28] ::1:49178 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:07:28] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 16:07:28] ::1:49194 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:07:34] ::1:49194 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 16:07:34] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 16:07:34] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 16:07:34] ::1:49194 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 16:07:34] ::1:49194 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:07:35] ::1:49194 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:08:25] ::1:36204 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:08:25] ::1:36204 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:08:25] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 16:08:25] ::1:36208 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:08:31] ::1:36208 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 16:08:31] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 16:08:31] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 16:08:31] ::1:36208 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 16:08:31] ::1:36208 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:08:32] ::1:36208 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:10:04] ::1:51322 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:10:04] ::1:51322 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:10:04] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 16:10:04] ::1:51324 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:10:11] ::1:51324 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 16:10:11] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 16:10:11] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 16:10:11] ::1:51324 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 16:10:11] ::1:51324 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:10:13] ::1:51324 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:11:00] ::1:56086 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:11:00] ::1:56086 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:11:00] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 16:11:00] ::1:56092 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:11:06] ::1:56092 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 16:11:06] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 16:11:06] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 16:11:06] ::1:56092 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 16:11:06] ::1:56092 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:11:07] ::1:56092 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:12:03] ::1:44858 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:12:03] ::1:44858 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:12:03] Collection my_collection is not created.
+[32mINFO[0m:     [11-06-2024 16:12:03] ::1:44860 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:12:07] ::1:44860 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
+[33mWARNING[0m:  [11-06-2024 16:12:07] Add of existing embedding ID: 2222
+[33mWARNING[0m:  [11-06-2024 16:12:07] Insert of existing embedding ID: 2222
+[32mINFO[0m:     [11-06-2024 16:12:07] ::1:44860 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/add HTTP/1.1" 201
+[32mINFO[0m:     [11-06-2024 16:12:07] ::1:44860 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/get HTTP/1.1" 200
+[32mINFO[0m:     [11-06-2024 16:12:10] ::1:44860 - "POST /api/v1/collections/0fc1b616-64f0-47ee-82c5-eb0cb6648052/query HTTP/1.1" 200

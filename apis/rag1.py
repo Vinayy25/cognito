@@ -2,7 +2,7 @@ import requests
 from langchain.vectorstores import Chroma
 import chromadb, json, uuid
 
-url = "https://c15d-2401-4900-33d8-e546-e9d5-c4e2-cde4-6b66.ngrok-free.app"
+url = "https://6133-2409-40f2-301c-3a3-8dbc-20ec-4da8-b5ee.ngrok-free.app"
 
 text = """Hey, did you catch the basketball game last night? It was incredible! The game was between the Lakers and the Celtics.
 LeBron James was on fire! He scored 40 points, including a last-minute three-pointer that sealed the victory. 
@@ -103,12 +103,65 @@ print("myembeddings ",myembeddings["embeddings"])
 
 
 
+newPrompt = "tell me about the basket ball games last night"
 
 
 
 
+response = requests.post(
+    url+"/embeddings/",
+
+    params={
+        "request":newPrompt
+    }
+
+)
+
+promptEmbeddings=(response.json()["embeddings"])
+
+print("promptEmbeddings ", promptEmbeddings)
+
+similarities = collection.query(
+    query_embeddings=promptEmbeddings,
+            n_results=1,
+)
 
 
 
+print("similarities ", similarities)
+
+summary = similarities['metadatas'][0][0]['summary']
+topics = similarities['metadatas'][0][0]['topics']
+text = similarities['documents'][0][0]
+
+final_sys_prompt = """
+      You are the most helpful and advanced personal assistant ever, helping the user navigate through life and be brief. 
+      He is asking you questions, and you answer them with the best of your ability.
+      You have access to some of their records, to help you answer their question in a more personalized way.
+      Records:
+        this is the summary :{summary}
+        these are the topics covered :{topics} 
+       
+"""
+print('\n\n\n')
+print("summary" , summary )
+print("topics" , topics )
+print("text" , text )
+print('\n\n\n')
 
 
+
+final_response = requests.post(
+    url+"/groq/chat",
+    params= {
+        "message": newPrompt,
+        "systemMessage": final_sys_prompt
+    }
+
+)
+
+# print("summary:", similarities.docs[0].metadata.summary)
+
+
+print("\n\n\n")
+print("final_response ", final_response.json())

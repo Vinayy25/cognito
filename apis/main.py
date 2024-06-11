@@ -102,21 +102,21 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
         return JSONResponse(status_code=500, content={"message": str(e)})
     
 @app.post("/groq/chat", response_model=ChatResponse)
-def groq_chat(message: str):
+def groq_chat(message: str, systemMessage : str):
     try:
         # Generate chat completion using GROQ model
        groq_chat_completion = groq_client.chat.completions.create(
          messages=[
         {
             "role": "system",
-            "content": "you are a helpful assistant."
+            "content":systemMessage,
         },
         {
             "role": "user",
             "content": message,
         }
              ],
-             model="gemma-7b-it",
+             model="llama3-70b-8192",
        )
        
        return ChatResponse(response=groq_chat_completion.choices[0].message.content)
