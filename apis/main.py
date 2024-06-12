@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File,Query
 from pydantic import BaseModel
 from typing import List
 from fastapi.responses import JSONResponse
@@ -9,11 +9,38 @@ from dotenv import load_dotenv
 import os
 from groq import Groq
 import numpy as np
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pathlib import Path
+import google.generativeai as genai
+import markdown2
+import asyncio
+
+
 
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+origins = ["http://127.0.0.1:8000"]
 load_dotenv()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+def get_generative_model(model_name, system_instruction = ""):
+    genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+    return genai.GenerativeModel(model_name, system_instruction = system_instruction,)
+
+
+# generative_image_model = get_generative_model('gemini-pro-vision')
 # Initialize the model
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 whisper_model = whisper.load_model("base")
@@ -53,7 +80,7 @@ class ChatResponse(BaseModel):
 async def get_embeddings(request: str):
     try:
         # Generate embeddings   
-        embeddings = model.encode([request], show_progress_bar=True)
+        embeddings = model.encode([request], show_progress_bar=True, prompt= '' )
         return EmbeddingResponse(embeddings=embeddings.tolist())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -108,6 +135,7 @@ def groq_chat(message: str, systemMessage : str):
        groq_chat_completion = groq_client.chat.completions.create(
          messages=[
         {
+            
             "role": "system",
             "content":systemMessage,
         },
@@ -117,7 +145,7 @@ def groq_chat(message: str, systemMessage : str):
         }
              ],
              model="llama3-70b-8192",
-       )
+               )
        
        return ChatResponse(response=groq_chat_completion.choices[0].message.content)
     except Exception as e:
@@ -126,8 +154,64 @@ def groq_chat(message: str, systemMessage : str):
 
 # @app.post('/prompt/chat')
 # def prompt_chat():
-#     return chat()
+#     return chat() 
 
+@app.get("/gemini")
+async def query(query: str, model_type: str = Query(default='text'), systemMessage: str = Query(default='')):
+    if not query:
+        return ''
+    
+    generative_text_model = get_generative_model('gemini-1.5-pro-latest',system_instruction=systemMessage)
+    models = {'text': generative_text_model}
+    model = models.get(model_type)
+
+    if not model:
+        raise HTTPException(status_code=400, detail="Invalid model type")
+    prompt = query
+    response = model.generate_content(
+        prompt,
+        stream = True
+    )
+
+    return StreamingResponse(generate_content_stream(model, prompt), media_type='text/plain')
+    response_text = response.text if hasattr(response, 'text') else response.content.decode()
+   
+    return StreamingResponse( response_text, media_type='text/plain')
+
+
+
+
+
+async def generate_content_stream(model, prompt):
+    # Simulate streaming by breaking response into chunks
+    response = model.generate_content(prompt)
+    content = response.text if hasattr(response, 'text') else response.content.decode()
+    for i in range(0, len(content), 100):  # Adjust chunk size as needed
+        yield content[i:i+100]
+        print(content[i:i+100])
+        await asyncio.sleep(0.1)  
+
+
+
+def to_html(markdown_format):
+    return (
+        markdown2.markdown(markdown_format)
+        .replace("\\", "")
+        .replace("<h1>", "<h7>")
+        .replace("</h1>", "</h7>")
+        .replace("\\\\", "")
+        .replace("```", "")
+        .replace("python", "")
+        .replace("\n","<br>")
+        .replace('"',"")
+        .replace("#","<b>")
+    )
+
+def removeEmpty(paragraph):
+    lines = paragraph.split('\n')
+    non_empty_lines = [line for line in lines if line.strip() != '']
+    cleaned_paragraph = '\n'.join(non_empty_lines)
+    return cleaned_paragraph
 
 if __name__ == "__main__":
     import uvicorn

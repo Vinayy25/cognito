@@ -1,37 +1,23 @@
 import requests 
 from langchain.vectorstores import Chroma
+from langchain_core.output_parsers import StrOutputParser
 import chromadb, json, uuid
 
-url = "https://6133-2409-40f2-301c-3a3-8dbc-20ec-4da8-b5ee.ngrok-free.app"
+url = "https://1f95-2409-40f2-301a-2232-624c-6bd-da22-dd62.ngrok-free.app"
 
-text = """Hey, did you catch the basketball game last night? It was incredible! The game was between the Lakers and the Celtics.
-LeBron James was on fire! He scored 40 points, including a last-minute three-pointer that sealed the victory. 
-In the third quarter, LeBron made this insane alley-oop dunk that had the entire arena on their feet. 
-The pass came from Anthony Davis, who was being double-teamed, and somehow, LeBron just soared through the air and slammed it down.
-It was like watching a scene from a movie. Jayson Tatum was the star for the Celtics. 
-He managed to score 35 points and had some incredible drives to the basket. 
-There was one moment where he crossed over two defenders and made a reverse layup that had everyone cheering. 
-The crowd was electric. Every time someone made a big play, the noise was deafening.
-And during halftime, they had this cool drone light show that displayed highlights from past games.
-It was really impressive. At the end of the game, there was this wholesome moment where LeBron gave his shoes to a young fan in the crowd. 
-The kid was over the moon, and the whole stadium applauded. It was a great way to cap off an already thrilling night"""
+text = """Lawyer A (Prosecution): Your Honor, the evidence presented clearly indicates a case of dowry harassment. The defendant, Mr. Kapoor, has not only failed to provide the promised marital home but has also subjected the victim, Ms. Iyer, to constant mental and emotional abuse for failing to meet his exorbitant dowry demands.
+Lawyer B (Defense): Objection! My client, Mr. Kapoor, vehemently denies these accusations. The gifts in question were willingly offered by the Iyer family, and there was no coercion involved. Ms. Iyer is attempting to malign my client's character after their unfortunate marital discord.
+Lawyer A: Your Honor, with all due respect, the documentation clearly outlines the specific items demanded as dowry by Mr. Kapoor's family before the wedding. We also have witness testimonies from neighbours who can attest to the constant arguments and harassment Ms. Iyer faced regarding the unmet dowry demands.
+Lawyer B: My client maintains his innocence. These accusations are merely a ploy by Ms. Iyer to claim a larger share of marital assets during the divorce proceedings. We have counter-testimonies that depict a loving relationship between the couple before the alleged dowry disputes arose.
+Lawyer A:  If there was a loving relationship, Your Honor, why would Ms. Iyer be forced to leave the marital home and seek refuge with her family? The emotional trauma she suffered is evident from the medical reports we have submitted.
+"""
+
+parser = StrOutputParser()
 
 
-text1 = """Back in the 1990s, my biology class was an eye-opening experience for many students. As Professor Harikrishna, 
-I took immense pride in guiding young minds through the fascinating world of life sciences. We delved deep into the study 
-of life and living organisms, exploring diverse fields such as botany, zoology, microbiology, genetics, and ecology.
- Our journey began at the cellular level, where we examined the intricate structures and functions of cells, the fundamental units of life. Understanding cellular processes like metabolism, cell division, and genetic inheritance was crucial in uncovering the mysteries of biological diversity.
-
-One of the most captivating areas we explored was genetics. I remember the excitement in the classroom as we discussed 
-the groundbreaking advancements in this field. Genes, made up of DNA, held the secrets to hereditary information. 
-The 1990s saw significant progress, such as the early stages of the Human Genome Project, which aimed to map the entire 
-human genome. This project promised new horizons in medicine, with the potential for personalized treatments based on an
- individual's genetic blueprint and the future possibility of gene therapy to correct genetic disorders."""
-
-
-chroma_client = chromadb.HttpClient(host='localhost', port=3000, )
+chroma_client = chromadb.HttpClient(host='localhost', port=3000,)
 collection = chroma_client.get_or_create_collection(
-    name = "my_collection",
+    name = "my_collection1",
 )
 
 
@@ -57,10 +43,8 @@ text_context_response = requests.post(
 )
 
 
-
-print("text_context_response",  text_context_response.json())
-
 text_context = text_context_response.json()['response']
+print("text_context ", text_context)
 jsonResponse = json.loads(text_context)
 summary = jsonResponse['summary']
 topics = jsonResponse['topics']
@@ -74,13 +58,12 @@ response = requests.post(
     params={
         "request":""" Raw Text: {text}, This is an summary of the broader conversation so you have more context {summary}, and Topics pertaining to the conversation {topics}"""
     }
-
 )
 
 
 
 embeddings=(response.json()["embeddings"])
-print("embeddings ", embeddings)
+# print("embeddings ", embeddings)
 
 
 
@@ -90,27 +73,26 @@ collection.add(
     documents = documents,
     embeddings = embeddings,
     metadatas = metadatas,
-    ids = [str(2222)]
+    ids = [ str(uuid.uuid4() )]
 )
 
-myembeddings = collection.get(
-    ids = [str(2222)],
-    include= ['embeddings']
+# myembeddings = collection.get(
+#     ids = [str(2222)],
+#     include= ['embeddings']
   
-)
+# )
 
-print("myembeddings ",myembeddings["embeddings"])
+# print("myembeddings ",myembeddings["embeddings"])
 
 
 
-newPrompt = "tell me about the basket ball games last night"
+newPrompt = "basketball game"
 
 
 
 
 response = requests.post(
     url+"/embeddings/",
-
     params={
         "request":newPrompt
     }
@@ -119,16 +101,16 @@ response = requests.post(
 
 promptEmbeddings=(response.json()["embeddings"])
 
-print("promptEmbeddings ", promptEmbeddings)
+# print("promptEmbeddings ", promptEmbeddings)
 
 similarities = collection.query(
     query_embeddings=promptEmbeddings,
-            n_results=1,
+            n_results=2,
 )
 
 
 
-print("similarities ", similarities)
+# print("similarities ", similarities)
 
 summary = similarities['metadatas'][0][0]['summary']
 topics = similarities['metadatas'][0][0]['topics']
@@ -139,9 +121,13 @@ final_sys_prompt = """
       He is asking you questions, and you answer them with the best of your ability.
       You have access to some of their records, to help you answer their question in a more personalized way.
       Records:
-        this is the summary :{summary}
-        these are the topics covered :{topics} 
-       
+        this is the summary :"""+summary+"""
+        these are the topics covered :"""+topics+"""
+      Use the summary and topics covered to generate your response more personalised. Do not include that you are referring to the record given to you
+      Make sure to add more related information to the generated response.
+      If the records provided happens to be completly unrelated to the prompt asked ,refrain from using the records provided
+      Respond in a very natural way.
+      UNDERSTOOD
 """
 print('\n\n\n')
 print("summary" , summary )
@@ -151,17 +137,24 @@ print('\n\n\n')
 
 
 
-final_response = requests.post(
-    url+"/groq/chat",
+final_response = requests.get(
+    url+"/gemini",
     params= {
-        "message": newPrompt,
+        "query": newPrompt,
         "systemMessage": final_sys_prompt
-    }
-
+    },
+    stream=True
 )
 
-# print("summary:", similarities.docs[0].metadata.summary)
+# print("final sys prompt " , final_sys_prompt)
 
 
 print("\n\n\n")
-print("final_response ", final_response.json())
+print("Streaming response:")
+for chunk in final_response.iter_content(chunk_size=None):
+    print(chunk.decode('utf-8'), end='')
+
+
+
+#again storing back the response in db so that it will have a relation lateron 
+
