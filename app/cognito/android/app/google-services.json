@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "513061587003",
+    "project_id": "cognito-ai-vinay",
+    "storage_bucket": "cognito-ai-vinay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513061587003:android:1182cd5b9384853c42341e",
+        "android_client_info": {
+          "package_name": "com.example.cognito"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADYbewKFmF3BW2_VUbG-BK20RLIYNPkWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

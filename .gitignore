@@ -6,6 +6,29 @@ chroma_data
 readme
 chroma.log
 chroma_db
+apis/collection
+apis/database
+apis/functions/__pycache__
+apis/qdrant_storage
+apis/static
+apis/law.py
+apis/milvus.py
+apis/rag1.py 
+apis/rag2.py
+apis/rag3.py
+apis/rag4.py
+apis/rag5.py
+apis/rag6.py
+apis/rag7.py
+apis/rag8.py
+apis/ragworking.py
+apis/testgemini.py
+apis/t1.py
+apis/testingalibaba.py
+apis/testingMilvius.py
+backend/chat.py
+
+
 
 
 

@@ -1339,3 +1339,99 @@ orjson.JSONDecodeError: Input is a zero-length, empty document: line 1 column 1 
 [32mINFO[0m:     [10-06-2024 23:34:46] ::1:55786 - "GET /api/v1/pre-flight-checks HTTP/1.1" 200
 [32mINFO[0m:     [10-06-2024 23:34:46] ::1:55786 - "POST /api/v1/collections/3ddebebd-0d42-4f11-af89-e3e722ad8885/add HTTP/1.1" 201
 [32mINFO[0m:     [10-06-2024 23:34:46] ::1:55786 - "POST /api/v1/collections/3ddebebd-0d42-4f11-af89-e3e722ad8885/get HTTP/1.1" 200
+[33mWARNING[0m:  [02-07-2024 18:36:52] chroma_server_nofile is set to 65535, but this is less than current soft limit of 524288. chroma_server_nofile will not be set.
+[32mINFO[0m:     [02-07-2024 18:36:53] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component System
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component OpenTelemetryClient
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component SqliteDB
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component QuotaEnforcer
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component Posthog
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component LocalSegmentManager
+[36mDEBUG[0m:    [02-07-2024 18:36:53] Starting component SegmentAPI
+[32mINFO[0m:     [02-07-2024 18:36:53] Started server process [[36m206926[0m]
+[32mINFO[0m:     [02-07-2024 18:36:53] Waiting for application startup.
+[32mINFO[0m:     [02-07-2024 18:36:53] Application startup complete.
+[32mINFO[0m:     [02-07-2024 18:36:53] Uvicorn running on [1mhttp://localhost:3000[0m (Press CTRL+C to quit)
+[32mINFO[0m:     [02-07-2024 18:38:04] ::1:60822 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:04] ::1:60822 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:04] ::1:60824 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:38] ::1:46304 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:38] ::1:46304 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:38] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [02-07-2024 18:38:38] ::1:46310 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:57] ::1:60944 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:57] ::1:60944 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:38:57] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [02-07-2024 18:38:57] ::1:60950 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:39:55] ::1:55544 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:39:55] ::1:55544 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [02-07-2024 18:39:55] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [02-07-2024 18:39:55] ::1:55552 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[33mWARNING[0m:  [04-07-2024 20:28:08] chroma_server_nofile is set to 65535, but this is less than current soft limit of 524288. chroma_server_nofile will not be set.
+[32mINFO[0m:     [04-07-2024 20:28:09] Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component System
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component OpenTelemetryClient
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component SqliteDB
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component QuotaEnforcer
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component Posthog
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component LocalSegmentManager
+[36mDEBUG[0m:    [04-07-2024 20:28:09] Starting component SegmentAPI
+[32mINFO[0m:     [04-07-2024 20:28:09] Started server process [[36m976311[0m]
+[32mINFO[0m:     [04-07-2024 20:28:09] Waiting for application startup.
+[32mINFO[0m:     [04-07-2024 20:28:09] Application startup complete.
+[32mINFO[0m:     [04-07-2024 20:28:09] Uvicorn running on [1mhttp://localhost:3000[0m (Press CTRL+C to quit)
+[32mINFO[0m:     [04-07-2024 20:31:26] ::1:60990 - "GET / HTTP/1.1" 404
+[32mINFO[0m:     [04-07-2024 20:32:10] ::1:34932 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:10] ::1:34932 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:10] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:32:10] ::1:34934 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:20] ::1:33662 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:20] ::1:33662 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:20] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:32:20] ::1:33666 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:51] ::1:58232 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:32:51] ::1:58232 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:34:15] ::1:36054 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:34:15] ::1:36054 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:34:15] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:34:15] ::1:36066 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:36:10] ::1:57752 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:36:10] ::1:57752 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:36:10] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:36:10] ::1:57766 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:37:26] ::1:56050 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:37:26] ::1:56050 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:37:26] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:37:26] ::1:56062 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:37:41] ::1:56080 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:37:41] ::1:56080 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:37:41] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:37:41] ::1:56094 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:39:23] ::1:47402 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:39:23] ::1:47402 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 20:39:23] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 20:39:23] ::1:47408 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 22:13:11] ::1:33874 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 22:13:11] ::1:33874 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 22:13:11] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 22:13:11] ::1:33876 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 22:16:41] ::1:43554 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 22:16:41] ::1:43554 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 22:16:41] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 22:16:41] ::1:43562 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:53:58] ::1:42346 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:53:58] ::1:42346 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:53:58] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 23:53:58] ::1:42360 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:56:03] ::1:60240 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:56:03] ::1:60240 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:56:03] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 23:56:03] ::1:60244 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:56:35] ::1:42008 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:56:35] ::1:42008 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:56:35] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 23:56:35] ::1:42020 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:58:59] ::1:44994 - "GET /api/v1/tenants/default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:58:59] ::1:44994 - "GET /api/v1/databases/default_database?tenant=default_tenant HTTP/1.1" 200
+[32mINFO[0m:     [04-07-2024 23:58:59] Collection timepass_conversations10 is not created.
+[32mINFO[0m:     [04-07-2024 23:58:59] ::1:44996 - "POST /api/v1/collections?tenant=default_tenant&database=default_database HTTP/1.1" 200
