@@ -49,15 +49,19 @@ class FirebaseService {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<void> signIn( String email, String password)async{
-
+  Future<void> signIn(String email, String password) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
     } catch (e) {
       rethrow;
     }
+  }
 
+  Future<String> getNgrokUrl() async {
+    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await _db.collection('ngrok_URLs').doc('url').get();
+    return documentSnapshot.data()!['url'];
   }
 
   void createUserDocument() async {
@@ -82,11 +86,16 @@ class FirebaseService {
             .toList();
         return ChatModel(conversations: conversations);
       }
+    } else {
+      await _db
+          .collection('conversations')
+          .doc(email)
+          .set({'conversations': []});
     }
     return null;
-  } 
+  }
 
-  Future<void> addConversation( Conversations conversation) async {
+  Future<void> addConversation(Conversations conversation) async {
     DocumentReference userDocRef = _db.collection('conversations').doc(email);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
@@ -102,3 +111,4 @@ class FirebaseService {
     }
   }
 }
+

@@ -1,6 +1,10 @@
 import 'package:cognito/firebase_options.dart';
+import 'package:cognito/screens/auth_screen.dart';
 import 'package:cognito/screens/chat_screen.dart';
+import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
+import 'package:cognito/states/play_audio_provider.dart';
+import 'package:cognito/states/record_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,21 +27,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        
+        ChangeNotifierProvider(create: (_) => AuthStateProvider()),
         ChangeNotifierProvider(create: (_) => ChatState()),
+        ChangeNotifierProvider(create: (_) => RecordAudioProvider()),
+        ChangeNotifierProvider(create: (_) => PlayAudioProvider()),
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Chat app',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-          fontFamily: GoogleFonts.montserrat().fontFamily,
-        ),
-        home: ChatScreen(
-          conversationId:  TimeOfDay.now().toString(),
-        ),
-      ),
+          debugShowCheckedModeBanner: false,
+          title: 'Chat app',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+            fontFamily: GoogleFonts.montserrat().fontFamily,
+          ),
+          home:
+              Consumer<AuthStateProvider>(builder: (context, provider, child) {
+            return (provider.isAuthenticated)
+                ? ChatScreen(
+                    conversationId: TimeOfDay.now().toString(),
+                  )
+                : LoginPage();
+          })),
     );
   }
 }

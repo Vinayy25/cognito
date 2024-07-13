@@ -1,5 +1,7 @@
 import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/states/chat_state.dart';
+import 'package:cognito/states/play_audio_provider.dart';
+import 'package:cognito/states/record_audio_provider.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/design.dart';
 import 'package:cognito/utils/text.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -31,6 +34,8 @@ class _ChatScreenState extends State<ChatScreen> {
     final ScrollController viewScrollController = ScrollController();
 
     final ChatState chatModelProvider = Provider.of<ChatState>(context);
+    final recordProvider = Provider.of<RecordAudioProvider>(context);
+    final playProvider = Provider.of<PlayAudioProvider>(context);
 
     return AdvancedDrawer(
         controller: drawerController,
@@ -47,13 +52,6 @@ class _ChatScreenState extends State<ChatScreen> {
             ]),
         drawer: const MyDrawer(),
         child: Scaffold(
-          floatingActionButton: Container(
-              height: 50,
-              width: 50,
-              child: Icon(Iconsax.microphone),
-              decoration: BoxDecoration(
-                  color: AppColor.primaryTextColor,
-                  borderRadius: BorderRadius.circular(100))),
           extendBodyBehindAppBar: true,
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
@@ -201,12 +199,16 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: Container(
                                 height: 50,
                                 margin: const EdgeInsets.symmetric(vertical: 5),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all()),
                                 child: TextFormField(
+                                  onTapOutside: (value) {
+                                    // dismiss keyboard
+                                    SystemChannels.textInput
+                                        .invokeMethod('TextInput.hide');
+                                  },
                                   controller: promptController,
                                   onTap: () {
                                     scrollController.jumpTo(scrollController
