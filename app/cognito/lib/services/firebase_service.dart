@@ -95,20 +95,38 @@ class FirebaseService {
     return null;
   }
 
-  Future<void> addConversation(Conversations conversation) async {
-    DocumentReference userDocRef = _db.collection('conversations').doc(email);
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+Future<void> addConversation(Conversations conversation) async {
+  
+  DocumentReference userDocRef = _db.collection('conversations').doc(email);
+  DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
-    if (userDocSnapshot.exists) {
-      List<dynamic> existingConversations =
-          (userDocSnapshot.data() as Map<String, dynamic>)['conversations'];
-      existingConversations.add(conversation.toJson());
+ print(conversation.toJson());
+  conversation.chats.forEach((element) {
+    print(element.toJson());
+  });
+  if (userDocSnapshot.exists) {
+    List<Map<String, dynamic>> existingConversations =
+        List<Map<String, dynamic>>.from((userDocSnapshot.data() as Map<String, dynamic>)['conversations']);
+    
+    existingConversations.add(conversation.toJson());
+
+
+
+    try {
       await userDocRef.update({'conversations': existingConversations});
-    } else {
+    } catch (e) {
+      print('Error updating document: $e');
+      rethrow;
+    }
+  } else {
+    try {
       await userDocRef.set({
         'conversations': [conversation.toJson()]
       });
+    } catch (e) {
+      print('Error setting document: $e');
+      rethrow;
     }
   }
+  }
 }
-

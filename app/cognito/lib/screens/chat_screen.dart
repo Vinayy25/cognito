@@ -227,7 +227,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             IconButton(
                                 onPressed: () {
                                   chatModelProvider.chat(promptController.text,
-                                      widget.conversationId);
+                                      '889129');
                                 },
                                 icon: const Icon(Iconsax.send_15,
                                     color: AppColor.iconColor))

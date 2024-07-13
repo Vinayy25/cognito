@@ -20,6 +20,7 @@ class ChatState extends ChangeNotifier {
   }
 
   void chat(String message, String conversationId) {
+    print("conversation id" + conversationId);
     final chat = Chat(
       message: message,
       sender: 'user',
@@ -29,6 +30,7 @@ class ChatState extends ChangeNotifier {
     final conversationIndex = chatModel.conversations.indexWhere(
       (element) => element.conversationId == conversationId,
     );
+
 
     if (conversationIndex != -1) {
       chatModel.conversations[conversationIndex].chats.add(chat);
@@ -40,6 +42,7 @@ class ChatState extends ChangeNotifier {
       chatModel.conversations.add(conversation);
       FirebaseService().addConversation(conversation);
     }
+
 
     notifyListeners();
   }

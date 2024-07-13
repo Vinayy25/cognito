@@ -12,7 +12,6 @@ class ChatModel {
       _$ChatModelFromJson(json);
   Map<String, dynamic> toJson() => _$ChatModelToJson(this);
 }
-
 @JsonSerializable()
 class Conversations {
   final List<Chat> chats;
@@ -27,9 +26,13 @@ class Conversations {
 
   factory Conversations.fromJson(Map<String, dynamic> json) =>
       _$ConversationsFromJson(json);
-  Map<String, dynamic> toJson() => _$ConversationsToJson(this);
-}
 
+  Map<String, dynamic> toJson() => {
+        'chats': chats.map((chat) => chat.toJson()).toList(),
+        'conversationId': conversationId,
+        'conversationName': conversationName,
+      };
+}
 @JsonSerializable()
 class Chat {
   final String message;
