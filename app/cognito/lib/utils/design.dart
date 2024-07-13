@@ -10,15 +10,16 @@ class SquareBoxDesign extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 20,
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
           color: AppColor.backgroundColor,
           borderRadius: BorderRadius.circular(10),
-          border: Border.fromBorderSide(BorderSide(
+          border: const Border.fromBorderSide(BorderSide(
             color: AppColor.primaryTextColor,
             width: 0.25,
           )),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
                 color: AppColor.primaryTextColor,
                 blurRadius: 5,

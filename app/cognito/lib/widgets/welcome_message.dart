@@ -1,6 +1,5 @@
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
-import 'package:cognito/widgets/app_card.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeMessage extends StatelessWidget {
@@ -9,7 +8,7 @@ class WelcomeMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
+      child: const Column(
         children: [
           AppText(
               text: "Hello, Ask me",

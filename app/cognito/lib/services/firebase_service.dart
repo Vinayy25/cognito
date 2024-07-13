@@ -1,17 +1,17 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cognito/models/chat_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class FirebaseService{
- final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+class FirebaseService {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final _db = FirebaseFirestore.instance;
 
-  Future<String> signInWithGoogle( ) async {
+  final email = FirebaseAuth.instance.currentUser?.email;
+
+  Future<String> signInWithGoogle() async {
     try {
-   
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
 
@@ -27,20 +27,16 @@ class FirebaseService{
             await _firebaseAuth.signInWithCredential(authCredential);
         final User? user = userCredential.user;
         print(user?.email ?? "no email");
-
-      
       } else {
         print("error");
 
         await _googleSignIn.signOut();
         return 'ERROR';
       }
-     
-      
 
       return 'SUCCESS';
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -53,14 +49,56 @@ class FirebaseService{
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  void createUserDocument()async{
+  Future<void> signIn( String email, String password)async{
+
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+    } catch (e) {
+      rethrow;
+    }
+
+  }
+
+  void createUserDocument() async {
     final User? user = _firebaseAuth.currentUser;
-    final DocumentReference documentReference = FirebaseFirestore.instance.collection('users').doc(user?.uid);
+    final DocumentReference documentReference =
+        FirebaseFirestore.instance.collection('users').doc(user?.uid);
     documentReference.set({
       'email': user?.email,
       'name': user?.displayName,
       'photoUrl': user?.photoURL,
     });
+  }
 
+  Future<ChatModel?> getUserConversations() async {
+    DocumentSnapshot docSnapshot =
+        await _db.collection('conversations').doc(email).get();
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey('conversations')) {
+        List<Conversations> conversations = (data['conversations'] as List)
+            .map((item) => Conversations.fromJson(item as Map<String, dynamic>))
+            .toList();
+        return ChatModel(conversations: conversations);
+      }
+    }
+    return null;
+  } 
+
+  Future<void> addConversation( Conversations conversation) async {
+    DocumentReference userDocRef = _db.collection('conversations').doc(email);
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    if (userDocSnapshot.exists) {
+      List<dynamic> existingConversations =
+          (userDocSnapshot.data() as Map<String, dynamic>)['conversations'];
+      existingConversations.add(conversation.toJson());
+      await userDocRef.update({'conversations': existingConversations});
+    } else {
+      await userDocRef.set({
+        'conversations': [conversation.toJson()]
+      });
+    }
   }
 }

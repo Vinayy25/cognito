@@ -164,7 +164,7 @@ class MyButton extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(255, 246, 193, 189).withOpacity(0.4),
+              color: const Color.fromARGB(255, 246, 193, 189).withOpacity(0.4),
               spreadRadius: 2,
               blurRadius: 5,
               offset: const Offset(0, 3), // changes position of shadow
