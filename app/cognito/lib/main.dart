@@ -4,6 +4,7 @@ import 'package:cognito/screens/chat_screen.dart';
 import 'package:cognito/screens/main_screen.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
+import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:cognito/states/record_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -33,6 +34,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ChatState()),
         ChangeNotifierProvider(create: (_) => RecordAudioProvider()),
         ChangeNotifierProvider(create: (_) => PlayAudioProvider()),
+        ChangeNotifierProvider(create: (_) => Data()),
+
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

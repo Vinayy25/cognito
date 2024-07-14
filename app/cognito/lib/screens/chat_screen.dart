@@ -1,20 +1,26 @@
+import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/services/firebase_service.dart';
+import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/chat_state.dart';
+import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:cognito/states/record_audio_provider.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/design.dart';
 import 'package:cognito/utils/text.dart';
+import 'package:cognito/widgets/chat_card.dart';
 import 'package:cognito/widgets/my_drawer.dart';
 import 'package:cognito/widgets/welcome_message.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   final String conversationId;
   final ChatState chatModelProvider;
   const ChatScreen(
@@ -22,6 +28,11 @@ class ChatScreen extends StatelessWidget {
       required this.conversationId,
       required this.chatModelProvider});
 
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -34,12 +45,47 @@ class ChatScreen extends StatelessWidget {
 
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
+    final dataProvider = Provider.of<Data>(context);
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
-        chatModelProvider.chat(message, conversationId);
+        widget.chatModelProvider.chat(message, widget.conversationId);
         promptController.clear();
       }
+    }
+
+    var myChat = (widget
+        .chatModelProvider
+        .chatModel
+        .conversations[
+            (widget.chatModelProvider.chatModel.conversations.indexWhere(
+      (element) => element.conversationId == widget.conversationId,
+    ))]
+        .chats);
+
+    Widget unwantedWidget(int len) {
+      return Visibility(
+        visible: len < 2,
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 100,
+            ),
+            const Divider(
+              thickness: 0.25,
+              color: AppColor.primaryTextColor,
+            ),
+            const WelcomeMessage(),
+            const Divider(
+              thickness: 0.25,
+              color: AppColor.primaryTextColor,
+            ),
+            const SizedBox(
+              height: 100,
+            ),
+          ],
+        ),
+      );
     }
 
     return AdvancedDrawer(
@@ -58,8 +104,80 @@ class ChatScreen extends StatelessWidget {
         drawer: const MyDrawer(),
         child: Scaffold(
           extendBodyBehindAppBar: true,
-          resizeToAvoidBottomInset: true,
+          extendBody: true,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniStartDocked,
+          floatingActionButton: GestureDetector(
+            onTap: () async {
+              if (dataProvider.requestPending == true) {
+                showToast(
+                    'please wait for previous audio transcription to be completed');
+              } else if (recordProvider.isRecording == true) {
+                await recordProvider
+                    .stopRecording(dataProvider.chatLength() + 1)
+                    .then((value) {
+                  dataProvider.addChat(RecorderChatModel(
+                      audio: value,
+                      time: TimeOfDay.now(),
+                      text: 'Transcribing...'));
+
+                  // _scrollController.position.animateTo(
+                  //   _scrollController.position.maxScrollExtent,
+                  //   duration: const Duration(milliseconds: 500),
+                  //   curve: Curves.fastOutSlowIn,
+                  // );
+                });
+              } else {
+                await recordProvider.recordVoice();
+              }
+            },
+            onLongPress: () async {
+              if (dataProvider.requestPending == true) {
+                showToast(
+                    'please wait for previous audio transcription to be completed');
+              } else if (recordProvider.isRecording == true) {
+                await recordProvider
+                    .stopRecording(dataProvider.chatLength() + 1)
+                    .then(
+                      (value) => dataProvider.addChat(RecorderChatModel(
+                          audio: value,
+                          time: TimeOfDay.now(),
+                          text: 'Transcribing...')),
+                    );
+              } else {
+                await recordProvider.recordVoice();
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.only(bottom: 70),
+              height: 80,
+              width: 80,
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 89, 79, 79),
+                    blurRadius: 5,
+                    spreadRadius: 1,
+                    offset: Offset(0, 0),
+                  )
+                ],
+                shape: BoxShape.circle,
+                color: Color.fromRGBO(53, 55, 75, 1),
+              ),
+              child: recordProvider.isRecording == true
+                  ? Lottie.asset(
+                      'assets/animations/voice_recording_inwhite.json',
+                      frameRate: FrameRate.max,
+                      repeat: true,
+                      reverse: true,
+                      fit: BoxFit.contain)
+                  : const Icon(size: 35, Icons.mic, color: Colors.white),
+            ),
+          ),
+          floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+          backgroundColor: AppColor.backgroundColor,
           appBar: AppBar(
+            backgroundColor: AppColor.backgroundColor,
             centerTitle: true,
             title: const AppText(
               text: 'cognito',
@@ -101,67 +219,54 @@ class ChatScreen extends StatelessWidget {
               width: width,
               color: AppColor.backgroundColor,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(
-                    height: 100,
-                  ),
-                  const Divider(
-                    thickness: 0.25,
-                    color: AppColor.primaryTextColor,
-                  ),
-                  const WelcomeMessage(),
-                  const Divider(
-                    thickness: 0.25,
-                    color: AppColor.primaryTextColor,
-                  ),
-                  const SizedBox(
-                    height: 100,
-                  ),
+                  unwantedWidget(myChat.length),
                   Expanded(
                       child: ListView.builder(
                     shrinkWrap: true,
-                    clipBehavior: Clip.none,
-                    padding: const EdgeInsets.only(top: 0, bottom: 20),
-                    itemCount: 10,
-                    controller: viewScrollController,
-                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(top: 70, bottom: 20),
+                    itemCount: myChat.length,
+                    // controller: viewScrollController,
+
                     itemBuilder: (context, index) {
-                      return ((chatModelProvider
-                                  .chatModel
-                                  .conversations[(chatModelProvider
-                                      .chatModel.conversations
-                                      .indexWhere(
-                                (element) =>
-                                    element.conversationId == conversationId,
-                              ))]
-                                  .chats
-                                  .length) >
-                              1)
-                          ? Container()
-                          : const Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SquareBoxDesign(text: 'Hello this is test'),
-                                    SquareBoxDesign(
-                                        text:
-                                            'Hello this is testing vinays code and design'),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SquareBoxDesign(text: 'Hello this is test'),
-                                    SquareBoxDesign(
-                                        text: 'Hello this is and design'),
-                                  ],
-                                ),
-                              ],
-                            );
+                      print(myChat);
+                      return Visibility(
+                        visible: myChat.length > 1,
+                        child: Align(
+                          alignment: myChat[index].sender == 'user'
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child: ChatCard(
+                            isUser: myChat[index].sender == 'user',
+                            text: myChat[index].message,
+                          ),
+                        ),
+                      );
+                      // : const Column(
+                      //     mainAxisAlignment: MainAxisAlignment.start,
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     children: [
+                      //       Row(
+                      //         mainAxisSize: MainAxisSize.min,
+                      //         children: [
+                      //           SquareBoxDesign(text: 'Hello this is test'),
+                      //           SquareBoxDesign(
+                      //               text:
+                      //                   'Hello this is testing vinays code and design'),
+                      //         ],
+                      //       ),
+                      //       Row(
+                      //         mainAxisSize: MainAxisSize.min,
+                      //         children: [
+                      //           SquareBoxDesign(text: 'Hello this is test'),
+                      //           SquareBoxDesign(
+                      //               text: 'Hello this is and design'),
+                      //         ],
+                      //       ),
+                      //     ],
+                      //   );
                     },
                   )),
                   Consumer<ChatState>(builder: (context, provider, child) {

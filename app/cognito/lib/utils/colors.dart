@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColor {
   AppColor._();
   static const Color backgroundColor = Color.fromARGB(255, 46, 51, 54);
-  static const Color primaryColor = Color(0xFF00B87C);
+  static const Color primaryColor = Colors.white;
   static const Color secondaryColor = Color(0xFF00B87C);
   static const Color primaryTextColor = Color.fromARGB(255, 75, 166, 240);
   static const Color secondaryTextColor = Colors.blueAccent;

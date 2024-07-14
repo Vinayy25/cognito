@@ -23,12 +23,13 @@ class ChatState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void chat(String message, String conversationId) {
+  void chat(String message, String conversationId)async {
     final chat = Chat(
       message: message,
       sender: 'user',
       time: DateTime.now().toString(),
     );
+    notifyListeners();
 
     final conversationIndex = chatModel.conversations.indexWhere(
       (element) => element.conversationId == conversationId,
@@ -36,14 +37,14 @@ class ChatState extends ChangeNotifier {
 
     if (conversationIndex != -1) {
       chatModel.conversations[conversationIndex].chats.add(chat);
-      FirebaseService().addChat(conversationId, chat);
+     await  FirebaseService().addChat(conversationId, chat);
     } else {
       final conversation = Conversations(
         chats: [...chatModel.conversations[conversationIndex].chats, chat],
         conversationId: conversationId,
       );
       chatModel.conversations.add(conversation);
-      FirebaseService().addChat(conversationId, chat);
+      await FirebaseService().addChat(conversationId, chat);
     }
 
     notifyListeners();
