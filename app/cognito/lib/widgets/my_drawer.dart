@@ -19,26 +19,23 @@ class MyDrawer extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Hero(
-              tag: "profile",
-              child: Container(
-                  width: 128.0,
-                  height: 128.0,
-                  margin: const EdgeInsets.only(
-                    top: 24.0,
-                    bottom: 64.0,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    color: AppColor.backgroundColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Iconsax.user,
-                    color: AppColor.iconBackgroundColor,
-                    size: 30,
-                  )),
-            ),
+            Container(
+                width: 128.0,
+                height: 128.0,
+                margin: const EdgeInsets.only(
+                  top: 24.0,
+                  bottom: 64.0,
+                ),
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(
+                  color: AppColor.backgroundColor,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Iconsax.user,
+                  color: AppColor.iconBackgroundColor,
+                  size: 30,
+                )),
             ListTile(
                 onTap: () {},
                 title: const AppText(

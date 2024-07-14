@@ -10,17 +10,20 @@ class ChatState extends ChangeNotifier {
   }
 
   Future<void> initializeData() async {
-    ChatModel? conversationData =
-        await FirebaseService().getUserConversations();
+    List<String> conversationIds = await FirebaseService().getConversationIds();
 
-    if (conversationData != null) {
-      chatModel = conversationData;
-      notifyListeners();
+    for (String conversationId in conversationIds) {
+      List<Chat> chats = await FirebaseService().getChats(conversationId);
+      final conversation = Conversations(
+        chats: chats,
+        conversationId: conversationId,
+      );
+      chatModel.conversations.add(conversation);
     }
+    notifyListeners();
   }
 
   void chat(String message, String conversationId) {
-    print("conversation id" + conversationId);
     final chat = Chat(
       message: message,
       sender: 'user',
@@ -31,19 +34,28 @@ class ChatState extends ChangeNotifier {
       (element) => element.conversationId == conversationId,
     );
 
-
     if (conversationIndex != -1) {
       chatModel.conversations[conversationIndex].chats.add(chat);
+      FirebaseService().addChat(conversationId, chat);
     } else {
       final conversation = Conversations(
-        chats: [chat],
+        chats: [...chatModel.conversations[conversationIndex].chats, chat],
         conversationId: conversationId,
       );
       chatModel.conversations.add(conversation);
-      FirebaseService().addConversation(conversation);
+      FirebaseService().addChat(conversationId, chat);
     }
 
+    notifyListeners();
+  }
 
+  void addConversationId(String conversationId) async {
+    final conversation = Conversations(
+      chats: [],
+      conversationId: conversationId,
+    );
+    chatModel.conversations.add(conversation);
+    await FirebaseService().addConversationId(conversationId);
     notifyListeners();
   }
 }

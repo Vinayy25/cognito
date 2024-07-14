@@ -1,6 +1,7 @@
 import 'package:cognito/firebase_options.dart';
 import 'package:cognito/screens/auth_screen.dart';
 import 'package:cognito/screens/chat_screen.dart';
+import 'package:cognito/screens/main_screen.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/play_audio_provider.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,11 +44,12 @@ class MyApp extends StatelessWidget {
           ),
           home:
               Consumer<AuthStateProvider>(builder: (context, provider, child) {
+         
+           
+
             return (provider.isAuthenticated)
-                ? ChatScreen(
-                    conversationId: TimeOfDay.now().toString(),
-                  )
-                : LoginPage();
+                ? const MainScreen()
+                : const LoginPage();
           })),
     );
   }

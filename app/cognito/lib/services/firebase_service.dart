@@ -75,58 +75,98 @@ class FirebaseService {
     });
   }
 
-  Future<ChatModel?> getUserConversations() async {
-    DocumentSnapshot docSnapshot =
-        await _db.collection('conversations').doc(email).get();
-    if (docSnapshot.exists) {
-      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
-      if (data != null && data.containsKey('conversations')) {
-        List<Conversations> conversations = (data['conversations'] as List)
-            .map((item) => Conversations.fromJson(item as Map<String, dynamic>))
-            .toList();
-        return ChatModel(conversations: conversations);
+  Future<List<String>> getConversationIds() async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _db
+          .collection('users')
+          .doc(email)
+          .collection('conversation_ids')
+          .doc('id')
+          .get();
+      return List<String>.from(documentSnapshot.data()!['conversation_ids']);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Chat>> getChats(String conversationId) async {
+    DocumentReference conversationDocRef = _db
+        .collection('users')
+        .doc(email)
+        .collection('conversations')
+        .doc(conversationId);
+
+    DocumentSnapshot conversationDocSnapshot = await conversationDocRef.get();
+
+    if (conversationDocSnapshot.exists) {
+      List<dynamic> chatData =
+          (conversationDocSnapshot.data() as Map<String, dynamic>)['chats'];
+      List<Chat> chats = chatData.map((data) => Chat.fromJson(data)).toList();
+      return chats;
+    } else {
+      return [];
+    }
+  }
+
+  Future<void> addChat(String conversationId, Chat chat) async {
+    DocumentReference conversationDocRef = _db
+        .collection('users')
+        .doc(email)
+        .collection('conversations')
+        .doc(conversationId);
+
+    DocumentSnapshot conversationDocSnapshot = await conversationDocRef.get();
+
+    if (conversationDocSnapshot.exists) {
+      List<dynamic> existingChats =
+          (conversationDocSnapshot.data() as Map<String, dynamic>)['chats'];
+      existingChats.add(chat.toJson());
+
+      try {
+        await conversationDocRef.update({'chats': existingChats});
+      } catch (e) {
+        rethrow;
       }
     } else {
-      await _db
-          .collection('conversations')
+      try {
+        await conversationDocRef.set({
+          'chats': [chat.toJson()]
+        });
+      } catch (e) {
+        rethrow;
+      }
+    }
+
+  }
+
+ Future<void> addConversationId( String id) async {
+    try {
+      DocumentReference documentReference = _db
+          .collection('users')
           .doc(email)
-          .set({'conversations': []});
-    }
-    return null;
-  }
+          .collection('conversation_ids')
+          .doc('id');
 
-Future<void> addConversation(Conversations conversation) async {
-  
-  DocumentReference userDocRef = _db.collection('conversations').doc(email);
-  DocumentSnapshot userDocSnapshot = await userDocRef.get();
+      DocumentSnapshot documentSnapshot = await documentReference.get();
 
- print(conversation.toJson());
-  conversation.chats.forEach((element) {
-    print(element.toJson());
-  });
-  if (userDocSnapshot.exists) {
-    List<Map<String, dynamic>> existingConversations =
-        List<Map<String, dynamic>>.from((userDocSnapshot.data() as Map<String, dynamic>)['conversations']);
-    
-    existingConversations.add(conversation.toJson());
+      if (documentSnapshot.exists) {
+        List<dynamic> conversationIds = (documentSnapshot.data()
+            as Map<String, dynamic>)['conversation_ids'];
 
 
-
-    try {
-      await userDocRef.update({'conversations': existingConversations});
+        if(conversationIds.contains(id)){
+          return;
+        }
+        conversationIds.add(id);
+        await documentReference.update({'conversation_ids': conversationIds});
+      } else {
+        await documentReference.set({
+          'conversation_ids': [id]
+        });
+      }
     } catch (e) {
-      print('Error updating document: $e');
-      rethrow;
-    }
-  } else {
-    try {
-      await userDocRef.set({
-        'conversations': [conversation.toJson()]
-      });
-    } catch (e) {
-      print('Error setting document: $e');
       rethrow;
     }
   }
-  }
+
 }

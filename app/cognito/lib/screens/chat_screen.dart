@@ -14,15 +14,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
   final String conversationId;
-  const ChatScreen({super.key, required this.conversationId});
+  final ChatState chatModelProvider;
+  const ChatScreen(
+      {super.key,
+      required this.conversationId,
+      required this.chatModelProvider});
 
-  @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -33,9 +32,15 @@ class _ChatScreenState extends State<ChatScreen> {
     final ScrollController scrollController = ScrollController();
     final ScrollController viewScrollController = ScrollController();
 
-    final ChatState chatModelProvider = Provider.of<ChatState>(context);
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
+
+    void sendMessage(String message) {
+      if (message.trim().isNotEmpty) {
+        chatModelProvider.chat(message, conversationId);
+        promptController.clear();
+      }
+    }
 
     return AdvancedDrawer(
         controller: drawerController,
@@ -62,26 +67,25 @@ class _ChatScreenState extends State<ChatScreen> {
               color: Colors.white,
             ),
             leading: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
               icon: const Icon(Iconsax.arrow_left_2, color: AppColor.iconColor),
             ),
             automaticallyImplyLeading: true,
             actions: [
-              Hero(
-                tag: 'profile',
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppColor.iconBackgroundColor,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: IconButton(
-                      onPressed: () {
-                        drawerController.showDrawer();
-                      },
-                      icon: const Icon(
-                        Iconsax.user,
-                        color: AppColor.iconColor,
-                      )),
-                ),
+              Container(
+                decoration: BoxDecoration(
+                    color: AppColor.iconBackgroundColor,
+                    borderRadius: BorderRadius.circular(20)),
+                child: IconButton(
+                    onPressed: () {
+                      drawerController.showDrawer();
+                    },
+                    icon: const Icon(
+                      Iconsax.user,
+                      color: AppColor.iconColor,
+                    )),
               ),
               const SizedBox(
                 width: 10,
@@ -106,14 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     thickness: 0.25,
                     color: AppColor.primaryTextColor,
                   ),
-                  // if (MediaQuery.of(context).viewInsets.bottom > 0)
-                  //   Container(
-                  //     child: AppText(
-                  //       text: promptController.text,
-                  //       color: AppColor.primaryTextColor,
-                  //     ),
-                  //   )
-                  // else
                   const WelcomeMessage(),
                   const Divider(
                     thickness: 0.25,
@@ -122,7 +118,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(
                     height: 100,
                   ),
-
                   Expanded(
                       child: ListView.builder(
                     shrinkWrap: true,
@@ -132,28 +127,41 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: viewScrollController,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SquareBoxDesign(text: 'Hello this is test'),
-                              SquareBoxDesign(
-                                  text:
-                                      'Hello this is testing vinays code and design'),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SquareBoxDesign(text: 'Hello this is test'),
-                              SquareBoxDesign(text: 'Hello this is and design'),
-                            ],
-                          ),
-                        ],
-                      );
+                      return ((chatModelProvider
+                                  .chatModel
+                                  .conversations[(chatModelProvider
+                                      .chatModel.conversations
+                                      .indexWhere(
+                                (element) =>
+                                    element.conversationId == conversationId,
+                              ))]
+                                  .chats
+                                  .length) >
+                              1)
+                          ? Container()
+                          : const Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SquareBoxDesign(text: 'Hello this is test'),
+                                    SquareBoxDesign(
+                                        text:
+                                            'Hello this is testing vinays code and design'),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SquareBoxDesign(text: 'Hello this is test'),
+                                    SquareBoxDesign(
+                                        text: 'Hello this is and design'),
+                                  ],
+                                ),
+                              ],
+                            );
                     },
                   )),
                   Consumer<ChatState>(builder: (context, provider, child) {
@@ -199,11 +207,12 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: Container(
                                 height: 50,
                                 margin: const EdgeInsets.symmetric(vertical: 5),
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all()),
-                                child: TextFormField(
+                                child: TextField(
                                   onTapOutside: (value) {
                                     // dismiss keyboard
                                     SystemChannels.textInput
@@ -215,7 +224,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                         .position.maxScrollExtent);
                                   },
                                   textInputAction: TextInputAction.send,
-                                  onFieldSubmitted: (value) {},
+                                  onSubmitted: (value) {
+                                    sendMessage(promptController.text);
+                                  },
                                   decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       hintStyle:
@@ -225,9 +236,10 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             ),
                             IconButton(
-                                onPressed: () {
-                                  chatModelProvider.chat(promptController.text,
-                                      '889129');
+                                onPressed: () async {
+                                  // chatModelProvider.chat(
+                                  //     promptController.text, conversationId);
+                                  sendMessage(promptController.text);
                                 },
                                 icon: const Icon(Iconsax.send_15,
                                     color: AppColor.iconColor))
