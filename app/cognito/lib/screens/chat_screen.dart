@@ -33,6 +33,21 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final ScrollController viewScrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewScrollController
+          .jumpTo(viewScrollController.position.maxScrollExtent);
+    });
+
+    
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -41,11 +56,13 @@ class _ChatScreenState extends State<ChatScreen> {
     final AdvancedDrawerController drawerController =
         AdvancedDrawerController();
     final ScrollController scrollController = ScrollController();
-    final ScrollController viewScrollController = ScrollController();
 
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
+
+
+    
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
@@ -89,249 +106,241 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     }
 
-    return AdvancedDrawer(
-        controller: drawerController,
-        rtlOpening: true,
-        backdropColor: AppColor.appBarColor,
-        childDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(
-                color: AppColor.secondaryTextColor,
-                blurRadius: 10,
-                spreadRadius: 1,
-              )
-            ]),
-        drawer: const MyDrawer(),
-        child: Scaffold(
-          extendBodyBehindAppBar: true,
-          extendBody: true,
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniStartDocked,
-          floatingActionButton: GestureDetector(
-            onTap: () async {
-              if (dataProvider.requestPending == true) {
-                showToast(
-                    'please wait for previous audio transcription to be completed');
-              } else if (recordProvider.isRecording == true) {
-                await recordProvider
-                    .stopRecording(dataProvider.chatLength() + 1)
-                    .then((value) {
-                  dataProvider.addChat(RecorderChatModel(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniStartDocked,
+      floatingActionButton: GestureDetector(
+        onTap: () async {
+          if (dataProvider.requestPending == true) {
+            showToast(
+                'please wait for previous audio transcription to be completed');
+          } else if (recordProvider.isRecording == true) {
+            await recordProvider
+                .stopRecording(dataProvider.chatLength() + 1)
+                .then((value) {
+              dataProvider.addChat(RecorderChatModel(
+                  audio: value,
+                  time: TimeOfDay.now(),
+                  text: 'Transcribing...'));
+
+              // _scrollController.position.animateTo(
+              //   _scrollController.position.maxScrollExtent,
+              //   duration: const Duration(milliseconds: 500),
+              //   curve: Curves.fastOutSlowIn,
+              // );
+            });
+          } else {
+            await recordProvider.recordVoice();
+          }
+        },
+        onLongPress: () async {
+          if (dataProvider.requestPending == true) {
+            showToast(
+                'please wait for previous audio transcription to be completed');
+          } else if (recordProvider.isRecording == true) {
+            await recordProvider
+                .stopRecording(dataProvider.chatLength() + 1)
+                .then(
+                  (value) => dataProvider.addChat(RecorderChatModel(
                       audio: value,
                       time: TimeOfDay.now(),
-                      text: 'Transcribing...'));
-
-                  // _scrollController.position.animateTo(
-                  //   _scrollController.position.maxScrollExtent,
-                  //   duration: const Duration(milliseconds: 500),
-                  //   curve: Curves.fastOutSlowIn,
-                  // );
-                });
-              } else {
-                await recordProvider.recordVoice();
-              }
-            },
-            onLongPress: () async {
-              if (dataProvider.requestPending == true) {
-                showToast(
-                    'please wait for previous audio transcription to be completed');
-              } else if (recordProvider.isRecording == true) {
-                await recordProvider
-                    .stopRecording(dataProvider.chatLength() + 1)
-                    .then(
-                      (value) => dataProvider.addChat(RecorderChatModel(
-                          audio: value,
-                          time: TimeOfDay.now(),
-                          text: 'Transcribing...')),
-                    );
-              } else {
-                await recordProvider.recordVoice();
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.only(bottom: 70),
-              height: 80,
-              width: 80,
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromARGB(255, 89, 79, 79),
-                    blurRadius: 5,
-                    spreadRadius: 1,
-                    offset: Offset(0, 0),
-                  )
-                ],
-                shape: BoxShape.circle,
-                color: Color.fromRGBO(53, 55, 75, 1),
-              ),
-              child: recordProvider.isRecording == true
-                  ? Lottie.asset(
-                      'assets/animations/voice_recording_inwhite.json',
-                      frameRate: FrameRate.max,
-                      repeat: true,
-                      reverse: true,
-                      fit: BoxFit.contain)
-                  : const Icon(size: 35, Icons.mic, color: Colors.white),
-            ),
+                      text: 'Transcribing...')),
+                );
+          } else {
+            await recordProvider.recordVoice();
+          }
+        },
+        child: Container(
+          margin: EdgeInsets.only(bottom: 70),
+          height: 80,
+          width: 80,
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromARGB(255, 89, 79, 79),
+                blurRadius: 5,
+                spreadRadius: 1,
+                offset: Offset(0, 0),
+              )
+            ],
+            shape: BoxShape.circle,
+            color: Color.fromRGBO(53, 55, 75, 1),
           ),
-          floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-          backgroundColor: AppColor.backgroundColor,
-          appBar: AppBar(
-            backgroundColor: AppColor.backgroundColor,
-            centerTitle: true,
-            title: const AppText(
-              text: 'cognito',
-              fontsize: 25,
-              color: Colors.white,
-            ),
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Iconsax.arrow_left_2, color: AppColor.iconColor),
-            ),
-            automaticallyImplyLeading: true,
-            actions: [
+          child: recordProvider.isRecording == true
+              ? Lottie.asset('assets/animations/voice_recording_inwhite.json',
+                  frameRate: FrameRate.max,
+                  repeat: true,
+                  reverse: true,
+                  fit: BoxFit.contain)
+              : const Icon(size: 35, Icons.mic, color: Colors.white),
+        ),
+      ),
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      backgroundColor: AppColor.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColor.backgroundColor,
+        centerTitle: true,
+        title: const AppText(
+          text: 'cognito',
+          fontsize: 25,
+          color: Colors.white,
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Iconsax.arrow_left_2, color: AppColor.iconColor),
+        ),
+        automaticallyImplyLeading: true,
+        actions: [
+          Container(
+            decoration: BoxDecoration(
+                color: AppColor.iconBackgroundColor,
+                borderRadius: BorderRadius.circular(20)),
+            child: IconButton(
+                onPressed: () {
+                  drawerController.showDrawer();
+                },
+                icon: const Icon(
+                  Iconsax.user,
+                  color: AppColor.iconColor,
+                )),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
+        forceMaterialTransparency: true,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        controller: scrollController,
+        child: Container(
+          height: height,
+          width: width,
+          color: AppColor.backgroundColor,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              unwantedWidget(myChat.length),
+              Expanded(
+                  child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(top: 70, bottom: 20),
+                itemCount: myChat.length,
+                controller: viewScrollController,
+                itemBuilder: (context, index) {
+                  
+                  return Visibility(
+                    visible: myChat.length >= 1,
+                    child: Align(
+                      alignment: myChat[index].sender == 'user'
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: ChatCard(
+                        isUser: myChat[index].sender == 'user',
+                        text: myChat[index].message,
+                      ),
+                    ),
+                  );
+                },
+              )),
               Container(
                 decoration: BoxDecoration(
-                    color: AppColor.iconBackgroundColor,
-                    borderRadius: BorderRadius.circular(20)),
-                child: IconButton(
-                    onPressed: () {
-                      drawerController.showDrawer();
-                    },
-                    icon: const Icon(
-                      Iconsax.user,
-                      color: AppColor.iconColor,
-                    )),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-            ],
-            forceMaterialTransparency: true,
-            elevation: 0,
-          ),
-          body: SingleChildScrollView(
-            controller: scrollController,
-            child: Container(
-              height: height,
-              width: width,
-              color: AppColor.backgroundColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  unwantedWidget(myChat.length),
-                  Expanded(
-                      child: ListView.builder(
-                    shrinkWrap: false,
-                    padding: const EdgeInsets.only(top: 70, bottom: 20),
-                    itemCount: myChat.length,
-                    // controller: viewScrollController,
+                  color: AppColor.appBarColor,
+                  boxShadow: const [
+                    BoxShadow(
+                        color: AppColor.secondaryTextColor,
+                        blurRadius: 10,
+                        spreadRadius: 1)
+                  ],
+                  border: Border.all(
+                    color: AppColor.borderColor,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        child: Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Iconsax.folder_add5,
+                                  color: AppColor.iconColor,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Iconsax.microphone5,
+                                    color: AppColor.iconColor)),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 50,
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all()),
+                          child: TextField(
+                            onTapOutside: (value) {
+                              // dismiss keyboard
+                              SystemChannels.textInput
+                                  .invokeMethod('TextInput.hide');
+                            },
+                            controller: promptController,
+                            onTap: () {
+                              scrollController.jumpTo(
+                                  scrollController.position.maxScrollExtent);
+                            },
+                            textInputAction: TextInputAction.send,
+                            onSubmitted: (value) {
+                              sendMessage(promptController.text);
 
-                    itemBuilder: (context, index) {
-                      return Visibility(
-                        visible: myChat.length >= 1,
-                        child: Align(
-                          alignment: myChat[index].sender == 'user'
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: ChatCard(
-                            isUser: myChat[index].sender == 'user',
-                            text: myChat[index].message,
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (viewScrollController.hasClients) {
+                                  viewScrollController.animateTo(
+                                    viewScrollController
+                                        .position.maxScrollExtent,
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.easeOut,
+                                  );
+                                }
+                              });
+                            },
+                            decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(color: AppColor.hintColor),
+                                hintText: "Message cognito.."),
                           ),
                         ),
-                      );
-                    },
-                  )),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColor.appBarColor,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: AppColor.secondaryTextColor,
-                            blurRadius: 10,
-                            spreadRadius: 1)
-                      ],
-                      border: Border.all(
-                        color: AppColor.borderColor,
                       ),
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 100,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Iconsax.folder_add5,
-                                      color: AppColor.iconColor,
-                                    )),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Iconsax.microphone5,
-                                        color: AppColor.iconColor)),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 50,
-                              margin: const EdgeInsets.symmetric(vertical: 5),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all()),
-                              child: TextField(
-                                onTapOutside: (value) {
-                                  // dismiss keyboard
-                                  SystemChannels.textInput
-                                      .invokeMethod('TextInput.hide');
-                                },
-                                controller: promptController,
-                                onTap: () {
-                                  scrollController.jumpTo(scrollController
-                                      .position.maxScrollExtent);
-                                },
-                                textInputAction: TextInputAction.send,
-                                onSubmitted: (value) {
-                                  sendMessage(promptController.text);
-                                },
-                                decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    hintStyle:
-                                        TextStyle(color: AppColor.hintColor),
-                                    hintText: "Message cognito.."),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                              onPressed: () async {
-                                // chatModelProvider.chat(
-                                //     promptController.text, conversationId);
-                                sendMessage(promptController.text);
-                              },
-                              icon: const Icon(Iconsax.send_15,
-                                  color: AppColor.iconColor))
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+                      IconButton(
+                          onPressed: () {
+                            sendMessage(promptController.text);
+                          },
+                          icon: const Icon(Iconsax.send_15,
+                              color: AppColor.iconColor))
+                    ],
+                  ),
+                ),
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

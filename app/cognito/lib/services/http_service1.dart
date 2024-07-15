@@ -14,7 +14,7 @@ class HttpService {
     return FirebaseService().getNgrokUrl();
   }
 
-  Future<Stream<String>> queryWithHistory({
+  Future<String> queryWithHistory({
     required String user,
     required String query,
     required String id,
@@ -23,9 +23,10 @@ class HttpService {
     if (baseUrl == '') {
       baseUrl = await getbaseUrl();
     }
-    baseUrl = 'https://fa24-152-58-239-232.ngrok-free.app';
+    baseUrl = 'https://8182-106-206-8-67.ngrok-free.app';
     final response = await http.get(
-      Uri.parse('$baseUrl/gemini/with-history').replace(queryParameters: {
+      Uri.parse('$baseUrl/gemini/with-history-no-stream')
+          .replace(queryParameters: {
         'user': user,
         'query': query,
         'id': id,
@@ -33,13 +34,13 @@ class HttpService {
       }),
       headers: {
         'Content-Type': 'application/json',
-        'stream': 'true',
       },
     );
 
     if (response.statusCode == 200) {
-      final stream = Stream<String>.fromIterable(response.body.split('\n'));
-      return stream;
+      final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
+      
+      return modelResponse['response'];
     } else {
       throw Exception('Failed to query with history: ${response.statusCode}');
     }

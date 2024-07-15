@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class AppText extends StatelessWidget {
   final String text;
   final double fontsize;
@@ -19,14 +18,16 @@ class AppText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      textAlign: textAlign,
-      style: GoogleFonts.montserrat(
-        fontSize: fontsize,
-        fontWeight: fontWeight,
-        color: color,
+    return RichText(
+      text: TextSpan(
+        text: text,
+        style: GoogleFonts.montserrat(
+          fontSize: fontsize,
+          fontWeight: fontWeight,
+          color: color,
+        ),
       ),
+      textAlign: textAlign,
     );
   }
 }

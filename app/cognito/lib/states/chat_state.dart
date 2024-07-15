@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
+  bool shouldRefresh = false;
 
   ChatState() {
     initializeData();
@@ -35,29 +36,29 @@ class ChatState extends ChangeNotifier {
       sender: 'user',
       time: DateTime.now().toString(),
     );
+
     notifyListeners();
     final conversationIndex = chatModel.conversations.indexWhere(
       (element) => element.conversationId == conversationId,
     );
-    final chatResponseStream = await HttpService().queryWithHistory(
+    chatModel.conversations[conversationIndex].chats.add(chat);
+
+    final chatResponse = await HttpService().queryWithHistory(
       user: email!,
       query: message,
       id: conversationId,
     );
-    Chat modelChat =
-        Chat(message: '', sender: 'model', time: DateTime.now().toString());
-   chatResponseStream.listen((data) async {
-      modelChat = Chat(
-        message: modelChat.message + data,
-        sender: 'model',
-        time: DateTime.now().toString(),
-      );
-      notifyListeners();
-    });
+    
+
+    final modelChat = Chat(
+      message: chatResponse,
+      sender: 'model',
+      time: DateTime.now().toString(),
+    );
 
     if (conversationIndex != -1) {
-      chatModel.conversations[conversationIndex].chats.add(chat);
       chatModel.conversations[conversationIndex].chats.add(modelChat);
+      notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
       await FirebaseService().addChat(conversationId, modelChat);
     } else {
@@ -67,6 +68,7 @@ class ChatState extends ChangeNotifier {
       );
 
       chatModel.conversations.add(conversation);
+      
       await FirebaseService().addChat(conversationId, chat);
       await FirebaseService().addChat(conversationId, modelChat);
     }
