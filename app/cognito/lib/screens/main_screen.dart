@@ -1,8 +1,10 @@
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/screens/chat_screen.dart';
 import 'package:cognito/states/chat_state.dart';
+import 'package:cognito/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -42,7 +44,7 @@ class MainScreen extends StatelessWidget {
 
       chatModelProvider.addConversationId(uuid);
       chatModelProvider.chat(value.toString(), uuid);
-
+      
       Navigator.push(
         context,
         CupertinoPageRoute(
@@ -102,6 +104,7 @@ class MainScreen extends StatelessWidget {
                           onSubmitted: (value) {
                             onSubmittedCallback(value);
                           },
+                          style: TextStyle(color: Colors.white),
                           decoration: const InputDecoration(
                             hintText: 'Ask me anything...',
                             hintStyle: TextStyle(

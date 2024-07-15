@@ -1,3 +1,4 @@
+import 'package:cognito/screens/transcribe_screen.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
@@ -80,6 +81,23 @@ class MyDrawer extends StatelessWidget {
               color: AppColor.primaryTextColor,
             ),
             ListTile(
+                onTap: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (_) => TranscribeScreen()));
+                },
+                title: const AppText(
+                  text: 'Transcribe',
+                  color: AppColor.primaryTextColor,
+                ),
+                leading: const Icon(
+                  Iconsax.audio_square4,
+                  color: AppColor.iconColor,
+                )),
+            const Divider(
+              thickness: 0.25,
+              color: AppColor.primaryTextColor,
+            ),
+            ListTile(
               onTap: () {},
               leading: const Icon(
                 Iconsax.setting,
@@ -131,5 +149,3 @@ class MyDrawer extends StatelessWidget {
     ));
   }
 }
-
-
