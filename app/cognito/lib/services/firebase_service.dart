@@ -61,6 +61,7 @@ class FirebaseService {
   Future<String> getNgrokUrl() async {
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _db.collection('ngrok_URLs').doc('url').get();
+        print("url is "+documentSnapshot.data()!['url']);
     return documentSnapshot.data()!['url'];
   }
 

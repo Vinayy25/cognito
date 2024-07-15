@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/auth_provider.dart';
+import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:cognito/states/record_audio_provider.dart';
@@ -17,7 +18,11 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 class TranscribeScreen extends StatefulWidget {
-  const TranscribeScreen({Key? key}) : super(key: key);
+  final String conversationId;
+ 
+  const TranscribeScreen(
+      {Key? key, required this.conversationId})
+      : super(key: key);
 
   @override
   State<TranscribeScreen> createState() => _TranscribeScreenState();
@@ -82,10 +87,11 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                     if (value != null) {
                       dataProvider.addChat(
                         RecorderChatModel(
-                            
                             audio: File(value.files.first.path!),
                             time: TimeOfDay.now(),
                             text: 'Transcribing...'),
+                         'vinay',
+                        widget.conversationId,
                       );
                     }
                   });
@@ -111,10 +117,14 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
             await recordProvider
                 .stopRecording(dataProvider.chatLength() + 1)
                 .then((value) {
-              dataProvider.addChat(RecorderChatModel(
-                  audio: value,
-                  time: TimeOfDay.now(),
-                  text: 'Transcribing...'));
+              dataProvider.addChat(
+                RecorderChatModel(
+                    audio: value,
+                    time: TimeOfDay.now(),
+                    text: 'Transcribing...'),
+                 'vinay',
+                widget.conversationId,
+              );
               setState(() {});
               _scrollController.position.animateTo(
                 _scrollController.position.maxScrollExtent,
@@ -134,10 +144,14 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
             await recordProvider
                 .stopRecording(dataProvider.chatLength() + 1)
                 .then(
-                  (value) => dataProvider.addChat(RecorderChatModel(
-                      audio: value,
-                      time: TimeOfDay.now(),
-                      text: 'Transcribing...')),
+                  (value) => dataProvider.addChat(
+                    RecorderChatModel(
+                        audio: value,
+                        time: TimeOfDay.now(),
+                        text: 'Transcribing...'),
+                     'vinay',
+                    widget.conversationId,
+                  ),
                 );
           } else {
             await recordProvider.recordVoice();

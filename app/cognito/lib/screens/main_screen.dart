@@ -56,6 +56,7 @@ class MainScreen extends StatelessWidget {
         context,
         CupertinoPageRoute(
           builder: (_) => ChatScreen(
+           
             conversationId: uuid,
             chatModelProvider: chatModelProvider,
           ),
@@ -235,6 +236,7 @@ class MainScreen extends StatelessWidget {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) => ChatScreen(
+                                        
                                           conversationId: chatModelProvider
                                               .chatModel
                                               .conversations[index]

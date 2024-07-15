@@ -11,6 +11,7 @@ import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/chat_card.dart';
 import 'package:cognito/widgets/my_drawer.dart';
 import 'package:cognito/widgets/welcome_message.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -23,10 +24,12 @@ import 'package:provider/provider.dart';
 class ChatScreen extends StatefulWidget {
   final String conversationId;
   final ChatState chatModelProvider;
-  const ChatScreen(
-      {super.key,
-      required this.conversationId,
-      required this.chatModelProvider});
+
+  const ChatScreen({
+    super.key,
+    required this.conversationId,
+    required this.chatModelProvider,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -116,10 +119,14 @@ class _ChatScreenState extends State<ChatScreen> {
             await recordProvider
                 .stopRecording(dataProvider.chatLength() + 1)
                 .then((value) {
-              dataProvider.addChat(RecorderChatModel(
-                  audio: value,
-                  time: TimeOfDay.now(),
-                  text: 'Transcribing...'));
+              dataProvider.addChat(
+                RecorderChatModel(
+                    audio: value,
+                    time: TimeOfDay.now(),
+                    text: 'Transcribing...'),
+                widget.chatModelProvider.email ?? '',
+                widget.conversationId,
+              );
 
               // _scrollController.position.animateTo(
               //   _scrollController.position.maxScrollExtent,
@@ -139,10 +146,14 @@ class _ChatScreenState extends State<ChatScreen> {
             await recordProvider
                 .stopRecording(dataProvider.chatLength() + 1)
                 .then(
-                  (value) => dataProvider.addChat(RecorderChatModel(
-                      audio: value,
-                      time: TimeOfDay.now(),
-                      text: 'Transcribing...')),
+                  (value) => dataProvider.addChat(
+                    RecorderChatModel(
+                        audio: value,
+                        time: TimeOfDay.now(),
+                        text: 'Transcribing...'),
+                    widget.chatModelProvider.email ?? '',
+                    widget.conversationId,
+                  ),
                 );
           } else {
             await recordProvider.recordVoice();
@@ -239,7 +250,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     .chats;
                 return Expanded(
                     child: ListView.builder(
-                  shrinkWrap: true,
+                  shrinkWrap: false,
                   padding: const EdgeInsets.only(top: 70, bottom: 20),
                   itemCount: chats.length,
                   controller: viewScrollController,
