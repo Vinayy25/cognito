@@ -3,8 +3,6 @@ import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service1.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class ChatState extends ChangeNotifier {
@@ -37,43 +35,42 @@ class ChatState extends ChangeNotifier {
       time: DateTime.now().toString(),
     );
 
-    notifyListeners();
     final conversationIndex = chatModel.conversations.indexWhere(
       (element) => element.conversationId == conversationId,
     );
-    chatModel.conversations[conversationIndex].chats.add(chat);
-
-    final chatResponse = await HttpService().queryWithHistory(
-      user: email!,
-      query: message,
-      id: conversationId,
-    );
-    
-
-    final modelChat = Chat(
-      message: chatResponse,
-      sender: 'model',
-      time: DateTime.now().toString(),
-    );
 
     if (conversationIndex != -1) {
+      chatModel.conversations[conversationIndex].chats.add(chat);
+      notifyListeners();
+
+      final chatResponse = await HttpService().queryWithHistory(
+        user: email!,
+        query: message,
+        id: conversationId,
+      );
+
+      final modelChat = Chat(
+        message: chatResponse,
+        sender: 'model',
+        time: DateTime.now().toString(),
+      );
+
       chatModel.conversations[conversationIndex].chats.add(modelChat);
+      shouldRefresh = true;
       notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
       await FirebaseService().addChat(conversationId, modelChat);
     } else {
       final conversation = Conversations(
-        chats: [chat, modelChat],
+        chats: [chat],
         conversationId: conversationId,
       );
 
       chatModel.conversations.add(conversation);
-      
+      shouldRefresh = true;
+      notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
-      await FirebaseService().addChat(conversationId, modelChat);
     }
-
-    notifyListeners();
   }
 
   void addConversationId(String conversationId) async {

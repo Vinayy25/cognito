@@ -44,7 +44,6 @@ class _ChatScreenState extends State<ChatScreen> {
           .jumpTo(viewScrollController.position.maxScrollExtent);
     });
 
-    
     super.initState();
   }
 
@@ -60,9 +59,6 @@ class _ChatScreenState extends State<ChatScreen> {
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
-
-
-    
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
@@ -226,28 +222,43 @@ class _ChatScreenState extends State<ChatScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               unwantedWidget(myChat.length),
-              Expanded(
-                  child: ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(top: 70, bottom: 20),
-                itemCount: myChat.length,
-                controller: viewScrollController,
-                itemBuilder: (context, index) {
-                  
-                  return Visibility(
-                    visible: myChat.length >= 1,
-                    child: Align(
-                      alignment: myChat[index].sender == 'user'
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: ChatCard(
-                        isUser: myChat[index].sender == 'user',
-                        text: myChat[index].message,
+              Consumer<ChatState>(builder: (context, value, child) {
+                if (value.shouldRefresh == true) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    viewScrollController
+                        .jumpTo(viewScrollController.position.maxScrollExtent);
+                  });
+                  value.shouldRefresh = false;
+                }
+
+                var chats = value
+                    .chatModel
+                    .conversations[(value.chatModel.conversations.indexWhere(
+                  (element) => element.conversationId == widget.conversationId,
+                ))]
+                    .chats;
+                return Expanded(
+                    child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(top: 70, bottom: 20),
+                  itemCount: chats.length,
+                  controller: viewScrollController,
+                  itemBuilder: (context, index) {
+                    return Visibility(
+                      visible: chats.length >= 1,
+                      child: Align(
+                        alignment: chats[index].sender == 'user'
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: ChatCard(
+                          isUser: chats[index].sender == 'user',
+                          text: chats[index].message,
+                        ),
                       ),
-                    ),
-                  );
-                },
-              )),
+                    );
+                  },
+                ));
+              }),
               Container(
                 decoration: BoxDecoration(
                   color: AppColor.appBarColor,
