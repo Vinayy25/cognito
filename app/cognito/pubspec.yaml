@@ -59,7 +59,7 @@ dependencies:
   record: ^3.0.3
   uuid: ^4.3.3
   simple_ripple_animation: ^0.0.3
-
+ 
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:

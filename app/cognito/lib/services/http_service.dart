@@ -4,16 +4,19 @@ import 'dart:io';
 
 import 'package:cognito/services/firebase_service.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 
 class HttpService {
   String? baseUrl = '';
+  final dio = Dio();
   HttpService() {
     getbaseUrl().then((value) => baseUrl = value);
   }
 
   getbaseUrl() async {
+    print("fetching ngrok url ");
     return FirebaseService().getNgrokUrl();
   }
 
@@ -39,7 +42,7 @@ class HttpService {
       }
       print(baseUrl);
       print("reached here");
-
+      baseUrl = 'https://fa24-152-58-239-232.ngrok-free.app';
       var response = await dio.postUri(
         Uri.parse(
             "$baseUrl/transcribe/"), // Replace "your_server_address" with your actual server address
@@ -80,7 +83,6 @@ class HttpService {
   }
 
   Future<String> checkHi() async {
-    final dio = Dio();
     dio.options.followRedirects = false;
 
     dio.options.maxRedirects = 5;
@@ -125,6 +127,43 @@ class HttpService {
       print("Error: $e");
     }
     return '';
+  }
+
+  Future<String> queryWithHistory({
+    required String user,
+    required String query,
+    required String id,
+    String modelType = 'text',
+  }) async {
+    try {
+    
+
+      final fetchUrl = Uri.parse(
+        '$baseUrl/gemini/with-history-no-stream',
+      );
+      final response = await dio.get(
+      
+     fetchUrl.path , // Replace with your actual endpoint URL
+        queryParameters: {
+          'user': user,
+          'query': query,
+          'id': id,
+          'model_type': modelType,
+        },
+        options: Options(
+          // responseType: ResponseType.stream, // To handle StreamingResponse
+          // followRedirects: true,
+          contentType: 'application/json',
+          // maxRedirects: 5,
+        ),
+      );
+
+      // Handle the response (streaming data)
+     return response.data;
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to query with history: $e');
+    }
   }
 
   // Future<String> sendAudioFileToTranscribe(File audioFile) async {

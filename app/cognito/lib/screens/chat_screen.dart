@@ -45,13 +45,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
-    final dataProvider = Provider.of<Data>(context);
+    final dataProvider = Provider.of<Data>(context, listen: true);
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
         widget.chatModelProvider.chat(message, widget.conversationId);
         promptController.clear();
       }
+      setState(() {});
     }
 
     var myChat = (widget
@@ -207,7 +208,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               const SizedBox(
                 width: 10,
-              )
+              ),
             ],
             forceMaterialTransparency: true,
             elevation: 0,
@@ -225,15 +226,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   unwantedWidget(myChat.length),
                   Expanded(
                       child: ListView.builder(
-                    shrinkWrap: true,
+                    shrinkWrap: false,
                     padding: const EdgeInsets.only(top: 70, bottom: 20),
                     itemCount: myChat.length,
                     // controller: viewScrollController,
 
                     itemBuilder: (context, index) {
-                      print(myChat);
                       return Visibility(
-                        visible: myChat.length > 1,
+                        visible: myChat.length >= 1,
                         child: Align(
                           alignment: myChat[index].sender == 'user'
                               ? Alignment.centerRight
@@ -244,115 +244,90 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       );
-                      // : const Column(
-                      //     mainAxisAlignment: MainAxisAlignment.start,
-                      //     mainAxisSize: MainAxisSize.min,
-                      //     children: [
-                      //       Row(
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         children: [
-                      //           SquareBoxDesign(text: 'Hello this is test'),
-                      //           SquareBoxDesign(
-                      //               text:
-                      //                   'Hello this is testing vinays code and design'),
-                      //         ],
-                      //       ),
-                      //       Row(
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         children: [
-                      //           SquareBoxDesign(text: 'Hello this is test'),
-                      //           SquareBoxDesign(
-                      //               text: 'Hello this is and design'),
-                      //         ],
-                      //       ),
-                      //     ],
-                      //   );
                     },
                   )),
-                  Consumer<ChatState>(builder: (context, provider, child) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: AppColor.appBarColor,
-                        boxShadow: const [
-                          BoxShadow(
-                              color: AppColor.secondaryTextColor,
-                              blurRadius: 10,
-                              spreadRadius: 1)
-                        ],
-                        border: Border.all(
-                          color: AppColor.borderColor,
-                        ),
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColor.appBarColor,
+                      boxShadow: const [
+                        BoxShadow(
+                            color: AppColor.secondaryTextColor,
+                            blurRadius: 10,
+                            spreadRadius: 1)
+                      ],
+                      border: Border.all(
+                        color: AppColor.borderColor,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 100,
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        Iconsax.folder_add5,
-                                        color: AppColor.iconColor,
-                                      )),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(Iconsax.microphone5,
-                                          color: AppColor.iconColor)),
-                                ],
-                              ),
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 100,
+                            child: Row(
+                              children: [
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                      Iconsax.folder_add5,
+                                      color: AppColor.iconColor,
+                                    )),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Iconsax.microphone5,
+                                        color: AppColor.iconColor)),
+                              ],
                             ),
-                            Expanded(
-                              child: Container(
-                                height: 50,
-                                margin: const EdgeInsets.symmetric(vertical: 5),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all()),
-                                child: TextField(
-                                  onTapOutside: (value) {
-                                    // dismiss keyboard
-                                    SystemChannels.textInput
-                                        .invokeMethod('TextInput.hide');
-                                  },
-                                  controller: promptController,
-                                  onTap: () {
-                                    scrollController.jumpTo(scrollController
-                                        .position.maxScrollExtent);
-                                  },
-                                  textInputAction: TextInputAction.send,
-                                  onSubmitted: (value) {
-                                    sendMessage(promptController.text);
-                                  },
-                                  decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      hintStyle:
-                                          TextStyle(color: AppColor.hintColor),
-                                      hintText: "Message cognito.."),
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () async {
-                                  // chatModelProvider.chat(
-                                  //     promptController.text, conversationId);
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 50,
+                              margin: const EdgeInsets.symmetric(vertical: 5),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all()),
+                              child: TextField(
+                                onTapOutside: (value) {
+                                  // dismiss keyboard
+                                  SystemChannels.textInput
+                                      .invokeMethod('TextInput.hide');
+                                },
+                                controller: promptController,
+                                onTap: () {
+                                  scrollController.jumpTo(scrollController
+                                      .position.maxScrollExtent);
+                                },
+                                textInputAction: TextInputAction.send,
+                                onSubmitted: (value) {
                                   sendMessage(promptController.text);
                                 },
-                                icon: const Icon(Iconsax.send_15,
-                                    color: AppColor.iconColor))
-                          ],
-                        ),
+                                decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintStyle:
+                                        TextStyle(color: AppColor.hintColor),
+                                    hintText: "Message cognito.."),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () async {
+                                // chatModelProvider.chat(
+                                //     promptController.text, conversationId);
+                                sendMessage(promptController.text);
+                              },
+                              icon: const Icon(Iconsax.send_15,
+                                  color: AppColor.iconColor))
+                        ],
                       ),
-                    );
-                  }),
+                    ),
+                  )
                 ],
               ),
             ),

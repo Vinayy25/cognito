@@ -37,14 +37,16 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    final ChatState chatModelProvider = Provider.of<ChatState>(context);
+    final ChatState chatModelProvider = Provider.of<ChatState>(
+      context,
+    );
 
     onSubmittedCallback(String value) {
       final String uuid = const Uuid().v4();
 
       chatModelProvider.addConversationId(uuid);
       chatModelProvider.chat(value.toString(), uuid);
-      
+
       Navigator.push(
         context,
         CupertinoPageRoute(
