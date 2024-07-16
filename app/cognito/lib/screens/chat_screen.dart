@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/services/firebase_service.dart';
+import 'package:cognito/services/http_service1.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
@@ -11,6 +14,7 @@ import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/chat_card.dart';
 import 'package:cognito/widgets/my_drawer.dart';
 import 'package:cognito/widgets/welcome_message.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +54,8 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -79,6 +85,34 @@ class _ChatScreenState extends State<ChatScreen> {
       (element) => element.conversationId == widget.conversationId,
     ))]
         .chats);
+    Future<void> _pickAndUploadFile(String user, String conversation_id) async {
+      try {
+        // Pick a PDF file
+        FilePickerResult? result = await FilePicker.platform
+            .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+
+        if (result != null) {
+          File file = File(result.files.single.path!);
+
+          // Upload the file
+          String responseMessage = await HttpService().uploadPdf(
+            user: user,
+            conversationId: conversation_id,
+            pdfFile: file,
+          );
+
+          // Show a success message
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(responseMessage)));
+        } else {
+          print('User canceled the picker');
+        }
+      } catch (e) {
+        print('Error picking or uploading file: $e');
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error uploading file: $e')));
+      }
+    }
 
     Widget unwantedWidget(int len) {
       return Visibility(
@@ -201,24 +235,7 @@ class _ChatScreenState extends State<ChatScreen> {
           icon: const Icon(Iconsax.arrow_left_2, color: AppColor.iconColor),
         ),
         automaticallyImplyLeading: true,
-        actions: [
-          Container(
-            decoration: BoxDecoration(
-                color: AppColor.iconBackgroundColor,
-                borderRadius: BorderRadius.circular(20)),
-            child: IconButton(
-                onPressed: () {
-                  drawerController.showDrawer();
-                },
-                icon: const Icon(
-                  Iconsax.user,
-                  color: AppColor.iconColor,
-                )),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-        ],
+        
         forceMaterialTransparency: true,
         elevation: 0,
       ),
@@ -296,7 +313,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: Row(
                           children: [
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  _pickAndUploadFile(
+                                      widget.chatModelProvider.email ?? '',
+                                      widget.conversationId);
+                                },
                                 icon: const Icon(
                                   Iconsax.folder_add5,
                                   color: AppColor.iconColor,

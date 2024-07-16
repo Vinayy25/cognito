@@ -2,7 +2,6 @@ import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/services/http_service1.dart';
 import 'package:flutter/material.dart';
 
-
 class Data extends ChangeNotifier {
   List<RecorderChatModel> chats = [];
   bool requestPending = false;
@@ -16,16 +15,15 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  fetchTrasnscription(String user,  String id) async {
+  fetchTrasnscription(String user, String id) async {
     requestPending = true;
     await HttpService()
         .transcribeAndSave(
-          user: user, 
-          conversationId: id,
-          audioFile: chats.last.audio!,
+      user: user,
+      conversationId: id,
+      audioFile: chats.last.audio!,
     )
         .then((value) {
-      value = value.substring(2, value.length - 2);
       chats.last.text = value;
 
       notifyListeners();

@@ -27,6 +27,22 @@ from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt
 
 
+
+import os
+from fastapi import FastAPI, File, UploadFile, Form
+from fastapi.responses import JSONResponse
+from pathlib import Path
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Qdrant
+from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
+from langchain_community.document_loaders import UnstructuredMarkdownLoader
+from llama_parse import LlamaParse
+import aiofiles
+import nltk
+
+nltk.download('averaged_perceptron_tagger')
+
+
 from functions.similaritySearch import getSimilarity
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -59,7 +75,7 @@ def get_generative_model(model_name, system_instruction = ""):
 # generative_image_model = get_generative_model('gemini-pro-vision')
 # Initialize the model
 # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-# whisper_model = whisper.load_model("base")
+whisper_model = whisper.load_model("base")
 r = redis.Redis(host='localhost', port=6379, db=0)
 
 groq_client = Groq(
@@ -112,109 +128,153 @@ async def root():
     return {"message": "Hello World"}
 
 
-# @app.post("/transcribe/")
-# async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
-#     try:
+@app.post("/transcribe/")
+async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
+    try:
 
-#         # Save the uploaded audio file
-#         file_path = f"uploads/{audio_file.filename}"
-#         with open(file_path, "wb") as audio:
-#             content = await audio_file.read()
-#             audio.write(content)
+        # Save the uploaded audio file
+        file_path = f"uploads/{audio_file.filename}"
+        with open(file_path, "wb") as audio:
+            content = await audio_file.read()
+            audio.write(content)
 
-#         # Call the transcription function with the file path
-#         transcription = whisper_model.transcribe(file_path)
+        # Call the transcription function with the file path
+        transcription = whisper_model.transcribe(file_path)
    
-#         # Return the transcription as a JSON response
-#         return {"transcription": transcription["text"]}
-#     except Exception as e:
-#         return JSONResponse(status_code=500, content={"message": str(e)})
+        # Return the transcription as a JSON response
+        return {"transcription": transcription["text"]}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": str(e)})
     
 
-# @app.post("/transcribe/save")
-# async def transcribe_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):
-#     try:
 
-#         # Save the uploaded audio file
-#         file_path = f"uploads/{audio_file.filename}"
-#         with open(file_path, "wb") as audio:
-#             content = await audio_file.read()
-#             audio.write(content)
 
-#         # Call the transcription function with the file path
-#         transcription = whisper_model.transcribe(file_path)
+@app.post("/transcribe/save")
+async def transcribe_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):
+    try:
 
-#         #save the trasncription in vector db
+        # Save the uploaded audio file
+        file_path = f"uploads/{audio_file.filename}"
+        with open(file_path, "wb") as audio:
+            content = await audio_file.read()
+            audio.write(content)
 
-#         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, separators=[
-#             "\n\n",
-#             "\n",
-#             " ",
-#             ".",
-#             ",",
-#             "\u200b",  # Zero-width space
-#             "\uff0c",  # Fullwidth comma
-#             "\u3001",  # Ideographic comma
-#             "\uff0e",  # Fullwidth full stop
-#             "\u3002",  # Ideographic full stop
-#             "",
-#         ],)
-#         text = text_splitter.split_text(transcription["text"])
+        # Call the transcription function with the file path
+        transcription = whisper_model.transcribe(file_path)
+
+        #save the trasncription in vector db
+
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, separators=[
+            "\n\n",
+            "\n",
+            " ",
+            ".",
+            ",",
+            "\u200b",  # Zero-width space
+            "\uff0c",  # Fullwidth comma
+            "\u3001",  # Ideographic comma
+            "\uff0e",  # Fullwidth full stop
+            "\u3002",  # Ideographic full stop
+            "",
+        ],)
+        text = text_splitter.split_text(transcription["text"])
         
 
-#         save_embeddings(text, user, conversation_id, embed_model=embed_model)
+        save_embeddings(text, user, conversation_id, embed_model=embed_model)
 
-#         # Return the transcription as a JSON response
-#         return JSONResponse(status_code=200, content={"transcription": transcription["text"]})
-#     except Exception as e:
-#         return JSONResponse(status_code=500, content={"message": str(e)})
+        # Return the transcription as a JSON response
+        return JSONResponse(status_code=200, content={"transcription": transcription["text"]})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": str(e)})
     
 
 
-# @app.post("/transcribe/summarize/save")
-# async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):
-#     try:
+@app.post("/transcribe/summarize/save")
+async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):
+    try:
 
-#         # Save the uploaded audio file
-#         file_path = f"uploads/{audio_file.filename}"
-#         with open(file_path, "wb") as audio:
-#             content = await audio_file.read()
-#             audio.write(content)
+        # Save the uploaded audio file
+        file_path = f"uploads/{audio_file.filename}"
+        with open(file_path, "wb") as audio:
+            content = await audio_file.read()
+            audio.write(content)
 
-#         # Call the transcription function with the file path
-#         transcription = whisper_model.transcribe(file_path)
+        # Call the transcription function with the file path
+        transcription = whisper_model.transcribe(file_path)
 
-#         #save the trasncription in vector db
+        #save the trasncription in vector db
 
-#         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=10, separators=[
-#             "\n\n",
-#             "\n",
-#             " ",
-#             ".",
-#             ",",
-#             "\u200b",  # Zero-width space
-#             "\uff0c",  # Fullwidth comma
-#             "\u3001",  # Ideographic comma
-#             "\uff0e",  # Fullwidth full stop
-#             "\u3002",  # Ideographic full stop
-#             "",
-#         ],)
-#         texts = text_splitter.split_text(transcription["text"])
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=10, separators=[
+            "\n\n",
+            "\n",
+            " ",
+            ".",
+            ",",
+            "\u200b",  # Zero-width space
+            "\uff0c",  # Fullwidth comma
+            "\u3001",  # Ideographic comma
+            "\uff0e",  # Fullwidth full stop
+            "\u3002",  # Ideographic full stop
+            "",
+        ],)
+        texts = text_splitter.split_text(transcription["text"])
 
-#         summarized_text = getSummaryUsingGroq(texts)
+        summarized_text = getSummaryUsingGroq(texts)
 
 
 
             
         
 
-#         save_embeddings(summarized_text, user, conversation_id, embed_model=embed_model)
+        save_embeddings(summarized_text, user, conversation_id, embed_model=embed_model)
 
-#         # Return the transcription as a JSON response
-#         return JSONResponse(status_code=200, content={"transcription": transcription["text"]})
-#     except Exception as e:
-#         return JSONResponse(status_code=500, content={"message": str(e)})
+        # Return the transcription as a JSON response
+        return JSONResponse(status_code=200, content={"transcription": transcription["text"]})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": str(e)})
     
+
+
+
+@app.post("/upload/pdf")
+async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pdf_file: UploadFile = File(...)):
+    try:
+        # Save the uploaded PDF file
+        file_path = f"uploads/{pdf_file.filename}"
+        async with aiofiles.open(file_path, 'wb') as out_file:
+            content = await pdf_file.read()
+            await out_file.write(content)
+
+        # Initialize LlamaParse to parse the document
+        instruction = """The provided document is to be processed into chunks."""
+        parser = LlamaParse(api_key=os.getenv("LLAMA_PARSE_API_KEY"), result_type="markdown", parsing_instruction=instruction, max_timeout=5000)
+        llama_parse_documents = await parser.aload_data(file_path)
+        parsed_doc = llama_parse_documents[0]
+
+        # Save parsed document to a temporary markdown file
+        document_path = Path(f"uploads/{pdf_file.filename}.md")
+        async with aiofiles.open(document_path, 'w') as f:
+            await f.write(parsed_doc.text)
+        print("reached to start")
+        
+        
+        # Load the parsed document
+        loader = UnstructuredMarkdownLoader(document_path)
+        loaded_documents = loader.load()
+        print("loaded documents ",loaded_documents)
+
+        # Split the document into chunks
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2048, chunk_overlap=128)
+        docs = text_splitter.split_documents(loaded_documents)
+
+        # Save embeddings to vector store
+        texts = [doc.page_content for doc in docs]
+        print("reached here " ,texts)
+        await save_embeddings(texts, user, conversation_id, embed_model)
+
+        return JSONResponse(status_code=200, content={"message": "PDF processed and embeddings saved successfully.", "document": parsed_doc.text})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": str(e)})
 
 
 @app.post("/groq/chat", response_model=ChatResponse)

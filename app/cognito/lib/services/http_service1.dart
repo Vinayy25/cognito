@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:cognito/services/firebase_service.dart';
+import 'package:http_parser/http_parser.dart';
 
 class HttpService {
   String? baseUrl = '';
@@ -78,6 +79,38 @@ class HttpService {
       return responseJson['transcription'];
     } else {
       throw Exception('Failed to transcribe and save: ${response.statusCode}');
+    }
+  }
+   Future<String> uploadPdf({
+    required String user,
+    required String conversationId,
+    required File pdfFile,
+  }) async {
+    if (baseUrl == '') {
+      baseUrl = await getbaseUrl();
+    }
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/upload/pdf'),
+    )
+      ..fields['user'] = user
+      ..fields['conversation_id'] = conversationId
+      ..files.add(await http.MultipartFile.fromPath(
+        'pdf_file',
+        pdfFile.path,
+        contentType: MediaType('application', 'pdf'),
+      ))
+      ..headers['Content-Type'] = 'multipart/form-data';
+
+    final response = await request.send();
+
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      final responseJson = jsonDecode(responseBody);
+      return responseJson['message'];
+    } else {
+      throw Exception('Failed to upload PDF: ${response.statusCode}');
     }
   }
 }

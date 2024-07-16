@@ -56,7 +56,6 @@ class MainScreen extends StatelessWidget {
         context,
         CupertinoPageRoute(
           builder: (_) => ChatScreen(
-           
             conversationId: uuid,
             chatModelProvider: chatModelProvider,
           ),
@@ -80,6 +79,24 @@ class MainScreen extends StatelessWidget {
         drawer: const MyDrawer(),
         child: Scaffold(
           backgroundColor: const Color(0xFFE6F7F9),
+          appBar: AppBar(actions: [
+            Container(
+              decoration: BoxDecoration(
+                  color: AppColor.iconBackgroundColor,
+                  borderRadius: BorderRadius.circular(20)),
+              child: IconButton(
+                  onPressed: () {
+                    drawerController.showDrawer();
+                  },
+                  icon: const Icon(
+                    Iconsax.user,
+                    color: AppColor.iconColor,
+                  )),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+          ]),
           body: Center(
             child: Container(
               width: width,
@@ -236,7 +253,6 @@ class MainScreen extends StatelessWidget {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) => ChatScreen(
-                                        
                                           conversationId: chatModelProvider
                                               .chatModel
                                               .conversations[index]
