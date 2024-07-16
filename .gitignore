@@ -2,7 +2,7 @@ apis/__pycache__
 apis/myvenv/
 apis/uploads/
 .env
-chroma_data/
+
 readme
 chroma.log
 chroma_db/
@@ -26,7 +26,6 @@ apis/testgemini.py
 apis/t1.py
 apis/testingalibaba.py
 apis/testingMilvius.py
-backend/chat.py
 
 
 
