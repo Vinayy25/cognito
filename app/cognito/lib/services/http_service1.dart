@@ -25,6 +25,7 @@ class HttpService {
     if (baseUrl == '') {
       baseUrl = await getbaseUrl();
     }
+    
     final response = await http.get(
       Uri.parse('$baseUrl/gemini/with-history-no-stream')
           .replace(queryParameters: {

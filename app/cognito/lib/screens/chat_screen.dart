@@ -54,8 +54,6 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -235,7 +233,6 @@ class _ChatScreenState extends State<ChatScreen> {
           icon: const Icon(Iconsax.arrow_left_2, color: AppColor.iconColor),
         ),
         automaticallyImplyLeading: true,
-        
         forceMaterialTransparency: true,
         elevation: 0,
       ),
