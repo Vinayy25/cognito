@@ -32,17 +32,13 @@ class HttpService {
     formData.files.add(MapEntry(
         "audio_file",
         await MultipartFile.fromFile(
-          filename: "vinay.mp3",
+          filename: "audio_file.mp3",
           audioFile.path,
         )));
 
     try {
-      if (baseUrl == '') {
-        await getbaseUrl().then((value) => baseUrl = value);
-      }
       print(baseUrl);
       print("reached here");
-      baseUrl = 'https://fa24-152-58-239-232.ngrok-free.app';
       var response = await dio.postUri(
         Uri.parse(
             "$baseUrl/transcribe/"), // Replace "your_server_address" with your actual server address
@@ -91,8 +87,7 @@ class HttpService {
       if (baseUrl == '') {
         await getbaseUrl().then((value) => baseUrl = value);
       }
-      print(baseUrl);
-      print("reached here");
+ 
 
       var response = await dio.post(
         // Uri.parse("$baseUrl/sayio"), // Replace "your_server_address" with your actual server address
@@ -123,10 +118,10 @@ class HttpService {
 
       final myresponse = response.data;
       return myresponse['message'];
-    } on DioError catch (e) {
+    } catch (e) {
       print("Error: $e");
+      throw Exception('Failed to check hi: $e');
     }
-    return '';
   }
 
   Future<String> queryWithHistory({
@@ -136,14 +131,11 @@ class HttpService {
     String modelType = 'text',
   }) async {
     try {
-    
-
       final fetchUrl = Uri.parse(
         '$baseUrl/gemini/with-history-no-stream',
       );
       final response = await dio.get(
-      
-     fetchUrl.path , // Replace with your actual endpoint URL
+        fetchUrl.path, // Replace with your actual endpoint URL
         queryParameters: {
           'user': user,
           'query': query,
@@ -159,55 +151,15 @@ class HttpService {
       );
 
       // Handle the response (streaming data)
-     return response.data;
+      return response.data;
     } catch (e) {
-      print('Error: $e');
+    
       throw Exception('Failed to query with history: $e');
     }
   }
 
-  // Future<String> sendAudioFileToTranscribe(File audioFile) async {
-  //   try {
-  //     if (baseUrl == '') {
-  //       await getbaseUrl().then((value) => baseUrl = value);
-  //     }
-  //     String url = '$baseUrl/transcribe';
-  //     var request = http.MultipartRequest('POST', Uri.parse(url));
-  //     // Add the audio file to the request
-  //     var fileStream = http.ByteStream(audioFile.openRead());
-  //     var fileLength = await audioFile.length();
-  //     var fileName = audioFile.path.split('/').last;
-  //     var mimeType =
-  //         MediaType('audio', 'mp3'); // Adjust the mime type accordingly
-  //     var audioFilePart = http.MultipartFile(
-  //       'audio_file',
-  //       fileStream,
-  //       fileLength,
-  //       filename: fileName,
-  //       contentType: mimeType,
-  //     );
-  //     request.files.add(audioFilePart);
+  // request to get conversation summary and name for templates
+  
 
-  //     // Send the request
-  //     var streamedResponse = await request.send();
 
-  //     // Get the response
-  //     var response = await http.Response.fromStream(streamedResponse);
-
-  //     // Check if the request was successful
-  //     if (response.statusCode == 200) {
-  //       // Parse the JSON response
-  //       var jsonResponse = jsonDecode(response.body);
-  //       // Get the transcription from the response
-  //       var transcription = jsonResponse['transcription'];
-  //       return transcription;
-  //     } else {
-  //       // Handle other status codes (e.g., 500 for internal server error)
-  //       throw Exception('Failed to transcribe audio: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     // Handle any exceptions that occur during the request
-  //     throw Exception('Failed to transcribe audio: $e');
-  //   }
-  // }
 }

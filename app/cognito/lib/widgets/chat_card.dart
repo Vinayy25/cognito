@@ -18,13 +18,13 @@ class ChatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColor.primaryColor,
         borderRadius: (isUser == true)
-            ? BorderRadius.only(
+            ? const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(0),
                 bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
               )
-            : BorderRadius.only(
+            : const BorderRadius.only(
                 topLeft: Radius.circular(0),
                 topRight: Radius.circular(30),
                 bottomLeft: Radius.circular(30),

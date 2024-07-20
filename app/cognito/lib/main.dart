@@ -1,7 +1,7 @@
 import 'package:cognito/firebase_options.dart';
 import 'package:cognito/screens/auth_screen.dart';
-import 'package:cognito/screens/chat_screen.dart';
 import 'package:cognito/screens/main_screen.dart';
+import 'package:cognito/screens/tests.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
@@ -11,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +34,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RecordAudioProvider()),
         ChangeNotifierProvider(create: (_) => PlayAudioProvider()),
         ChangeNotifierProvider(create: (_) => Data()),
-
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -47,9 +45,6 @@ class MyApp extends StatelessWidget {
           ),
           home:
               Consumer<AuthStateProvider>(builder: (context, provider, child) {
-         
-           
-
             return (provider.isAuthenticated)
                 ? const MainScreen()
                 : const LoginPage();

@@ -18,6 +18,7 @@ Map<String, dynamic> _$ChatModelToJson(ChatModel instance) => <String, dynamic>{
 
 Conversations _$ConversationsFromJson(Map<String, dynamic> json) =>
     Conversations(
+      conversationSummary: json['conversationSummary'] as String?,
       chats: (json['chats'] as List<dynamic>)
           .map((e) => Chat.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -30,6 +31,7 @@ Map<String, dynamic> _$ConversationsToJson(Conversations instance) =>
       'chats': instance.chats,
       'conversationId': instance.conversationId,
       'conversationName': instance.conversationName,
+      'conversationSummary': instance.conversationSummary,
     };
 
 Chat _$ChatFromJson(Map<String, dynamic> json) => Chat(

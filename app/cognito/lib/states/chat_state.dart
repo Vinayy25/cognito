@@ -71,6 +71,12 @@ class ChatState extends ChangeNotifier {
       notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
     }
+    if(chatModel.conversations[conversationIndex].chats.length == 4 || chatModel.conversations[conversationIndex].chats.length %10== 0){
+      
+      Map<String, String> topicsAndSummary = await HttpService().getTopicsAndSummary( email! , conversationId); 
+      chatModel.conversations[conversationIndex].conversationName = topicsAndSummary['title'];
+      chatModel.conversations[conversationIndex].conversationSummary = topicsAndSummary['summary'];
+    }
   }
 
   void addConversationId(String conversationId) async {

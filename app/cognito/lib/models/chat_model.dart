@@ -16,12 +16,15 @@ class ChatModel {
 class Conversations {
   final List<Chat> chats;
   final String conversationId;
-  final String? conversationName;
+  String? conversationName;
+  String? conversationSummary;
 
   Conversations({
+    this.conversationSummary, 
     required this.chats,
     required this.conversationId,
     this.conversationName,
+
   });
 
   factory Conversations.fromJson(Map<String, dynamic> json) =>
@@ -31,6 +34,7 @@ class Conversations {
         'chats': chats.map((chat) => chat.toJson()).toList(),
         'conversationId': conversationId,
         'conversationName': conversationName,
+        'conversationSummary': conversationSummary,
       };
 }
 @JsonSerializable()

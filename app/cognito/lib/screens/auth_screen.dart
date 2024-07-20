@@ -1,9 +1,6 @@
 import 'package:cognito/services/firebase_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -58,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextField(
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           border: InputBorder.none, hintText: "Email"),
                     ),
                   ),
@@ -76,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                       controller: passwordController,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration:  const InputDecoration(
                           border: InputBorder.none, hintText: "Password"),
                     ),
                   ),
@@ -90,11 +87,11 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () async {
                           FirebaseService().signInWithGoogle();
                         },
-                        child: Image(
+                        child:const  Image(
                             width: 30,
                             image: AssetImage('assets/icons/google.png')),
                       ),
-                      SizedBox(width: 40),
+                    const   SizedBox(width: 40),
                       GestureDetector(
                         onTap: () async {
                           await FirebaseService().signOut();

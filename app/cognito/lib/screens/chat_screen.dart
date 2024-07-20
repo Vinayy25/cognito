@@ -192,7 +192,7 @@ class _ChatScreenState extends State<ChatScreen> {
           }
         },
         child: Container(
-          margin: EdgeInsets.only(bottom: 70),
+          margin: const EdgeInsets.only(bottom: 70),
           height: 80,
           width: 80,
           decoration: const BoxDecoration(
@@ -291,7 +291,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     BoxShadow(
                         color: AppColor.secondaryTextColor,
                         blurRadius: 10,
-                        spreadRadius: 1)
+                        spreadRadius: 1),
                   ],
                   border: Border.all(
                     color: AppColor.borderColor,

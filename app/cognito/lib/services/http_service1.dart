@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cognito/services/toast_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:cognito/services/firebase_service.dart';
 import 'package:http_parser/http_parser.dart';
@@ -25,7 +26,7 @@ class HttpService {
     if (baseUrl == '') {
       baseUrl = await getbaseUrl();
     }
-    
+
     final response = await http.get(
       Uri.parse('$baseUrl/gemini/with-history-no-stream')
           .replace(queryParameters: {
@@ -82,7 +83,8 @@ class HttpService {
       throw Exception('Failed to transcribe and save: ${response.statusCode}');
     }
   }
-   Future<String> uploadPdf({
+
+  Future<String> uploadPdf({
     required String user,
     required String conversationId,
     required File pdfFile,
@@ -112,6 +114,38 @@ class HttpService {
       return responseJson['message'];
     } else {
       throw Exception('Failed to upload PDF: ${response.statusCode}');
+    }
+  }
+
+  Future<Map<String , String>> getTopicsAndSummary(
+    String user,
+    String conversationId,
+  ) async {
+    if (baseUrl == '') {
+      showToast('Fetching base url');
+      baseUrl = await getbaseUrl();
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/gemini/topics-summary').replace(queryParameters: {
+        'user': user,
+        'id': conversationId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
+
+      return {
+        'topics': modelResponse['topics'],
+        'summary': modelResponse['summary'],
+      };
+    } else {
+      throw Exception(
+          'Failed to query the summary and topics: ${response.statusCode}');
     }
   }
 }
