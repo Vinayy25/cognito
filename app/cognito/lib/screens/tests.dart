@@ -6,7 +6,7 @@ class TestWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
+    return const CustomScrollView(
       slivers: [
         SliverAppBar(
           title: AppText(text: "Cognito"),

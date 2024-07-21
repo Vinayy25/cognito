@@ -1,7 +1,6 @@
 import 'package:cognito/firebase_options.dart';
 import 'package:cognito/screens/auth_screen.dart';
 import 'package:cognito/screens/main_screen.dart';
-import 'package:cognito/screens/tests.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';

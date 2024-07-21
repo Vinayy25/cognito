@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/models/recorder_model.dart';
-import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service1.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/chat_state.dart';
@@ -9,14 +9,10 @@ import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:cognito/states/record_audio_provider.dart';
 import 'package:cognito/utils/colors.dart';
-import 'package:cognito/utils/design.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/chat_card.dart';
-import 'package:cognito/widgets/my_drawer.dart';
 import 'package:cognito/widgets/welcome_message.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
@@ -65,7 +61,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
-    final dataProvider = Provider.of<Data>(context, listen: true);
+    final dataProvider = Provider.of<Data>(  context, listen: true);
+    dataProvider.baseUrl = ((widget.chatModelProvider.baseUrl != '')? widget.chatModelProvider.baseUrl :  HttpService(baseUrl: '').getbaseUrl()as String?);
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
@@ -83,53 +80,25 @@ class _ChatScreenState extends State<ChatScreen> {
       (element) => element.conversationId == widget.conversationId,
     ))]
         .chats);
-    Future<void> _pickAndUploadFile(String user, String conversation_id) async {
-      try {
-        // Pick a PDF file
-        FilePickerResult? result = await FilePicker.platform
-            .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
-
-        if (result != null) {
-          File file = File(result.files.single.path!);
-
-          // Upload the file
-          String responseMessage = await HttpService().uploadPdf(
-            user: user,
-            conversationId: conversation_id,
-            pdfFile: file,
-          );
-
-          // Show a success message
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(responseMessage)));
-        } else {
-          print('User canceled the picker');
-        }
-      } catch (e) {
-        print('Error picking or uploading file: $e');
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Error uploading file: $e')));
-      }
-    }
 
     Widget unwantedWidget(int len) {
       return Visibility(
         visible: len < 2,
-        child: Column(
+        child: const Column(
           children: [
-            const SizedBox(
+            SizedBox(
               height: 100,
             ),
-            const Divider(
+            Divider(
               thickness: 0.25,
               color: AppColor.primaryTextColor,
             ),
-            const WelcomeMessage(),
-            const Divider(
+            WelcomeMessage(),
+            Divider(
               thickness: 0.25,
               color: AppColor.primaryTextColor,
             ),
-            const SizedBox(
+            SizedBox(
               height: 100,
             ),
           ],
@@ -270,7 +239,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   controller: viewScrollController,
                   itemBuilder: (context, index) {
                     return Visibility(
-                      visible: chats.length >= 1,
+                      visible: chats.isNotEmpty,
                       child: Align(
                         alignment: chats[index].sender == 'user'
                             ? Alignment.centerRight
@@ -311,7 +280,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           children: [
                             IconButton(
                                 onPressed: () {
-                                  _pickAndUploadFile(
+                                  widget.chatModelProvider.pickAndUploadFile(
                                       widget.chatModelProvider.email ?? '',
                                       widget.conversationId);
                                 },
@@ -354,7 +323,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   viewScrollController.animateTo(
                                     viewScrollController
                                         .position.maxScrollExtent,
-                                    duration: Duration(milliseconds: 300),
+                                    duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeOut,
                                   );
                                 }

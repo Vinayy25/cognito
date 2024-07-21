@@ -1,13 +1,10 @@
-import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/screens/chat_screen.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/widgets/my_drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -116,17 +113,17 @@ class _MainScreenState extends State<MainScreen>
               floating: true,
               stretch: true,
               expandedHeight: 360,
-              backgroundColor: AppColor.appBarColor
-              ,
+              backgroundColor: AppColor.appBarColor,
               flexibleSpace: FlexibleSpaceBar(
-                stretchModes: [
+                stretchModes: const [
                   StretchMode.blurBackground,
                 ],
                 background: Container(
                     width: width,
                     color: Colors.white,
                     child: Padding(
-                      padding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
+                      padding: const EdgeInsets.only(
+                          bottom: 10, left: 10, right: 10),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -166,7 +163,8 @@ class _MainScreenState extends State<MainScreen>
                                       onSubmitted: (value) {
                                         onSubmittedCallback(value);
                                       },
-                                      style: TextStyle(color: Colors.white),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                       decoration: const InputDecoration(
                                         hintText: 'Ask me anything...',
                                         hintStyle: TextStyle(
@@ -266,78 +264,80 @@ class _MainScreenState extends State<MainScreen>
                     )),
               ),
             ),
-            SliverGrid.builder(
-              itemCount: chatModelProvider.chatModel.conversations.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.8),
-              itemBuilder: (context, index) {
-
-                String conversationTitle = chatModelProvider
-                        .chatModel.conversations[index].conversationName ??
-                    "New chat";
-                String conversationSummary = chatModelProvider
-                        .chatModel.conversations[index].conversationSummary ??
-                    "continue chating";
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => ChatScreen(
-                                conversationId: chatModelProvider.chatModel
-                                    .conversations[index].conversationId,
-                                chatModelProvider: chatModelProvider,
-                              )),
-                    );
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    color: const Color(0xFF454A60),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.chat_bubble_outline,
-                                  size: 40,
-                                  color: Color.fromARGB(255, 250, 251, 254)),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  conversationTitle,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 250, 251, 254),
+            DecoratedSliver(
+              decoration: const BoxDecoration(color: AppColor.appBarColor),
+              sliver: SliverGrid.builder(
+                itemCount: chatModelProvider.chatModel.conversations.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 0.8),
+                itemBuilder: (context, index) {
+                  String conversationTitle = chatModelProvider
+                          .chatModel.conversations[index].conversationName ??
+                      "New chat";
+                  String conversationSummary = chatModelProvider
+                          .chatModel.conversations[index].conversationSummary ??
+                      "continue chating";
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => ChatScreen(
+                                  conversationId: chatModelProvider.chatModel
+                                      .conversations[index].conversationId,
+                                  chatModelProvider: chatModelProvider,
+                                )),
+                      );
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      color: const Color(0xFF454A60),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.chat_bubble_outline,
+                                    size: 40,
+                                    color: Color.fromARGB(255, 250, 251, 254)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    conversationTitle,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(255, 250, 251, 254),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Expanded(
-                            child: Text(
-                              conversationSummary,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color.fromARGB(255, 250, 251, 254),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 3,
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 10),
-                        ],
+                            Expanded(
+                              child: Text(
+                                conversationSummary,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Color.fromARGB(255, 250, 251, 254),
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             )
           ],
         ),

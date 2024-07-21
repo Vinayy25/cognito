@@ -7,12 +7,12 @@ class StorageManagement {
   static Future<String> makeDirectory({required String dirName}) async {
     final Directory? directory = await getExternalStorageDirectory();
 
-    final _formattedDirName = '/$dirName/';
+    final formattedDirName = '/$dirName/';
 
-    final Directory _newDir =
-        await Directory(directory!.path + _formattedDirName).create();
+    final Directory newDir =
+        await Directory(directory!.path + formattedDirName).create();
 
-    return _newDir.path;
+    return newDir.path;
   }
 
   static get getAudioDir async => await makeDirectory(dirName: 'recordings');

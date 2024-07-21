@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/auth_provider.dart';
-import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:cognito/states/record_audio_provider.dart';
@@ -21,8 +20,7 @@ class TranscribeScreen extends StatefulWidget {
   final String conversationId;
  
   const TranscribeScreen(
-      {Key? key, required this.conversationId})
-      : super(key: key);
+      {super.key, required this.conversationId});
 
   @override
   State<TranscribeScreen> createState() => _TranscribeScreenState();
@@ -51,7 +49,7 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
     final dataProvider = Provider.of<Data>(context);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final ScrollController _scrollController = ScrollController();
+    final ScrollController scrollController = ScrollController();
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +70,7 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                 onPressed: () {
                   authProvider.logoutAll();
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.logout,
                   color: Colors.white,
                 )),
@@ -96,7 +94,7 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                     }
                   });
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.file_upload_outlined,
                   color: Colors.white,
                 ))
@@ -126,8 +124,8 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                 widget.conversationId,
               );
               setState(() {});
-              _scrollController.position.animateTo(
-                _scrollController.position.maxScrollExtent,
+              scrollController.position.animateTo(
+                scrollController.position.maxScrollExtent,
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.fastOutSlowIn,
               );
@@ -209,7 +207,7 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
               height: height - 100,
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                controller: _scrollController,
+                controller: scrollController,
                 itemBuilder: (context, index) {
                   return Chat(
                     index: index,
@@ -325,10 +323,10 @@ class _ChatState extends State<Chat> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
+                      const SizedBox(
                         height: 20,
                         width: 20,
-                        child: const CircularProgressIndicator(
+                        child: CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2,
                         ),

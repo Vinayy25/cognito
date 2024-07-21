@@ -6,11 +6,11 @@ class GPTTypingText extends StatefulWidget {
   final Duration speed;
 
   const GPTTypingText({
-    Key? key,
+    super.key,
     required this.text,
     this.textStyle =  const TextStyle(fontSize: 16.0, color: Colors.white),
     this.speed = const Duration(milliseconds: 50),
-  }) : super(key: key);
+  });
 
   @override
   State<GPTTypingText> createState() => _GPTTypingTextState();

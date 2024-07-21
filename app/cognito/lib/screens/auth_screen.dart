@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                         onTap: () async {
                           await FirebaseService().signOut();
                         },
-                        child: Image(
+                        child: const Image(
                             width: 30,
                             image: AssetImage('assets/icons/facebook.png')),
                       ),

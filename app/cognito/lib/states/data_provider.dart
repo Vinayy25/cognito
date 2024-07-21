@@ -2,9 +2,13 @@ import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/services/http_service1.dart';
 import 'package:flutter/material.dart';
 
-class Data extends ChangeNotifier {
+class Data extends ChangeNotifier  {
+  String? baseUrl;
+  
+  
   List<RecorderChatModel> chats = [];
   bool requestPending = false;
+
 
   addChat(RecorderChatModel chat, String user, String id) {
     chats.add(chat);
@@ -17,7 +21,9 @@ class Data extends ChangeNotifier {
 
   fetchTrasnscription(String user, String id) async {
     requestPending = true;
-    await HttpService()
+    await HttpService(
+    baseUrl: baseUrl!
+    )
         .transcribeAndSave(
       user: user,
       conversationId: id,

@@ -61,7 +61,7 @@ class FirebaseService {
   Future<String> getNgrokUrl() async {
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _db.collection('ngrok_URLs').doc('url').get();
-        print("url is "+documentSnapshot.data()!['url']);
+    print("url is " + documentSnapshot.data()!['url']);
     return documentSnapshot.data()!['url'];
   }
 
@@ -84,7 +84,28 @@ class FirebaseService {
           .collection('conversation_ids')
           .doc('id')
           .get();
+
+      if (!documentSnapshot.exists ||
+          documentSnapshot.data()!['conversation_ids'] == null) {
+        return [];
+      }
       return List<String>.from(documentSnapshot.data()!['conversation_ids']);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, String>?>> getSummaryAndTitles(
+      String conversationId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _db
+          .collection('users')
+          .doc(email)
+          .collection('conversation_ids')
+          .doc('id')
+          .get();
+      return List<Map<String, String>>.from(
+          documentSnapshot.data()!['conversation_details']);
     } catch (e) {
       rethrow;
     }
@@ -137,10 +158,9 @@ class FirebaseService {
         rethrow;
       }
     }
-
   }
 
- Future<void> addConversationId( String id) async {
+  Future<void> addConversationId(String id) async {
     try {
       DocumentReference documentReference = _db
           .collection('users')
@@ -150,12 +170,14 @@ class FirebaseService {
 
       DocumentSnapshot documentSnapshot = await documentReference.get();
 
-      if (documentSnapshot.exists) {
+      if (documentSnapshot.exists &&
+          (documentSnapshot.data()
+                  as Map<String, dynamic>)['conversation_ids'] !=
+              null) {
         List<dynamic> conversationIds = (documentSnapshot.data()
             as Map<String, dynamic>)['conversation_ids'];
 
-
-        if(conversationIds.contains(id)){
+        if (conversationIds.contains(id)) {
           return;
         }
         conversationIds.add(id);
@@ -163,11 +185,56 @@ class FirebaseService {
       } else {
         await documentReference.set({
           'conversation_ids': [id]
-        });
+        }, SetOptions(merge: true));
       }
     } catch (e) {
       rethrow;
     }
   }
 
+  Future<void> saveSummaryAndTitle(
+    ChatModel chatModel,
+  ) async {
+    // Ref erence to the user's document
+
+    DocumentReference documentReference = _db
+        .collection('users')
+        .doc(email)
+        .collection('conversation_ids')
+        .doc('id');
+
+    DocumentSnapshot documentSnapshot = await documentReference.get();
+
+    if (documentSnapshot.exists &&
+        (documentSnapshot.data()
+                as Map<String, dynamic>)['conversation_details'] !=
+            null) {
+      List<dynamic> conversationDetails = (documentSnapshot.data()
+          as Map<String, dynamic>)['conversation_details'];
+
+      conversationDetails = chatModel.conversations.map((conversation) {
+        return {
+          'conversation_id': conversation.conversationId,
+          'title': conversation.conversationName,
+          'summary': conversation.conversationSummary,
+        };
+      }).toList();
+      await documentReference
+          .update({'conversation_details': conversationDetails});
+    } else {
+      try {
+        await documentReference.set({
+          'conversation_details': chatModel.conversations.map((conversation) {
+            return {
+              'conversation_id': conversation.conversationId,
+              'title': conversation.conversationName!,
+              'summary': conversation.conversationSummary!,
+            };
+          }).toList()
+        }, SetOptions(merge: true));
+      } catch (e) {
+        rethrow;
+      }
+    }
+  }
 }

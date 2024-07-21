@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cognito/services/toast_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:cognito/services/firebase_service.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class HttpService {
-  String? baseUrl = '';
+  String baseUrl;
 
-  HttpService() {
-    getbaseUrl().then((value) => baseUrl = value);
-  }
-
+  HttpService({required this.baseUrl});
   Future<String> getbaseUrl() async {
     print("fetching ngrok url ");
     return FirebaseService().getNgrokUrl();
@@ -26,7 +25,6 @@ class HttpService {
     if (baseUrl == '') {
       baseUrl = await getbaseUrl();
     }
-
     final response = await http.get(
       Uri.parse('$baseUrl/gemini/with-history-no-stream')
           .replace(queryParameters: {
@@ -117,19 +115,18 @@ class HttpService {
     }
   }
 
-  Future<Map<String , String>> getTopicsAndSummary(
+  Future<Map<String, String>> getTopicsAndSummary(
     String user,
     String conversationId,
   ) async {
     if (baseUrl == '') {
-      showToast('Fetching base url');
       baseUrl = await getbaseUrl();
     }
 
     final response = await http.get(
-      Uri.parse('$baseUrl/gemini/topics-summary').replace(queryParameters: {
-        'user': user,
-        'id': conversationId,
+      Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
+        'username': user,
+        'conversation_id': conversationId,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -140,12 +137,49 @@ class HttpService {
       final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
 
       return {
-        'topics': modelResponse['topics'],
+        'title': modelResponse['title'],
         'summary': modelResponse['summary'],
       };
-    } else {
+    } else if (response.statusCode == 404) {
+      return {
+        'title': '',
+        'summary': '',
+      };
+    } else if(response.statusCode == 500) {
+      
+
+        return {
+          'title': '',
+          'summary': '',
+        };}
+      else{
       throw Exception(
-          'Failed to query the summary and topics: ${response.statusCode}');
+          'Failed to query the summary and title: ${response.statusCode}');
+    }
+
+    // add conversation details to db 
+  
+  }
+
+
+
+  Future<bool> checkServerAvailavility() async {
+    if (baseUrl == '') {
+      showToast('Fetching base url');
+      baseUrl = await getbaseUrl();
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/health'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

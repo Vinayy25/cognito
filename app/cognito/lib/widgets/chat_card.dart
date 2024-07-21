@@ -1,7 +1,6 @@
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatCard extends StatelessWidget {
   final String text;

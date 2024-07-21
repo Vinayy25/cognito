@@ -14,10 +14,9 @@ from fastapi.responses import StreamingResponse
 from pathlib import Path
 import google.generativeai as genai
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
+from fastapi.responses import PlainTextResponse
 from functions.prepareEmbeddings import save_embeddings
-
-from functions.getSuummary import getSummaryUsingGroq
+from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
 from langchain_huggingface import HuggingFaceEmbeddings
 from vertexai.generative_models import Content, GenerativeModel, Part
 from fastui import prebuilt_html, FastUI, AnyComponent
@@ -281,6 +280,7 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
 def groq_chat(message: str, systemMessage : str):
     try:
         # Generate chat completion using GROQ model
+       print("got a groq request ")
        groq_chat_completion = groq_client.chat.completions.create(
          messages=[
         {
@@ -389,9 +389,6 @@ async def query_with_history(user: str,query: str,id: str,  model_type: str = Qu
     similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
 
     similarText = list_to_numbered_string(similarDocs)
-
-    
-
     systemMessage = gemini_system_prompt + similarText 
     print("system message: ",systemMessage)
 
@@ -437,6 +434,8 @@ async def query_with_history(user: str,query: str,id: str,  model_type: str = Qu
     return JSONResponse(status_code=200, content={"response": chat_response.text })
     
 
+
+
 def stream_my_res(model,prompt, user , conversation_id, r):
     chat_parts = ""
 
@@ -473,8 +472,39 @@ def stream_my_res(model,prompt, user , conversation_id, r):
     store_chat_history(username=user, conversation_id=conversation_id, text=prompt, role="user", r=r)
     store_chat_history(username=user, conversation_id=conversation_id, text=chat_parts, role="model", r=r)
         
-    
+@app.get("/chat-summary-title/")
+async def get_chat_history_as_text(username: str, conversation_id: str):
+    try:
+        # Retrieve chat history from Redis
+        chat_history = get_chat_history(username, conversation_id, r)
+        # Format chat history as a single text with different lines for each chat
+        formatted_chat_history = ""
+        for entry in chat_history:
+            role = entry.get("role", "unknown").capitalize()
+            for part in entry.get("parts", []):
+                text = part.get("text", "")
+                formatted_chat_history += f"{role}: {text}\n"
+        
 
+        
+        chat_summary_and_title = groq_chat(message=formatted_chat_history, systemMessage="given the following conversation data , generate a small summary of 1 sentance and a title and in JSON format with keys summary and title, do not include any other text or body , respond only with json of summary and title")
+
+        print ("chat_summary_and_title ",chat_summary_and_title.response)
+        if is_valid_json(chat_summary_and_title.response):
+            print("is valid")
+            chat_summary_and_title_json = json.loads(chat_summary_and_title.response)
+
+        else :
+            print("is not valid")
+
+  
+        
+        
+        print("text_context_response ", chat_summary_and_title_json)
+        return JSONResponse(status_code=200, content={ "summary": chat_summary_and_title_json['summary'], "title": chat_summary_and_title_json['title']})
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 
 @app.get('/voyage/embed')
@@ -536,3 +566,9 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
 
+def is_valid_json(text):
+    try:
+        json.loads(text)
+        return True
+    except ValueError:
+        return False

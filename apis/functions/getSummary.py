@@ -5,7 +5,7 @@ import json, uuid
 def  getSummaryUsingGroq(texts: List[str]): 
 
     localUrl = "http://localhost:8000"
-    summarisedTexts = []
+    summarisedTexts = {}
     for i in range(len(texts)):
     
         text= texts[i]
@@ -22,10 +22,10 @@ def  getSummaryUsingGroq(texts: List[str]):
         message =  text + """\n\nGiven the information about the user, provide a summary, and the topics discussed.\n
                 *** Summary must be a brief overview of the transcript.\n\n
                 *** Topics must be a list of topics that were discussed in the transcript, include topics not mentioned but that relate to the topics discussed.\n\n
-                """ 
-
+                """
         # Repeat until valid JSON response is received
         while True:
+                
                 text_context_response = requests.post(
                     localUrl + "/groq/chat",
                     params={
@@ -35,8 +35,6 @@ def  getSummaryUsingGroq(texts: List[str]):
                 )
                 text_context = text_context_response.json()['response']
                 print("text_context_response ", text_context)
-
-                
                 if is_valid_json(text_context):
                     break
                 else:
@@ -70,16 +68,85 @@ def  getSummaryUsingGroq(texts: List[str]):
 
         summary = jsonResponse['summary']
         topics = jsonResponse['topics']
-
-
         topics_json = json.dumps(topics)
 
-        summarisedTexts.append("summary:" +summary+  " topics: "+topics_json)
+        summarisedTexts['summary'] = summary
+        summarisedTexts['topics'] = topics_json
 
-
+        print("summarisedTexts ", summarisedTexts)
 
     return summarisedTexts
 
+def getTitleAndSummary(text: str): 
+
+    localUrl = "http://localhost:8000"
+    summarisedTexts = {}
+   
+    systemMessage= """
+            These transcripts contain information about your user. 
+            Your task is to organize the information in a way that makes sense to you.
+            Your response must be in json format with only the two following keys: "summary", "topics".
+            Do not inclue any line breaks or special characters in your response.
+            Strictly check and validate if it is a valid JSON structure.
+            Don't include any other keys or text in the response, avoid line breaks.
+            Don't include backslashes in the response
+        """
+    message =  text + """\n\nGiven the information about the user, provide a summary, and the topics discussed.\n
+            *** Summary must be a brief overview of the transcript.\n\n
+            *** Topics must be a list of topics that were discussed in the transcript, include topics not mentioned but that relate to the topics discussed.\n\n
+            """
+    # Repeat until valid JSON response is received
+    while True:
+            text_context_response = requests.post(
+                localUrl + "/groq/chat",
+                params={
+                    "message": message,
+                    "systemMessage": systemMessage
+                }
+            )
+            text_context = text_context_response.json()['response']
+            print("text_context_response ", text_context)
+            if is_valid_json(text_context):
+                break
+            else:
+                print(f"Invalid JSON format received: {text_context}")
+
+                # Request correction from the API
+                correction_message = """The response provided was not a valid JSON structure. Please reformat the response to ensure it is a valid JSON with keys 'summary' and 'topics' only. 
+                Remove any line breaks or special characters from the response. 
+                Remove backslashes from the response.
+                Here is the response you provided:
+                {text_context}"""
+                
+                correction_system_message = """
+                    These transcripts contain information about your user. Please make the corrections as said and only respond with a valid json body"""
+
+                correction_response = requests.post(
+                    localUrl + "/groq/chat",
+                    params={
+                        "message": correction_message,
+                        "systemMessage": correction_system_message
+                    }
+                )
+                print("correction res: "+correction_response.json()['response'])
+                # Use the corrected response for the next iteration
+                text_context = correction_response.json()['response']
+                if is_valid_json(text_context):
+                    break
+
+    jsonResponse = json.loads(text_context)
+
+
+    summary = jsonResponse['summary']
+    topics = jsonResponse['topics']
+    topics_json = json.dumps(topics)
+
+    summarisedTexts['summary'] = summary
+    summarisedTexts['topics'] = topics_json
+
+    print("summarisedTexts ", summarisedTexts)
+
+    return summarisedTexts
 
 
         

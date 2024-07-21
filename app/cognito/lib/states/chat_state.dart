@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service1.dart';
-import 'package:cognito/states/auth_provider.dart';
+import 'package:cognito/services/toast_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -9,12 +12,36 @@ class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
+  String baseUrl = '';
 
   ChatState() {
     initializeData();
   }
 
+  void checkForSummary() async {
+    for (int conversationIndex = 0;
+        conversationIndex < chatModel.conversations.length;
+        conversationIndex++) {
+      var x = chatModel.conversations[conversationIndex];
+      if (x.chats.length == 4 ||
+          x.chats.length % 10 == 0 ||
+          x.conversationName == null) {
+        print(x.conversationName);
+        Map<String, String> topicsAndSummary =
+            await HttpService(baseUrl: baseUrl)
+                .getTopicsAndSummary(email!, x.conversationId);
+        x.conversationName = topicsAndSummary['title'];
+        x.conversationSummary = topicsAndSummary['summary'];
+      }
+    }
+
+    await FirebaseService().saveSummaryAndTitle(chatModel);
+    notifyListeners();
+  }
+
   Future<void> initializeData() async {
+    baseUrl = await HttpService(baseUrl: '').getbaseUrl();
+
     List<String> conversationIds = await FirebaseService().getConversationIds();
 
     for (String conversationId in conversationIds) {
@@ -25,6 +52,7 @@ class ChatState extends ChangeNotifier {
       );
       chatModel.conversations.add(conversation);
     }
+    checkForSummary();
     notifyListeners();
   }
 
@@ -43,7 +71,7 @@ class ChatState extends ChangeNotifier {
       chatModel.conversations[conversationIndex].chats.add(chat);
       notifyListeners();
 
-      final chatResponse = await HttpService().queryWithHistory(
+      final chatResponse = await HttpService(baseUrl: baseUrl).queryWithHistory(
         user: email!,
         query: message,
         id: conversationId,
@@ -71,12 +99,7 @@ class ChatState extends ChangeNotifier {
       notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
     }
-    if(chatModel.conversations[conversationIndex].chats.length == 4 || chatModel.conversations[conversationIndex].chats.length %10== 0){
-      
-      Map<String, String> topicsAndSummary = await HttpService().getTopicsAndSummary( email! , conversationId); 
-      chatModel.conversations[conversationIndex].conversationName = topicsAndSummary['title'];
-      chatModel.conversations[conversationIndex].conversationSummary = topicsAndSummary['summary'];
-    }
+    checkForSummary();
   }
 
   void addConversationId(String conversationId) async {
@@ -87,5 +110,34 @@ class ChatState extends ChangeNotifier {
     chatModel.conversations.add(conversation);
     await FirebaseService().addConversationId(conversationId);
     notifyListeners();
+  }
+
+  Future<void> pickAndUploadFile(String user, String conversationId) async {
+    try {
+      // Pick a PDF file
+      FilePickerResult? result = await FilePicker.platform
+          .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+
+      if (result != null) {
+        File file = File(result.files.single.path!);
+
+        // Upload the file
+        String responseMessage = await HttpService(baseUrl: baseUrl).uploadPdf(
+          user: user,
+          conversationId: conversationId,
+          pdfFile: file,
+        );
+
+        // Show a success message
+        showToast(responseMessage);
+      } else {
+        print('User canceled the picker');
+      }
+    } catch (e) {
+      print('Error picking or uploading file: $e');
+      showToast(
+        'Error picking or uploading file: $e',
+      );
+    }
   }
 }
