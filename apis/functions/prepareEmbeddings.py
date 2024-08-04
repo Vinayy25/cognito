@@ -28,9 +28,3 @@ def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_mo
 
 
 
-if __name__ == "__main__":
-    embed_model = HuggingFaceEmbeddings(
-    model_name="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
-    )
-    save_embeddings(["lets do some timepass"], "viya", '12345675432', embed_model=embed_model)
-    

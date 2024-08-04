@@ -17,6 +17,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from fastapi.responses import PlainTextResponse
 from functions.prepareEmbeddings import save_embeddings
 from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
+
 from langchain_huggingface import HuggingFaceEmbeddings
 from vertexai.generative_models import Content, GenerativeModel, Part
 from fastui import prebuilt_html, FastUI, AnyComponent
@@ -24,7 +25,7 @@ from fastui import prebuilt_html, FastUI, AnyComponent
 from models import ChatLogRequest, ChatPart, ChatLogRequest, ChatResponse, EmbeddingRequest, EmbeddingResponse
 from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt
-
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 
 
 import os
@@ -47,10 +48,12 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# alibaba_model = SentenceTransformer('Alibaba-NLP/gte-large-en-v1.5', trust_remote_code=True)
-embed_model = HuggingFaceEmbeddings(
-    model_name="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
-)
+
+# embed_model = HuggingFaceEmbeddings(
+#     model_name="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
+# )
+
+
 
 origins = ["http://127.0.0.1:8000"]
 load_dotenv()
@@ -70,6 +73,7 @@ def get_generative_model(model_name, system_instruction = ""):
     genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
     return genai.GenerativeModel(model_name, system_instruction = system_instruction,)
 
+embed_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=os.getenv("GEMINI_API_KEY"))
 
 # generative_image_model = get_generative_model('gemini-pro-vision')
 # Initialize the model
@@ -188,7 +192,7 @@ async def transcribe_and_save(user: str, conversation_id:str ,audio_file: Upload
     
 
 
-@app.post("/transcribe/summarize/save")
+@app.post("/transcribe/summarize/save/")
 async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):
     try:
 
@@ -217,13 +221,9 @@ async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_fi
             "",
         ],)
         texts = text_splitter.split_text(transcription["text"])
+        print("texts ",texts)
 
         summarized_text = getSummaryUsingGroq(texts)
-
-
-
-            
-        
 
         save_embeddings(summarized_text, user, conversation_id, embed_model=embed_model)
 
@@ -276,28 +276,29 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
         return JSONResponse(status_code=500, content={"message": str(e)})
 
 
-@app.post("/groq/chat", response_model=ChatResponse)
-def groq_chat(message: str, systemMessage : str):
-    try:
-        # Generate chat completion using GROQ model
-       print("got a groq request ")
-       groq_chat_completion = groq_client.chat.completions.create(
-         messages=[
-        {
-            "role": "system",
-            "content":systemMessage,
-        },
-        {
-            "role": "user",
-            "content": message,
-        }
-             ],
-             model="llama3-70b-8192",
-               )
-       
-       return ChatResponse(response=groq_chat_completion.choices[0].message.content)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.get("/groq/chat/", )
+async def groq_chat(message: str, systemMessage : str):
+        try:
+                # Generate chat completion using GROQ model
+            print("got a groq request ")
+            groq_chat_completion = groq_client.chat.completions.create(
+                messages=[
+                {
+                    "role": "system",
+                    "content":systemMessage,
+                },
+                {
+                    "role": "user",
+                    "content": message,
+                }
+                    ],
+                    model="llama3-70b-8192",
+                    )
+            return JSONResponse(status_code=200, content={ "response": groq_chat_completion.choices[0].message.content,})
+            
+        except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+            
 
 
 
