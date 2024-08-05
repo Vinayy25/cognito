@@ -66,6 +66,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '513061587003',
     projectId: 'cognito-ai-vinay',
     storageBucket: 'cognito-ai-vinay.appspot.com',
+    androidClientId: '513061587003-6njjqv6r50vagsjf0r69p64rl3i1ilg6.apps.googleusercontent.com',
+    iosClientId: '513061587003-juso494huh1b0eg3anur9aurm7qrklj1.apps.googleusercontent.com',
     iosBundleId: 'com.example.cognito',
   );
 
@@ -75,6 +77,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '513061587003',
     projectId: 'cognito-ai-vinay',
     storageBucket: 'cognito-ai-vinay.appspot.com',
+    androidClientId: '513061587003-6njjqv6r50vagsjf0r69p64rl3i1ilg6.apps.googleusercontent.com',
+    iosClientId: '513061587003-qc5h4e7hnq7g7k3enibgsao39tusi3rr.apps.googleusercontent.com',
     iosBundleId: 'com.example.cognito.RunnerTests',
   );
 }

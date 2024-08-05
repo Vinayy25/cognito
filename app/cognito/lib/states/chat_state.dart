@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/services/firebase_service.dart';
-import 'package:cognito/services/http_service1.dart';
+import 'package:cognito/services/http_service.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,8 +17,14 @@ class ChatState extends ChangeNotifier {
   ChatState() {
     initializeData();
   }
+  void refresh() {
+    notifyListeners();
+  }
 
   void checkForSummary() async {
+    bool changesMade = false;
+
+    List<Conversations> previousChatSummaryAndTitle = chatModel.conversations;
     for (int conversationIndex = 0;
         conversationIndex < chatModel.conversations.length;
         conversationIndex++) {
@@ -30,25 +36,44 @@ class ChatState extends ChangeNotifier {
         Map<String, String> topicsAndSummary =
             await HttpService(baseUrl: baseUrl)
                 .getTopicsAndSummary(email!, x.conversationId);
-        x.conversationName = topicsAndSummary['title'];
-        x.conversationSummary = topicsAndSummary['summary'];
+
+        if (topicsAndSummary['title'] == null ||
+            topicsAndSummary['summary'] == null ||
+            topicsAndSummary['title'] == '' ||
+            topicsAndSummary['summary'] == '') {
+          x.conversationName =
+              previousChatSummaryAndTitle[conversationIndex].conversationName;
+          x.conversationSummary = previousChatSummaryAndTitle[conversationIndex]
+              .conversationSummary;
+        } else {
+          x.conversationName = topicsAndSummary['title'];
+          x.conversationSummary = topicsAndSummary['summary'];
+
+          changesMade = true;
+        }
       }
+      if (changesMade == true) {
+        await FirebaseService().saveSummaryAndTitle(chatModel);
+      }
+      notifyListeners();
     }
 
-    await FirebaseService().saveSummaryAndTitle(chatModel);
     notifyListeners();
   }
 
   Future<void> initializeData() async {
     baseUrl = await HttpService(baseUrl: '').getbaseUrl();
-
-    List<String> conversationIds = await FirebaseService().getConversationIds();
+    Map<String, dynamic> x = await FirebaseService().getConversationIds();
+    List<dynamic> conversationIds = x['conversation_ids'];
+    Map<String, dynamic> conversationDetails = x['conversation_details'][0];
 
     for (String conversationId in conversationIds) {
       List<Chat> chats = await FirebaseService().getChats(conversationId);
       final conversation = Conversations(
         chats: chats,
         conversationId: conversationId,
+        conversationName: conversationDetails['title'],
+        conversationSummary: conversationDetails['summary'],
       );
       chatModel.conversations.add(conversation);
     }
@@ -99,7 +124,6 @@ class ChatState extends ChangeNotifier {
       notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
     }
-    checkForSummary();
   }
 
   void addConversationId(String conversationId) async {

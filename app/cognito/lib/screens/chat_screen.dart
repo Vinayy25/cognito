@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/models/recorder_model.dart';
-import 'package:cognito/services/http_service1.dart';
+import 'package:cognito/services/http_service.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';

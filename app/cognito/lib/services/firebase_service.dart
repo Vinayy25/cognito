@@ -22,10 +22,14 @@ class FirebaseService {
         final AuthCredential authCredential = GoogleAuthProvider.credential(
             idToken: googleSignInAuthentication.idToken,
             accessToken: googleSignInAuthentication.accessToken);
+        // check if the user is new
 
         final UserCredential userCredential =
             await _firebaseAuth.signInWithCredential(authCredential);
         final User? user = userCredential.user;
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          return "NEW_USER";
+        }
         print(user?.email ?? "no email");
       } else {
         print("error");
@@ -51,8 +55,23 @@ class FirebaseService {
 
   Future<void> signIn(String email, String password) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      if (email.isNotEmpty && password.isNotEmpty) {
+        await _firebaseAuth.signInWithEmailAndPassword(
+            email: email, password: password);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> createUserAccount(String email, String password) async {
+    try {
+      if (email.isNotEmpty && password.isNotEmpty) {
+        await _firebaseAuth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        await _firebaseAuth.signInWithEmailAndPassword(
+            email: email, password: password);
+      }
     } catch (e) {
       rethrow;
     }
@@ -61,7 +80,7 @@ class FirebaseService {
   Future<String> getNgrokUrl() async {
     final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await _db.collection('ngrok_URLs').doc('url').get();
-    print("url is " + documentSnapshot.data()!['url']);
+
     return documentSnapshot.data()!['url'];
   }
 
@@ -76,20 +95,36 @@ class FirebaseService {
     });
   }
 
-  Future<List<String>> getConversationIds() async {
+  Future<Map<String,dynamic
+  >> getConversationIds() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _db
           .collection('users')
           .doc(email)
           .collection('conversation_ids')
           .doc('id')
-          .get();
+          .get(); 
 
       if (!documentSnapshot.exists ||
           documentSnapshot.data()!['conversation_ids'] == null) {
-        return [];
+        return {};
       }
-      return List<String>.from(documentSnapshot.data()!['conversation_ids']);
+
+
+
+       Map<String, dynamic> x = 
+       
+       {
+     "conversation_ids":  documentSnapshot.data()!['conversation_ids'],
+     "conversation_details": documentSnapshot.data()!['conversation_details']
+       };
+
+
+
+      return x;
+
+
+
     } catch (e) {
       rethrow;
     }
@@ -213,18 +248,42 @@ class FirebaseService {
           as Map<String, dynamic>)['conversation_details'];
 
       conversationDetails = chatModel.conversations.map((conversation) {
+        if (conversation.conversationName == null ||
+            conversation.conversationSummary == null ||
+            conversation.conversationName == '' ||
+            conversation.conversationSummary == '') {
+          return {
+            'conversation_id': conversation.conversationId,
+            'title': 'New chat',
+            'summary': 'Continue with your conversation...',
+          };
+        }
+
+
         return {
           'conversation_id': conversation.conversationId,
           'title': conversation.conversationName,
           'summary': conversation.conversationSummary,
         };
       }).toList();
-      await documentReference
-          .update({'conversation_details': conversationDetails});
+
+      await documentReference.update(
+        {'conversation_details': conversationDetails},
+      );
     } else {
       try {
         await documentReference.set({
           'conversation_details': chatModel.conversations.map((conversation) {
+            if (conversation.conversationName == null ||
+                conversation.conversationSummary == null ||
+                conversation.conversationName == '' ||
+                conversation.conversationSummary == '') {
+              return {
+                'conversation_id': conversation.conversationId,
+                'title': 'New chat',
+                'summary': 'Continue with your conversation...',
+              };
+            }
             return {
               'conversation_id': conversation.conversationId,
               'title': conversation.conversationName!,

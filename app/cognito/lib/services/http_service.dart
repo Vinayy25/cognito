@@ -145,23 +145,18 @@ class HttpService {
         'title': '',
         'summary': '',
       };
-    } else if(response.statusCode == 500) {
-      
-
-        return {
-          'title': '',
-          'summary': '',
-        };}
-      else{
+    } else if (response.statusCode == 500 || response.statusCode == 502) {
+      return {
+        'title': '',
+        'summary': '',
+      };
+    } else {
       throw Exception(
           'Failed to query the summary and title: ${response.statusCode}');
     }
 
-    // add conversation details to db 
-  
+    // add conversation details to db
   }
-
-
 
   Future<bool> checkServerAvailavility() async {
     if (baseUrl == '') {

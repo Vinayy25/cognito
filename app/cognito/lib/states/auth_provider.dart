@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class AuthStateProvider extends ChangeNotifier {
   bool isAuthenticated = false;
   bool signInPage = true;
-  String deviceId = '';
+
+  String email = "";
   AuthStateProvider() {
     checkAuthStatus();
   }
+  bool isNewUser = false;
 
   void toggleSignInPage() {
     signInPage = !signInPage;
@@ -35,7 +37,7 @@ class AuthStateProvider extends ChangeNotifier {
     await auth.signOut();
   }
 
-  void checkAuthStatus() {
+  void checkAuthStatus() async{
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         isAuthenticated = false;
@@ -43,6 +45,7 @@ class AuthStateProvider extends ChangeNotifier {
         notifyListeners();
       } else {
         isAuthenticated = true;
+        email = user.email!;
         notifyListeners();
       }
     });

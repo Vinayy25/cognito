@@ -6,6 +6,7 @@ from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 from dotenv import load_dotenv
 from groq import Groq
+import requests
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -277,7 +278,7 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
 
 
 @app.get("/groq/chat/", )
-async def groq_chat(message: str, systemMessage : str):
+def groq_chat(message: str, systemMessage : str):
         try:
                 # Generate chat completion using GROQ model
             print("got a groq request ")
@@ -479,27 +480,39 @@ async def get_chat_history_as_text(username: str, conversation_id: str):
         # Retrieve chat history from Redis
         chat_history = get_chat_history(username, conversation_id, r)
         # Format chat history as a single text with different lines for each chat
+        
         formatted_chat_history = ""
         for entry in chat_history:
             role = entry.get("role", "unknown").capitalize()
             for part in entry.get("parts", []):
                 text = part.get("text", "")
                 formatted_chat_history += f"{role}: {text}\n"
+        system_message_for_groq = "Given the following conversation data , generate a small summary of less than 10 words and a title for showing the chat preview ALSO in JSON format with keys summary and title, do not include any other text or body , respond only with json of summary and title"
         
+         
 
-        
-        chat_summary_and_title = groq_chat(message=formatted_chat_history, systemMessage="given the following conversation data , generate a small summary of 1 sentance and a title and in JSON format with keys summary and title, do not include any other text or body , respond only with json of summary and title")
 
-        print ("chat_summary_and_title ",chat_summary_and_title.response)
-        if is_valid_json(chat_summary_and_title.response):
+        groq_chat_completion = groq_client.chat.completions.create(
+                messages=[
+                {
+                    "role": "system",
+                    "content":system_message_for_groq,
+                },
+                {
+                    "role": "user",
+                    "content": formatted_chat_history,
+                }
+                    ],
+                    model="llama3-70b-8192",
+                    )
+        chat_summary_and_title= groq_chat_completion.choices[0].message.content
+       
+        if is_valid_json(chat_summary_and_title):
             print("is valid")
-            chat_summary_and_title_json = json.loads(chat_summary_and_title.response)
+            chat_summary_and_title_json = json.loads(chat_summary_and_title)
 
         else :
-            print("is not valid")
-
-  
-        
+            print("is not valid")        
         
         print("text_context_response ", chat_summary_and_title_json)
         return JSONResponse(status_code=200, content={ "summary": chat_summary_and_title_json['summary'], "title": chat_summary_and_title_json['title']})

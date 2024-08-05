@@ -9,35 +9,17 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'AI Chat',
-      home: MainScreen(),
-    );
-  }
-}
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+    final ChatState chatModelProvier;
+  const MainScreen({super.key, required this.chatModelProvier});
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
+
   late AnimationController animationController;
   late Animation<double> animation;
 
@@ -65,8 +47,8 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    final ChatState chatModelProvider =
-        Provider.of<ChatState>(context, listen: true);
+  
+    
 
     final ScrollController viewScrollController = ScrollController();
     final AdvancedDrawerController drawerController =
@@ -75,15 +57,15 @@ class _MainScreenState extends State<MainScreen>
     onSubmittedCallback(String value) {
       final String uuid = const Uuid().v4();
 
-      chatModelProvider.addConversationId(uuid);
-      chatModelProvider.chat(value.toString(), uuid);
+      widget.chatModelProvier.addConversationId(uuid);
+      widget.chatModelProvier.chat(value.toString(), uuid);
 
       Navigator.push(
         context,
         CupertinoPageRoute(
           builder: (_) => ChatScreen(
             conversationId: uuid,
-            chatModelProvider: chatModelProvider,
+            chatModelProvider: widget.chatModelProvier,
           ),
         ),
       );
@@ -267,17 +249,17 @@ class _MainScreenState extends State<MainScreen>
             DecoratedSliver(
               decoration: const BoxDecoration(color: AppColor.appBarColor),
               sliver: SliverGrid.builder(
-                itemCount: chatModelProvider.chatModel.conversations.length,
+                itemCount: widget.chatModelProvier.chatModel.conversations.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     childAspectRatio: 0.8),
                 itemBuilder: (context, index) {
-                  String conversationTitle = chatModelProvider
+                  String conversationTitle = widget.chatModelProvier
                           .chatModel.conversations[index].conversationName ??
                       "New chat";
-                  String conversationSummary = chatModelProvider
+                  String conversationSummary = widget.chatModelProvier
                           .chatModel.conversations[index].conversationSummary ??
                       "continue chating";
                   return GestureDetector(
@@ -285,9 +267,11 @@ class _MainScreenState extends State<MainScreen>
                       Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) => ChatScreen(
-                                  conversationId: chatModelProvider.chatModel
+                                  conversationId: widget
+                                      .chatModelProvier
+                                      .chatModel
                                       .conversations[index].conversationId,
-                                  chatModelProvider: chatModelProvider,
+                                  chatModelProvider: widget.chatModelProvier,
                                 )),
                       );
                     },
