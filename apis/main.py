@@ -183,7 +183,7 @@ async def transcribe_and_save(user: str, conversation_id:str ,audio_file: Upload
         ],)
         text = text_splitter.split_text(transcription["text"])
         
-
+        print("text ",text)
         save_embeddings(text, user, conversation_id, embed_model=embed_model)
 
         # Return the transcription as a JSON response

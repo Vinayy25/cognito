@@ -9,9 +9,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-
 class MainScreen extends StatefulWidget {
-    final ChatState chatModelProvier;
+  final ChatState chatModelProvier;
   const MainScreen({super.key, required this.chatModelProvier});
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -19,7 +18,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen>
     with SingleTickerProviderStateMixin {
-
   late AnimationController animationController;
   late Animation<double> animation;
 
@@ -47,8 +45,6 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-  
-    
 
     final ScrollController viewScrollController = ScrollController();
     final AdvancedDrawerController drawerController =
@@ -105,7 +101,7 @@ class _MainScreenState extends State<MainScreen>
                     color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.only(
-                          bottom: 10, left: 10, right: 10),
+                          top: 20, bottom: 10, left: 10, right: 10),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -249,18 +245,19 @@ class _MainScreenState extends State<MainScreen>
             DecoratedSliver(
               decoration: const BoxDecoration(color: AppColor.appBarColor),
               sliver: SliverGrid.builder(
-                itemCount: widget.chatModelProvier.chatModel.conversations.length,
+                itemCount:
+                    widget.chatModelProvier.chatModel.conversations.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     childAspectRatio: 0.8),
                 itemBuilder: (context, index) {
-                  String conversationTitle = widget.chatModelProvier
-                          .chatModel.conversations[index].conversationName ??
+                  String conversationTitle = widget.chatModelProvier.chatModel
+                          .conversations[index].conversationName ??
                       "New chat";
-                  String conversationSummary = widget.chatModelProvier
-                          .chatModel.conversations[index].conversationSummary ??
+                  String conversationSummary = widget.chatModelProvier.chatModel
+                          .conversations[index].conversationSummary ??
                       "continue chating";
                   return GestureDetector(
                     onTap: () {
@@ -270,7 +267,8 @@ class _MainScreenState extends State<MainScreen>
                                   conversationId: widget
                                       .chatModelProvier
                                       .chatModel
-                                      .conversations[index].conversationId,
+                                      .conversations[index]
+                                      .conversationId,
                                   chatModelProvider: widget.chatModelProvier,
                                 )),
                       );

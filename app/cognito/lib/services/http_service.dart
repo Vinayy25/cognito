@@ -78,7 +78,8 @@ class HttpService {
       final responseJson = jsonDecode(responseBody);
       return responseJson['transcription'];
     } else {
-      throw Exception('Failed to transcribe and save: ${response.statusCode}');
+      throw Exception(
+          'Failed to transcribe and save: ${response.statusCode} ${response.reasonPhrase}');
     }
   }
 
