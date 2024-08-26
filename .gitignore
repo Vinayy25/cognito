@@ -10,7 +10,7 @@ apis/collection
 apis/database
 apis/functions/__pycache__
 apis/qdrant_storage
-apis/static
+
 apis/law.py
 apis/milvus.py
 apis/rag1.py 
@@ -35,6 +35,5 @@ tunnel_status.sh
 firebaseKeys.json
 Dockerfile
 .vscode
-
-
+notes.txt
 

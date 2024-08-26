@@ -20,7 +20,7 @@ from functions.prepareEmbeddings import save_embeddings
 from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
 
 from langchain_huggingface import HuggingFaceEmbeddings
-from vertexai.generative_models import Content, GenerativeModel, Part
+# from vertexai.generative_models import Content, GenerativeModel, Part
 from fastui import prebuilt_html, FastUI, AnyComponent
 
 from models import ChatLogRequest, ChatPart, ChatLogRequest, ChatResponse, EmbeddingRequest, EmbeddingResponse

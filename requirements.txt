@@ -23,3 +23,9 @@ nltk
 faiss-cpu
 aiofiles
 unstructured
+markdown2
+vertexai
+llama_parse
+openai-whisper
+python-multipart
+
