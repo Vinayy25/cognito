@@ -5,7 +5,11 @@
 
 Cognito is an innovative project aimed at providing real-time, context-aware responses by continuously listening to the surroundings. The system comprises a backend and a mobile application, enabling seamless interaction with language models (LLMs). It leverages advanced technologies like FAISS vector databases, Redis caching, Firebase Firestore, and OpenAI Whisper for transcription.
 
-![Cognito](/images/cognito_logo.jpeg)
+<div style="display: flex; justify-content: space-around; align-items: center; gap: 10px;">
+    
+    <img src="/images/cognito_logo.jpeg" alt="Cognito" width="300">
+</div>
+
 
 ## Features
 
