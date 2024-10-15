@@ -15,12 +15,13 @@ Cognito is an innovative project aimed at providing real-time, context-aware res
 - **Memory Persistence**: Stores information using Redis cache and Firebase Firestore to maintain continuity.
 - **Context-Aware Interactions**: Enables users to start a conversation with LLMs that can provide responses based on the recorded surroundings.
 
-![App Home Screen](/images/1.jpeg)  
-![Chat Screen](/images/2.jpeg)  
-![Chats](/images/3.jpeg)  
-![Transcription](/images/4.jpeg)
+<div style="display: flex; justify-content: space-around; align-items: center; gap: 10px;">
+    <img src="/images/1.jpeg" alt="App Home Screen" width="200">
+    <img src="/images/2.jpeg" alt="Chat Screen" width="200">
+    <img src="/images/3.jpeg" alt="Chats" width="200">
+    <img src="/images/4.jpeg" alt="Transcription" width="200">
+</div>
 
-<img src="/images/1.jpeg" width="200">
 
 
 ## Project Structure
