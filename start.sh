@@ -44,6 +44,6 @@ EOF
 
 # Start the FastAPI server using uvicorn
 cd apis
-gnome-terminal -- uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2 --reload
+gnome-terminal -- uvicorn main:app --host 0.0.0.0 --port 8000 --workers 3 --reload
 
 

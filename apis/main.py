@@ -90,7 +90,7 @@ groq_client = Groq(
 
 # Initialize OpenAI client
 
-
+    
 openai = OpenAI(
     api_key=  os.getenv("KRUTRIM_API_KEY"),
     base_url="https://cloud.olakrutrim.com/v1",

@@ -63,7 +63,9 @@ class ChatState extends ChangeNotifier {
 
   Future<void> initializeData() async {
     baseUrl = await HttpService(baseUrl: '').getbaseUrl();
+    print(baseUrl);
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
+
     List<dynamic> conversationIds = x['conversation_ids'];
     Map<String, dynamic> conversationDetails = x['conversation_details'][0];
 

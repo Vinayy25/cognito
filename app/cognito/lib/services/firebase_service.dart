@@ -95,36 +95,27 @@ class FirebaseService {
     });
   }
 
-  Future<Map<String,dynamic
-  >> getConversationIds() async {
+  Future<Map<String, dynamic>> getConversationIds() async {
     try {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await _db
           .collection('users')
           .doc(email)
           .collection('conversation_ids')
           .doc('id')
-          .get(); 
+          .get();
 
       if (!documentSnapshot.exists ||
           documentSnapshot.data()!['conversation_ids'] == null) {
+            print("does not exist");
         return {};
       }
 
-
-
-       Map<String, dynamic> x = 
-       
-       {
-     "conversation_ids":  documentSnapshot.data()!['conversation_ids'],
-     "conversation_details": documentSnapshot.data()!['conversation_details']
-       };
-
-
-
+      Map<String, dynamic> x = {
+        "conversation_ids": documentSnapshot.data()!['conversation_ids'],
+        "conversation_details": documentSnapshot.data()!['conversation_details']
+      };
+      print("this is x"+ x.toString());
       return x;
-
-
-
     } catch (e) {
       rethrow;
     }
@@ -258,7 +249,6 @@ class FirebaseService {
             'summary': 'Continue with your conversation...',
           };
         }
-
 
         return {
           'conversation_id': conversation.conversationId,
