@@ -77,13 +77,27 @@ To run the project, ensure the following are installed:
    pip install -r requirements.txt
    ```
 
-4. **Run the Project**
+4. **Environment Variables**
+
+   Create a `.env` file in the root directory and add the following:
+
+   ```bash
+   KRUTRIM_API_KEY=<your_krutrim_api_key>
+   GROQ_API_KEY=<your_groq_api_key>
+   LOW_RESET=TRUE
+   GEMINI_API_KEY=<your_gemini_api_key>
+   LLAMA_PARSE_API_KEY=<your_llama_parse_api_key>
+   DEEPGRAM_API_KEY=<your_deepgram_api_key>
+   NEETS_API_KEY=<your_neets_api_key>
+   ```
+
+5. **Run the Project**
    Execute the following command to start the server:
    ```bash
    sh start.sh
    ```
 
-5. **Running the Mobile App**
+6. **Running the Mobile App**
    - Ensure Flutter is installed.
    - Connect a mobile device or emulator.
    - Navigate to the `app/cognito` directory and run:
