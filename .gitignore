@@ -26,7 +26,7 @@ apis/testgemini.py
 apis/t1.py
 apis/testingalibaba.py
 apis/testingMilvius.py
-apis/tts_deepgram.py
+
 apis/tts.py
 
 flask_app_hosted.sh
