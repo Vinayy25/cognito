@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File,Query
 import json,os,whisper,time,voyageai,asyncio,markdown2,redis
 from typing import List
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -14,10 +14,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pathlib import Path
 import google.generativeai as genai
+from functions.genModel import get_generative_model, get_embed_model
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from fastapi.responses import PlainTextResponse
 from functions.prepareEmbeddings import save_embeddings
 from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
+from tts_deepgram import get_audio_deepgram
+from functions.geminiChat import geminiResponse
+from helpers.formatting import list_to_numbered_string
 
 from langchain_huggingface import HuggingFaceEmbeddings
 # from vertexai.generative_models import Content, GenerativeModel, Part
@@ -26,7 +30,7 @@ from fastui import prebuilt_html, FastUI, AnyComponent
 from models import ChatLogRequest, ChatPart, ChatLogRequest, ChatResponse, EmbeddingRequest, EmbeddingResponse
 from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
 import os
@@ -69,12 +73,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-def get_generative_model(model_name, system_instruction = ""):
-    
-    genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-    return genai.GenerativeModel(model_name, system_instruction = system_instruction,)
 
-embed_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=os.getenv("GEMINI_API_KEY"))
+
+
 
 # generative_image_model = get_generative_model('gemini-pro-vision')
 # Initialize the model
@@ -184,6 +185,7 @@ async def transcribe_and_save(user: str, conversation_id:str ,audio_file: Upload
         text = text_splitter.split_text(transcription["text"])
         
         print("text ",text)
+        embed_model = get_embed_model()
         save_embeddings(text, user, conversation_id, embed_model=embed_model)
 
         # Return the transcription as a JSON response
@@ -225,7 +227,7 @@ async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_fi
         print("texts ",texts)
 
         summarized_text = getSummaryUsingGroq(texts)
-
+        embed_model = get_embed_model()
         save_embeddings(summarized_text, user, conversation_id, embed_model=embed_model)
 
         # Return the transcription as a JSON response
@@ -270,6 +272,7 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
         # Save embeddings to vector store
         texts = [doc.page_content for doc in docs]
         print("reached here " ,texts)
+        embed_model = get_embed_model()
         await save_embeddings(texts, user, conversation_id, embed_model)
 
         return JSONResponse(status_code=200, content={"message": "PDF processed and embeddings saved successfully.", "document": parsed_doc.text})
@@ -352,11 +355,12 @@ async def query(query: str, model_type: str = Query(default='text'), systemMessa
 #         await asyncio.sleep(10)
 
 
+
 @app.get("/gemini/with-history")
 async def query_with_history(user: str,query: str,id: str,  model_type: str = Query(default='text'), ):
     if not query:
         return ''
-    
+    embed_model = get_embed_model()
     similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
 
     similarText = list_to_numbered_string(similarDocs)
@@ -382,12 +386,30 @@ async def query_with_history(user: str,query: str,id: str,  model_type: str = Qu
     prompt = query 
     return StreamingResponse(stream_my_res(chat, prompt, user ,id , r), media_type='text/event-stream')
 
+@app.get("/gemini/with-history-no-stream/audio")
+async def query_with_history_and_audio(user: str,query: str,id: str,  model_type: str = Query(default='text')):
+    if not query:
+        return ''
+    embed_model = get_embed_model()
+    chat_response = geminiResponse(user, id, query, model_type, r, embed_model= embed_model)
+    filename = f"audios/{user}_{id}.wav"
+    #get_audio_deepgram returns the filename of the audio 
+    get_audio_deepgram(chat_response.text, filename=filename) 
+
+    return FileResponse(
+        path=filename,
+        media_type="audio/wav",
+        filename=f"{user}_{id}.wav"
+    )
+    
+
+
 
 @app.get("/gemini/with-history-no-stream")
 async def query_with_history(user: str,query: str,id: str,  model_type: str = Query(default='text'), ):
     if not query:
         return ''
-    
+    embed_model = get_embed_model()
     similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
 
     similarText = list_to_numbered_string(similarDocs)
@@ -489,9 +511,6 @@ async def get_chat_history_as_text(username: str, conversation_id: str):
                 formatted_chat_history += f"{role}: {text}\n"
         system_message_for_groq = "Given the following conversation data , generate a small summary of less than 10 words and a title for showing the chat preview ALSO in JSON format with keys summary and title, do not include any other text or body , respond only with json of summary and title"
         
-         
-
-
         groq_chat_completion = groq_client.chat.completions.create(
                 messages=[
                 {
@@ -563,19 +582,6 @@ def removeEmpty(paragraph):
     cleaned_paragraph = '\n'.join(non_empty_lines)
     return cleaned_paragraph
 
-
-def list_to_numbered_string(items):
-    """
-    Converts a list of strings into a single numbered string.
-    
-    Args:
-        items (list of str): The list of strings to convert.
-    
-    Returns:
-        str: A single string with each item numbered and separated by newlines.
-    """
-    numbered_string = "\n".join(f"{i+1}. {item}" for i, item in enumerate(items))
-    return numbered_string
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
