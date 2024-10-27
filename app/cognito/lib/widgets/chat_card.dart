@@ -1,6 +1,7 @@
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatCard extends StatelessWidget {
   final String text;
@@ -22,7 +23,7 @@ class ChatCard extends StatelessWidget {
                 topRight: Radius.circular(0),
                 bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
-              )
+              ) 
             : const BorderRadius.only(
                 topLeft: Radius.circular(0),
                 topRight: Radius.circular(30),
@@ -35,8 +36,16 @@ class ChatCard extends StatelessWidget {
           ),
         ],
       ),
-      child: AppText(
-        text: text,
+      child: MarkdownBody(
+        data: text,
+        selectable: true,
+        styleSheet: MarkdownStyleSheet(
+        
+          p: TextStyle(
+            color: AppColor.backgroundColor,
+            fontSize: 14,
+          ),
+        ),
       ),
     );
   }

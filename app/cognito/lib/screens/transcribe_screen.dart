@@ -378,6 +378,7 @@ class _ChatState extends State<Chat> {
       iconSize: 30,
     );
   }
+  
 
   _audioProgressSection(
       PlayAudioProvider playProvider, Data dataProvider, int index) {
