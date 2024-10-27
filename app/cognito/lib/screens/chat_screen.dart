@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/models/recorder_model.dart';
+import 'package:cognito/screens/demo.dart';
 import 'package:cognito/services/http_service.dart';
 import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/chat_state.dart';
@@ -61,8 +60,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
-    final dataProvider = Provider.of<Data>(  context, listen: true);
-    dataProvider.baseUrl = ((widget.chatModelProvider.baseUrl != '')? widget.chatModelProvider.baseUrl :  HttpService(baseUrl: '').getbaseUrl()as String?);
+    final dataProvider = Provider.of<Data>(context, listen: true);
+    dataProvider.baseUrl = ((widget.chatModelProvider.baseUrl != '')
+        ? widget.chatModelProvider.baseUrl
+        : HttpService(baseUrl: '').getbaseUrl() as String?);
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
@@ -336,6 +337,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       ),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => MapsDemo()));
+                          },
+                          icon: Icon(Iconsax.activity)),
                       IconButton(
                           onPressed: () {
                             sendMessage(promptController.text);

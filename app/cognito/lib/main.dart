@@ -10,13 +10,17 @@ import 'package:cognito/states/record_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ola_maps/ola_maps.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  Olamaps.instance.initialize("BQZPdb7TwcDIj1mvJ7tmo5d4gTWXEWqmJlRZFrKb");
 
   runApp(const MyApp());
 }
@@ -70,6 +74,3 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
-
-
-
