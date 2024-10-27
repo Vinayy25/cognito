@@ -20,6 +20,7 @@ from fastapi.responses import PlainTextResponse
 from functions.prepareEmbeddings import save_embeddings
 from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
 from tts_deepgram import get_audio_deepgram
+from tts import getAudioFromNeets
 from functions.geminiChat import geminiResponse
 from helpers.formatting import list_to_numbered_string
 
@@ -392,14 +393,17 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
         return ''
     embed_model = get_embed_model()
     chat_response = geminiResponse(user, id, query, model_type, r, embed_model= embed_model)
-    filename = f"audios/{user}_{id}.wav"
+    time_stamp = time.time()
+    filename = f"audios/{user}_{id}_{time_stamp}.mp3"
     #get_audio_deepgram returns the filename of the audio 
-    get_audio_deepgram(chat_response.text, filename=filename) 
+    # get_audio_deepgram(chat_response.text, filename=filename) 
+    getAudioFromNeets(chat_response.text, filename=filename)
+    
 
     return FileResponse(
         path=filename,
-        media_type="audio/wav",
-        filename=f"{user}_{id}.wav"
+        media_type="audio/mp3",
+        filename=filename,
     )
     
 

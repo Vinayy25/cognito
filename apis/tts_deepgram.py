@@ -19,7 +19,7 @@ def get_audio_deepgram(text : str, filename: str):
 
         # STEP 2: Configure the options (such as model choice, audio configuration, etc.)
         options = SpeakOptions(
-            model="aura-asteria-en",
+            model="aura-zeus-en",
             encoding="linear16",
             container="wav"
         )
