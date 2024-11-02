@@ -289,6 +289,7 @@ def groq_chat(message: str, systemMessage : str):
                 # Generate chat completion using GROQ model
             print("got a groq request ")
             groq_chat_completion = groq_client.chat.completions.create(
+                response_format={"type": "json_object"},
                 messages=[
                 {
                     "role": "system",
@@ -299,7 +300,7 @@ def groq_chat(message: str, systemMessage : str):
                     "content": message,
                 }
                     ],
-                    model="llama3-70b-8192",
+                    model="llama-3.2-3b-preview",
                     )
             return JSONResponse(status_code=200, content={ "response": groq_chat_completion.choices[0].message.content,})
             

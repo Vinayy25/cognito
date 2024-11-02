@@ -100,13 +100,8 @@ def getTitleAndSummary(text: str):
     summarisedTexts = {}
    
     systemMessage= """
-            These transcripts contain information about your user. 
-            Your task is to organize the information in a way that makes sense to you.
-            Your response must be in json format with only the two following keys: "summary", "topics".
+            Your response must be in JSON format with only the two following keys: "summary", "topics".
             Do not inclue any line breaks or special characters in your response.
-            Strictly check and validate if it is a valid JSON structure.
-            Don't include any other keys or text in the response, avoid line breaks.
-            Don't include backslashes in the response
         """
     message =  text + """\n\nGiven the information about the user, provide a summary, and the topics discussed.\n
             *** Summary must be a brief overview of the transcript.\n\n
