@@ -6,44 +6,77 @@ from functions.similaritySearch import getSimilarity
 from templates import gemini_system_prompt
 from helpers.formatting import list_to_numbered_string
 from groq import Groq
+import simpleaudio as sa
+from tts_deepgram import get_audio_deepgram
+
 
 # Set up the Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-# def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
-#     similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
-#     similarText = list_to_numbered_string(similarDocs)
-#     systemMessage = gemini_system_prompt + similarText 
-#     print("System message: ", systemMessage)
 
-#     # Initialize chat history with system message for Groq
-#     chat_history = [{"role": "system", "content": systemMessage}]
+def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_model):
+    similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
+    similarText = list_to_numbered_string(similarDocs)
+    systemMessage = gemini_system_prompt + similarText 
+    print("System message: ", systemMessage)
+
+    # Initialize chat history with system message for Groq
+    chat_history = [{"role": "system", "content": systemMessage}]
     
-#     # Load previous chat history from Redis and format for Groq
-#     previous_chats = get_chat_history(user, id, r)
-#     for entry in previous_chats:
-#         chat_history.append({"role": entry["role"], "content": " ".join(part["text"] for part in entry["parts"])})
+    # Load previous chat history from Redis and format for Groq
+    previous_chats = get_chat_history(user, id, r)
+    for entry in previous_chats:
+        role = entry.get("role")
+        if role not in {"user", "assistant"}:
+            print(f"Invalid role '{role}' in chat history. Skipping this entry.")
+            continue
+        chat_history.append({"role": role, "content": entry["parts"][0]["text"]})
 
-#     # Append the user query to the chat history
-#     chat_history.append({"role": "user", "content": query})
+    # Add the current user query to the chat history
+    chat_history.append({"role": "user", "content": query})
 
-#     # Generate a response using Groq
-#     response = client.chat.completions.create(
-#         model="llama-3.2-90b-vision-preview",
-#         messages=chat_history,
+    # Check if roles are valid before calling Groq API
+    print("Formatted chat history:", chat_history)
 
-#     )
+    # Make the API call and stream the response
+    response_stream = client.chat.completions.create(
+        model="llama-3.2-90b-vision-preview",
+        messages=chat_history,
+        
+        stream=True
+    )
 
-#     # Extract and store response
-#     assistant_response = response.choices[0].message.content
-#     chat_history.append({"role": "assistant", "content": assistant_response})
-    
-#     # Store chat history in Redis
-#     store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
-#     store_chat_history(username=user, conversation_id=id, text=assistant_response, role="assistant", r=r)
-    
-#     return assistant_response
+    audio_files = []
+    buffer = ""
+    buffer_limit = 100  # Set a sensible buffer limit (e.g., 1000 characters)
 
+    for chunk in response_stream:
+        assistant_response_chunk = chunk.choices[0].delta.content
+        print("Assistant response chunk:", assistant_response_chunk)
+
+        if assistant_response_chunk:
+            buffer += assistant_response_chunk
+            # Check if buffer has reached the limit
+            if len(buffer) >= buffer_limit:
+                # Generate audio for the accumulated text
+                audio_filename = f"{id}_{len(audio_files)}.wav"
+                audio_file = get_audio_deepgram(buffer, audio_filename)
+                audio_files.append(audio_file)
+                buffer = ""  # Reset the buffer
+
+        # Store each chunk in chat history in Redis
+        store_chat_history(username=user, conversation_id=id, text=assistant_response_chunk, role="assistant", r=r)
+
+    # Handle any remaining text in the buffer
+    if buffer:
+        audio_filename = f"{id}_{len(audio_files)}.wav"
+        audio_file = get_audio_deepgram(buffer, audio_filename)
+        audio_files.append(audio_file)
+
+    # Store the user query in chat history in Redis
+    store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
+
+    return audio_files
 
 def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
     similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)

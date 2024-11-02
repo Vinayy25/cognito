@@ -38,4 +38,3 @@ def get_audio_deepgram(text : str, filename: str):
         print(f"Exception: {e}")
 
 
-
