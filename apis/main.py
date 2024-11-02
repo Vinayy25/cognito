@@ -20,9 +20,11 @@ from fastapi.responses import PlainTextResponse
 from functions.prepareEmbeddings import save_embeddings
 from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
 from tts_deepgram import get_audio_deepgram
+from functions.groqChat import groqResponse
 from tts import getAudioFromNeets
 from functions.geminiChat import geminiResponse
 from helpers.formatting import list_to_numbered_string
+from tts_deepgram import get_audio_deepgram
 
 from langchain_huggingface import HuggingFaceEmbeddings
 # from vertexai.generative_models import Content, GenerativeModel, Part
@@ -311,7 +313,7 @@ def groq_chat(message: str, systemMessage : str):
 async def query(query: str, model_type: str = Query(default='text'), systemMessage: str = Query(default='')):
     if not query:
         return ''
-    generative_text_model = get_generative_model('gemini-1.5-pro-latest',system_instruction=systemMessage)
+    generative_text_model = get_generative_model('gemini-1.5-flash',system_instruction=systemMessage)
     models = {'text': generative_text_model}
     model = models.get(model_type)
     if not model:
@@ -387,17 +389,17 @@ async def query_with_history(user: str,query: str,id: str,  model_type: str = Qu
     prompt = query 
     return StreamingResponse(stream_my_res(chat, prompt, user ,id , r), media_type='text/event-stream')
 
-@app.get("/gemini/with-history-no-stream/audio")
+@app.get("/audio-chat")
 async def query_with_history_and_audio(user: str,query: str,id: str,  model_type: str = Query(default='text')):
     if not query:
         return ''
     embed_model = get_embed_model()
-    chat_response = geminiResponse(user, id, query, model_type, r, embed_model= embed_model)
+    chat_response = groqResponse(user, id, query, r, embed_model)
     time_stamp = time.time()
     filename = f"audios/{user}_{id}_{time_stamp}.mp3"
     #get_audio_deepgram returns the filename of the audio 
     # get_audio_deepgram(chat_response.text, filename=filename) 
-    getAudioFromNeets(chat_response.text, filename=filename)
+    get_audio_deepgram(chat_response, filename=filename)
     
 
     return FileResponse(
