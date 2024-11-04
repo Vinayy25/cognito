@@ -67,7 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
-        widget.chatModelProvider.chat(message, widget.conversationId);
+        widget.chatModelProvider.chatStream(message, widget.conversationId);
         promptController.clear();
       }
       setState(() {});

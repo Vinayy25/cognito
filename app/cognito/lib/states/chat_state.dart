@@ -166,7 +166,61 @@ class ChatState extends ChangeNotifier {
       );
     }
   }
+
+  void chatStream(String message, String conversationId) async {
+    final chat = Chat(
+      message: message,
+      sender: 'user',
+      time: DateTime.now().toString(),
+    );
+
+    final conversationIndex = chatModel.conversations.indexWhere(
+      (element) => element.conversationId == conversationId,
+    );
+
+    if (conversationIndex != -1) {
+      chatModel.conversations[conversationIndex].chats.add(chat);
+      notifyListeners();
+
+      // Start streaming chat response
+      final chatResponseStream = HttpService(baseUrl: baseUrl)
+          .queryWithHistoryAndTextStream(
+              user: email!, query: message, id: conversationId);
+
+      String accumulatedResponse = '';
+      Chat modelChat =
+          Chat(message: "Generating response...", sender: 'model', time: '');
+      chatModel.conversations[conversationIndex].chats.add(modelChat);
+      chatResponseStream.listen((chunk) {
+        accumulatedResponse += chunk;
+
+        modelChat = Chat(
+          message: accumulatedResponse,
+          sender: 'model',
+          time: DateTime.now().toString(),
+        );
+
+        // Append the model chat message instead of replacing
+        chatModel.conversations[conversationIndex].chats.last = modelChat;
+        shouldRefresh = true;
+        notifyListeners();
+      }, onDone: () async {
+        shouldRefresh = true;
+        await FirebaseService().addChat(conversationId, chat);
+        notifyListeners();
+      }, onError: (error) {
+        print('Error receiving chat stream: $error');
+      });
+    } else {
+      final conversation = Conversations(
+        chats: [chat],
+        conversationId: conversationId,
+      );
+
+      chatModel.conversations.add(conversation);
+      shouldRefresh = true;
+      notifyListeners();
+      await FirebaseService().addChat(conversationId, chat);
+    }
+  }
 }
-
-
-

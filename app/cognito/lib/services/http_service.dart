@@ -47,6 +47,36 @@ class HttpService {
     }
   }
 
+  Stream<String> queryWithHistoryAndTextStream({
+    required String user,
+    required String query,
+    required String id,
+    String modelType = 'text',
+  }) async* {
+    if (baseUrl == '') {
+      baseUrl = await getbaseUrl();
+    }
+
+    final request = http.Request(
+      'GET',
+      Uri.parse('$baseUrl/chat-stream').replace(queryParameters: {
+        'user': user,
+        'query': query,
+        'id': id,
+        'model_type': modelType,
+      }),
+    );
+
+    request.headers['Content-Type'] = 'application/json';
+
+    final response = await request.send();
+
+    await for (var chunk in response.stream.transform(utf8.decoder)) {
+      print(chunk);
+      yield chunk;
+    }
+  }
+
   Future<String> transcribeAndSave({
     required String user,
     required String conversationId,
