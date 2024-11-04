@@ -423,6 +423,13 @@ async def query_with_history_and_audio_stream(user: str, query: str, id: str, mo
 
     return StreamingResponse(iterfile(), media_type="audio/wav")
 
+@app.get("/chat-stream")
+async def query_with_history_and_text_stream(user: str, query: str, id: str, model_type: str = Query(default='text')):
+    if not query:
+        return ''
+    embed_model = get_embed_model()    
+    return StreamingResponse(stream_groq_response(user, id, query, r, embed_model), media_type="text/event-stream")
+
 
 
 

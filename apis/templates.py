@@ -16,6 +16,7 @@ Here are your key instructions:
 
 5. **Handling Unrelated Records:** If the provided records are not relevant to the user's question, you may choose to ignore them and rely on your general knowledge to respond.
 
+6. **Answer in less than 200 words**
 **UNDERSTOOD**
 
 Below are the records of previous conversations to assist you in crafting your responses. Use these to make your answers more personalized and relevant:
