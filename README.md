@@ -57,6 +57,8 @@ To run the project, ensure the following are installed:
 - Ngrok
 - Redis
 - Flutter SDK
+- Nginx
+- tmux or screen (optional, for managing long-running processes)
 
 ## Getting Started
 
@@ -97,6 +99,26 @@ To run the project, ensure the following are installed:
    sh start.sh
    ```
 
+#### Using tmux (Recommended for Production)
+
+ **Start a tmux session**:
+   ```bash
+   tmux new -s mysession
+   ```
+
+ **Run Uvicorn inside tmux**:
+   ```bash
+   uvicorn your_app:app --host 127.0.0.1 --port 3000
+   ```
+
+ **Detach from tmux**:
+   Press `Ctrl + B`, then `D`.
+
+ **Reattach to tmux session**:
+   ```bash
+   tmux attach -t mysession
+   ```
+
 6. **Running the Mobile App**
    - Ensure Flutter is installed.
    - Connect a mobile device or emulator.
@@ -104,6 +126,57 @@ To run the project, ensure the following are installed:
      ```bash
      flutter run
      ```
+7. ### Nginx Setup
+
+ **Install Nginx**:
+   ```bash
+   sudo apt update
+   sudo apt install nginx
+   ```
+
+ **Configure Nginx**:
+   Edit `/etc/nginx/sites-available/default`:
+   
+
+   ```nginx
+   server {
+       listen 80;
+       server_name cognito.fun www.cognito.fun;
+
+       location / {
+           proxy_pass http://127.0.0.1:3000;
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+   ```
+
+ **Test and Reload Nginx**:
+   ```bash
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+
+### Monitoring and Managing Processes
+
+- **Check running processes**:
+  ```bash
+  ps aux | grep uvicorn
+  ```
+
+- **Check listening ports**:
+  ```bash
+  sudo lsof -i :3000
+  ```
+
+- **Use top or htop for real-time monitoring**:
+  ```bash
+  top
+  # or
+  htop
+  ```
 
 ## How It Works
 

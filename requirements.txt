@@ -9,6 +9,7 @@ python-dotenv
 groq
 requests
 numpy
+
 Jinja2
 google-api-python-client
 google-auth
