@@ -3,7 +3,7 @@ import redis
 from fastapi import HTTPException
 from redis_functions import get_chat_history, store_chat_history
 from functions.similaritySearch import getSimilarity
-from templates import gemini_system_prompt
+from templates import gemini_system_prompt, system_prompt_without_rag
 from helpers.formatting import list_to_numbered_string
 from groq import Groq
 import simpleaudio as sa
@@ -117,10 +117,13 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     return assistant_response
 
-def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_model):
-    similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
-    similarText = list_to_numbered_string(similarDocs)
-    systemMessage = gemini_system_prompt + similarText 
+def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_model, perform_rag: str):
+    if perform_rag == "true":
+        similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
+        similarText = list_to_numbered_string(similarDocs)
+        systemMessage = gemini_system_prompt + similarText 
+    else:
+        systemMessage = system_prompt_without_rag
 
     # Initialize chat history with system message for Groq
     chat_history = [{"role": "system", "content": systemMessage}]

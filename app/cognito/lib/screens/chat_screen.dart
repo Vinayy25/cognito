@@ -10,6 +10,7 @@ import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/chat_card.dart';
 import 'package:cognito/widgets/welcome_message.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 
@@ -109,7 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
       extendBody: true,
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniStartDocked,
-      
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
@@ -257,16 +257,19 @@ class _ChatScreenState extends State<ChatScreen> {
                             decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 hintStyle: TextStyle(color: AppColor.hintColor),
-                                hintText: "Message cognito.."),
+                                hintText: "Ask cognito.."),
                           ),
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => MapsDemo()));
-                          },
-                          icon: Icon(Iconsax.activity)),
+                      CupertinoSwitch(
+                        value: widget.chatModelProvider.performRAG,
+                        activeColor: AppColor.iconColor,
+                        onChanged: (bool value) {
+                          setState(() {
+                            widget.chatModelProvider.setPerformRAG(value);
+                          });
+                        },
+                      ),
                       IconButton(
                           onPressed: () {
                             sendMessage(promptController.text);

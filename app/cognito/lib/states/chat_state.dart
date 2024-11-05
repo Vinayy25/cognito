@@ -12,11 +12,16 @@ class ChatState extends ChangeNotifier {
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
   String baseUrl = '';
-
+  bool performRAG = false;
   ChatState() {
     initializeData();
   }
   void refresh() {
+    notifyListeners();
+  }
+
+  void setPerformRAG(bool value) {
+    performRAG = value;
     notifyListeners();
   }
 
@@ -184,7 +189,10 @@ class ChatState extends ChangeNotifier {
       // Start streaming chat response
       final chatResponseStream = HttpService(baseUrl: baseUrl)
           .queryWithHistoryAndTextStream(
-              user: email!, query: message, id: conversationId);
+              user: email!,
+              query: message,
+              id: conversationId,
+              performRAG: performRAG);
 
       String accumulatedResponse = '';
       Chat modelChat =

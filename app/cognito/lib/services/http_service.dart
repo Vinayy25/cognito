@@ -51,6 +51,7 @@ class HttpService {
     required String query,
     required String id,
     String modelType = 'text',
+    required bool performRAG, 
   }) async* {
     if (baseUrl == '') {
       baseUrl = await getbaseUrl();
@@ -63,6 +64,7 @@ class HttpService {
         'query': query,
         'id': id,
         'model_type': modelType,
+        'perform_rag': performRAG.toString(),
       }),
     );
 
