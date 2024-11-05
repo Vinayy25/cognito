@@ -6,7 +6,7 @@ from functions.similaritySearch import getSimilarity
 from templates import gemini_system_prompt, system_prompt_without_rag
 from helpers.formatting import list_to_numbered_string
 from groq import Groq
-import simpleaudio as sa
+
 from tts_deepgram import get_audio_deepgram
 
 
