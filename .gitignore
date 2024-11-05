@@ -10,7 +10,7 @@ apis/collection
 apis/database
 apis/functions/__pycache__
 apis/qdrant_storage
-
+apis/helpers/__pycache__
 apis/law.py
 apis/milvus.py
 apis/rag1.py 
