@@ -6,7 +6,6 @@ import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
-import 'package:cognito/states/record_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,7 +34,6 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthStateProvider()),
           ChangeNotifierProvider(create: (_) => ChatState()),
-          ChangeNotifierProvider(create: (_) => RecordAudioProvider()),
           ChangeNotifierProvider(create: (_) => PlayAudioProvider()),
           ChangeNotifierProvider(create: (_) => Data()),
         ],

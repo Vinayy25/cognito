@@ -2,11 +2,9 @@ import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/models/recorder_model.dart';
 import 'package:cognito/screens/demo.dart';
 import 'package:cognito/services/http_service.dart';
-import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
-import 'package:cognito/states/record_audio_provider.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/chat_card.dart';
@@ -58,7 +56,6 @@ class _ChatScreenState extends State<ChatScreen> {
         AdvancedDrawerController();
     final ScrollController scrollController = ScrollController();
 
-    final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
     dataProvider.baseUrl = ((widget.chatModelProvider.baseUrl != '')
@@ -112,80 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
       extendBody: true,
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniStartDocked,
-      floatingActionButton: GestureDetector(
-        onTap: () async {
-          if (dataProvider.requestPending == true) {
-            showToast(
-                'please wait for previous audio transcription to be completed');
-          } else if (recordProvider.isRecording == true) {
-            await recordProvider
-                .stopRecording(dataProvider.chatLength() + 1)
-                .then((value) {
-              dataProvider.addChat(
-                RecorderChatModel(
-                    audio: value,
-                    time: TimeOfDay.now(),
-                    text: 'Transcribing...'),
-                widget.chatModelProvider.email ?? '',
-                widget.conversationId,
-              );
-
-              // _scrollController.position.animateTo(
-              //   _scrollController.position.maxScrollExtent,
-              //   duration: const Duration(milliseconds: 500),
-              //   curve: Curves.fastOutSlowIn,
-              // );
-            });
-          } else {
-            await recordProvider.recordVoice();
-          }
-        },
-        onLongPress: () async {
-          if (dataProvider.requestPending == true) {
-            showToast(
-                'please wait for previous audio transcription to be completed');
-          } else if (recordProvider.isRecording == true) {
-            await recordProvider
-                .stopRecording(dataProvider.chatLength() + 1)
-                .then(
-                  (value) => dataProvider.addChat(
-                    RecorderChatModel(
-                        audio: value,
-                        time: TimeOfDay.now(),
-                        text: 'Transcribing...'),
-                    widget.chatModelProvider.email ?? '',
-                    widget.conversationId,
-                  ),
-                );
-          } else {
-            await recordProvider.recordVoice();
-          }
-        },
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 70),
-          height: 80,
-          width: 80,
-          decoration: const BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(255, 89, 79, 79),
-                blurRadius: 5,
-                spreadRadius: 1,
-                offset: Offset(0, 0),
-              )
-            ],
-            shape: BoxShape.circle,
-            color: Color.fromRGBO(53, 55, 75, 1),
-          ),
-          child: recordProvider.isRecording == true
-              ? Lottie.asset('assets/animations/voice_recording_inwhite.json',
-                  frameRate: FrameRate.max,
-                  repeat: true,
-                  reverse: true,
-                  fit: BoxFit.contain)
-              : const Icon(size: 35, Icons.mic, color: Colors.white),
-        ),
-      ),
+      
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(

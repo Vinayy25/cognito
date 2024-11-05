@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'package:cognito/models/recorder_model.dart';
-import 'package:cognito/services/toast_service.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
-import 'package:cognito/states/record_audio_provider.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/typing_text.dart';
@@ -44,7 +42,6 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthStateProvider>(context);
-    final recordProvider = Provider.of<RecordAudioProvider>(context);
     final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context);
     final height = MediaQuery.of(context).size.height;
@@ -106,79 +103,7 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: GestureDetector(
-        onTap: () async {
-          if (dataProvider.requestPending == true) {
-            showToast(
-                'please wait for previous audio transcription to be completed');
-          } else if (recordProvider.isRecording == true) {
-            await recordProvider
-                .stopRecording(dataProvider.chatLength() + 1)
-                .then((value) {
-              dataProvider.addChat(
-                RecorderChatModel(
-                    audio: value,
-                    time: TimeOfDay.now(),
-                    text: 'Transcribing...'),
-                 'vinay',
-                widget.conversationId,
-              );
-              setState(() {});
-              scrollController.position.animateTo(
-                scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.fastOutSlowIn,
-              );
-            });
-          } else {
-            await recordProvider.recordVoice();
-          }
-        },
-        onLongPress: () async {
-          if (dataProvider.requestPending == true) {
-            showToast(
-                'please wait for previous audio transcription to be completed');
-          } else if (recordProvider.isRecording == true) {
-            await recordProvider
-                .stopRecording(dataProvider.chatLength() + 1)
-                .then(
-                  (value) => dataProvider.addChat(
-                    RecorderChatModel(
-                        audio: value,
-                        time: TimeOfDay.now(),
-                        text: 'Transcribing...'),
-                     'vinay',
-                    widget.conversationId,
-                  ),
-                );
-          } else {
-            await recordProvider.recordVoice();
-          }
-        },
-        child: Container(
-          height: 80,
-          width: 80,
-          decoration: const BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(255, 89, 79, 79),
-                blurRadius: 5,
-                spreadRadius: 1,
-                offset: Offset(0, 0),
-              )
-            ],
-            shape: BoxShape.circle,
-            color: Color.fromRGBO(53, 55, 75, 1),
-          ),
-          child: recordProvider.isRecording == true
-              ? Lottie.asset('assets/animations/voice_recording_inwhite.json',
-                  frameRate: FrameRate.max,
-                  repeat: true,
-                  reverse: true,
-                  fit: BoxFit.contain)
-              : const Icon(size: 35, Icons.mic, color: Colors.white),
-        ),
-      ),
+     
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       body: Container(
         width: width,
@@ -212,7 +137,6 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                   return Chat(
                     index: index,
                     dataProvider: dataProvider,
-                    recordProvider: recordProvider,
                     playProvider: playProvider,
                   );
                 },
@@ -255,13 +179,11 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
 }
 
 class Chat extends StatefulWidget {
-  final RecordAudioProvider recordProvider;
   final PlayAudioProvider playProvider;
   final Data dataProvider;
   final int index;
   const Chat(
       {super.key,
-      required this.recordProvider,
       required this.dataProvider,
       required this.playProvider,
       required this.index});

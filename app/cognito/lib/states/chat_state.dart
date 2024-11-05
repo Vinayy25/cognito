@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service.dart';
-import 'package:cognito/services/toast_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -155,13 +154,13 @@ class ChatState extends ChangeNotifier {
         );
 
         // Show a success message
-        showToast(responseMessage);
+        print(responseMessage);
       } else {
         print('User canceled the picker');
       }
     } catch (e) {
       print('Error picking or uploading file: $e');
-      showToast(
+      print(
         'Error picking or uploading file: $e',
       );
     }

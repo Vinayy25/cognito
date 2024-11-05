@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cognito/services/toast_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:cognito/services/firebase_service.dart';
@@ -191,7 +190,7 @@ class HttpService {
 
   Future<bool> checkServerAvailavility() async {
     if (baseUrl == '') {
-      showToast('Fetching base url');
+      print('Fetching base url');
       baseUrl = await getbaseUrl();
     }
 
