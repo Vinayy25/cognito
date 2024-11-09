@@ -153,6 +153,7 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
         # Return the transcription as a JSON response
         return {"transcription": transcription["text"]}
     except Exception as e:
+        print("error in transcribe ",e)
         return JSONResponse(status_code=500, content={"message": str(e)})
     
 

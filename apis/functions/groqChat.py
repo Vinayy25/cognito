@@ -40,7 +40,7 @@ def stream_groq_response_with_audio(user: str, id: str, query: str, r: redis.Red
 
     # Make the API call and stream the response
     response_stream = client.chat.completions.create(
-        model="llama-3.2-90b-vision-preview",
+        model="llama-3.2-90b-text-preview",
         messages=chat_history,
         
         stream=True
