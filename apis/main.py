@@ -462,7 +462,7 @@ async def query_with_history_and_text_stream(user: str, query: str, id: str,  pe
 
 
 @app.post("/analyze-image")
-async def analyze_image_endpoint(file: UploadFile = File(...)):
+async def analyze_image_endpoint(file: UploadFile = File(...), prompt: str = Query(default='What is in this image?')):
     try:
         # Save the uploaded file to a temporary location
         temp_file_path = f"uploads/{file.filename}"
@@ -470,8 +470,8 @@ async def analyze_image_endpoint(file: UploadFile = File(...)):
             temp_file.write(await file.read())
 
         # Call the analyze_image function
-        response_content = analyze_image(temp_file_path)
-        
+        response_content = analyze_image(temp_file_path, prompt)
+
 
         # Remove the temporary file
         os.remove(temp_file_path)
