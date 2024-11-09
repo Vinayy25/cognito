@@ -329,7 +329,7 @@ def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assi
                     "content": message,
                 }
                     ],
-                    model="llama-3.2-3b-preview",
+                    model="llama-3.2-90b-text-preview",
                     )
             return JSONResponse(status_code=200, content={ "response": groq_chat_completion.choices[0].message.content,})
             

@@ -105,7 +105,7 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     # Make the API call
     response = client.chat.completions.create(
-        model="llama-3.2-90b-vision-preview",
+        model="llama-3.2-90b-text-preview",
         messages=chat_history
     )
 
@@ -145,7 +145,7 @@ def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_m
 
     # Make the API call and stream the response
     response = client.chat.completions.create(
-        model="llama-3.2-90b-vision-preview",
+        model="llama-3.2-90b-text-preview",
         messages=chat_history,
         stream=True,
         
