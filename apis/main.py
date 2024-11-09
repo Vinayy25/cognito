@@ -284,13 +284,40 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
         return JSONResponse(status_code=500, content={"message": str(e)})
 
 
-@app.get("/groq/chat/", )
+@app.get("/groq/chat-json/", )
 def groq_chat(message: str, systemMessage : str):
         try:
                 # Generate chat completion using GROQ model
             print("got a groq request ")
             groq_chat_completion = groq_client.chat.completions.create(
                 response_format={"type": "json_object"},
+                messages=[
+                {
+                    "role": "system",
+                    "content":systemMessage,
+                },
+                {
+                    "role": "user",
+                    "content": message,
+                }
+                    ],
+                    model="llama-3.2-3b-preview",
+                    )
+            return JSONResponse(status_code=200, content={ "response": groq_chat_completion.choices[0].message.content,})
+            
+        except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+            
+
+
+
+@app.get("/groq/chat/", )
+def groq_chat(message: str, systemMessage : str):
+        try:
+                # Generate chat completion using GROQ model
+            print("got a groq request ")
+            groq_chat_completion = groq_client.chat.completions.create(
+               
                 messages=[
                 {
                     "role": "system",
