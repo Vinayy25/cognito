@@ -312,7 +312,7 @@ def groq_chat(message: str, systemMessage : str):
 
 
 @app.get("/groq/chat/", )
-def groq_chat(message: str, systemMessage : str):
+def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assistant that answers in short"):
         try:
                 # Generate chat completion using GROQ model
             print("got a groq request ")
