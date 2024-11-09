@@ -25,6 +25,8 @@ from tts import getAudioFromNeets
 from functions.geminiChat import geminiResponse
 from helpers.formatting import list_to_numbered_string
 from tts_deepgram import get_audio_deepgram
+from functions.groqVision import analyze_image
+
 
 from langchain_huggingface import HuggingFaceEmbeddings
 # from vertexai.generative_models import Content, GenerativeModel, Part
@@ -459,6 +461,24 @@ async def query_with_history_and_text_stream(user: str, query: str, id: str,  pe
     return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag), media_type="text/event-stream")
 
 
+@app.post("/analyze-image")
+async def analyze_image_endpoint(file: UploadFile = File(...)):
+    try:
+        # Save the uploaded file to a temporary location
+        temp_file_path = f"uploads/{file.filename}"
+        with open(temp_file_path, "wb") as temp_file:
+            temp_file.write(await file.read())
+
+        # Call the analyze_image function
+        response_content = analyze_image(temp_file_path)
+        
+
+        # Remove the temporary file
+        os.remove(temp_file_path)
+
+        return {"response": response_content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/gemini/with-history-no-stream")
