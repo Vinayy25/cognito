@@ -21,6 +21,7 @@ from functions.prepareEmbeddings import save_embeddings
 from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
 from tts_deepgram import get_audio_deepgram
 from functions.groqChat import groqResponse
+from functions.groqAudio import translate_audio
 from tts import getAudioFromNeets
 from functions.geminiChat import geminiResponse
 from helpers.formatting import list_to_numbered_string
@@ -361,36 +362,6 @@ async def query(query: str, model_type: str = Query(default='text'), systemMessa
     return StreamingResponse( response_text, media_type='text/plain')
 
 
-# async def chat_stream(gemModel, prompt, buffer):
-#     response = gemModel.send_message(prompt, stream = True)
-#     content = response.text if hasattr(response, 'text') else response.content.decode()
-#     # for i in range(0, len(content), 100):  # Adjust chunk size as needed
-#     #     chunk = content[i:i+100]
-#     #     yield chunk
-#     #     print(chunk)
-#     #     buffer.append(chunk)
-#     #     # await asyncio.sleep(0.1)
-
-
-#     for chunk in model.send_message(prompt, stream=True):
-#         if token := chunk.choices[0].delta.content or "":
-#         # Add the token to the output
-#          output += token
-#         # Send the message
-#         m = FastUI(root=[c.Markdown(text=output)])
-#         msg = f'data: {m.model_dump_json(by_alias=True, exclude_none=True)}\n\n'
-#         yield msg 
-#     # Append the message to the history
-#     message = {"role": "user", "content": token}
-
-#     app.message_history.append(message)
-#     # Avoid the browser reconnecting
-#     while True:
-#         yield msg
-#         await asyncio.sleep(10)
-
-
-
 @app.get("/gemini/with-history")
 async def query_with_history(user: str,query: str,id: str,  model_type: str = Query(default='text'), ):
     if not query:
@@ -480,6 +451,23 @@ async def analyze_image_endpoint(file: UploadFile = File(...), prompt: str = Que
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/groq/transcribe/")
+async def transcribe_audio(file: UploadFile = File(...)):
+    try:
+        # Save the uploaded file to a temporary location
+        temp_file_path = f"uploads/{file.filename}"
+        with open(temp_file_path, "wb") as temp_file:
+            temp_file.write(await file.read())
+
+        # Call the translate_audio function
+        transcription_text = translate_audio(temp_file_path)
+
+        # Remove the temporary file
+        os.remove(temp_file_path)
+
+        return JSONResponse(status_code=200, content={"transcription": transcription_text})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/gemini/with-history-no-stream")
 async def query_with_history(user: str,query: str,id: str,  model_type: str = Query(default='text'), ):
