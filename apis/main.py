@@ -462,9 +462,6 @@ async def transcribe_audio(file: UploadFile = File(...)):
         # Call the translate_audio function
         transcription_text = translate_audio(temp_file_path)
 
-        # Remove the temporary file
-        os.remove(temp_file_path)
-
         return JSONResponse(status_code=200, content={"transcription": transcription_text})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
