@@ -159,6 +159,29 @@ To run the project, ensure the following are installed:
    sudo systemctl reload nginx
    ```
 
+
+### Redis Setup
+
+1. **Install Redis**:
+   ```bash
+   sudo apt update
+   sudo apt install redis-server
+   ```
+
+2. **Enable and Start Redis**:
+   ```bash
+   sudo systemctl enable redis-server
+   sudo systemctl start redis-server
+   ```
+
+3. **Verify Redis Installation**:
+   - Test the connection to Redis:
+     ```bash
+     redis-cli ping
+     ```
+   - You should receive a `PONG` response if Redis is running correctly.
+
+
 ### Monitoring and Managing Processes
 
 - **Check running processes**:
