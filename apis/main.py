@@ -1,42 +1,30 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File,Query
-import json,os,whisper,time,voyageai,asyncio,markdown2,redis
+import json,os,time,voyageai,asyncio,markdown2,redis
 from typing import List
 from fastapi.responses import FileResponse, JSONResponse
-from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 from dotenv import load_dotenv
 from groq import Groq
-import requests
-import numpy as np
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pathlib import Path
-import google.generativeai as genai
 from functions.genModel import get_generative_model, get_embed_model
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from fastapi.responses import PlainTextResponse
 from functions.prepareEmbeddings import save_embeddings
-from functions.getSummary import getSummaryUsingGroq, getTitleAndSummary
+from functions.getSummary import getSummaryUsingGroq
 from tts_deepgram import get_audio_deepgram
 from functions.groqChat import groqResponse
 from functions.groqAudio import translate_audio
-from tts import getAudioFromNeets
-from functions.geminiChat import geminiResponse
 from helpers.formatting import list_to_numbered_string
 from tts_deepgram import get_audio_deepgram
 from functions.groqVision import analyze_image
 
 
-from langchain_huggingface import HuggingFaceEmbeddings
-# from vertexai.generative_models import Content, GenerativeModel, Part
-from fastui import prebuilt_html, FastUI, AnyComponent
-
-from models import ChatLogRequest, ChatPart, ChatLogRequest, ChatResponse, EmbeddingRequest, EmbeddingResponse
+from models import  ChatResponse
 from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
 import os
@@ -44,8 +32,6 @@ from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 from pathlib import Path
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Qdrant
-from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from llama_parse import LlamaParse
 from functions.groqChat import stream_groq_response
@@ -87,7 +73,8 @@ app.add_middleware(
 # generative_image_model = get_generative_model('gemini-pro-vision')
 # Initialize the model
 # model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-whisper_model = whisper.load_model("base")
+# whisper_model = whisper.load_model("base")
+
 r = redis.Redis(host='localhost', port=6379, db=0)
 
 groq_client = Groq(
@@ -137,7 +124,7 @@ async def krutrim_chat(message: str, systemMessage : str ):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Why are you gay"}
 
 
 @app.post("/transcribe/")
@@ -151,7 +138,7 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
             audio.write(content)
 
         # Call the transcription function with the file path
-        transcription = whisper_model.transcribe(file_path)
+        transcription = translate_audio(file_path)
    
         # Return the transcription as a JSON response
         return {"transcription": transcription["text"]}
@@ -173,7 +160,7 @@ async def transcribe_and_save(user: str, conversation_id:str ,audio_file: Upload
             audio.write(content)
 
         # Call the transcription function with the file path
-        transcription = whisper_model.transcribe(file_path)
+        transcription = translate_audio(file_path)
 
         #save the trasncription in vector db
 
@@ -214,8 +201,7 @@ async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_fi
             audio.write(content)
 
         # Call the transcription function with the file path
-        transcription = whisper_model.transcribe(file_path)
-
+        transcription = translate_audio(file_path)
         #save the trasncription in vector db
 
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=10, separators=[
@@ -410,26 +396,49 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
         media_type="audio/mp3",
         filename=filename,
     )
+
 @app.get("/audio-chat-stream")
-async def query_with_history_and_audio_stream(user: str, query: str, id: str, model_type: str = Query(default='text')):
+async def query_with_history_and_audio_stream(user: str, query: str, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false')):
     if not query:
         return ''
     embed_model = get_embed_model()
-    audio_files = stream_groq_response(user, id, query, r, embed_model)
-    
-    def iterfile():
-        for audio_file in audio_files:
-            with open(audio_file, mode="rb") as file_like:
-                yield from file_like
+    buffer = []
+    filename = f"uploads/{user}_{id}_audio.wav"
+    async def iterfile():
+        async for chunk in stream_groq_response(user, id, query, None, embed_model, perform_rag=perform_rag):
+            buffer.append(chunk)
+            if chunk.endswith('.'):
+                sentence = ' '.join(buffer)
+                buffer.clear()
+                audio_files = get_audio_deepgram(sentence, filename=filename)
+                
+                for audio_file in audio_files:
+                    if audio_file is not None:
+                        async with aiofiles.open(audio_file, mode="rb") as file_like:
+                            while chunk := await file_like.read(1024):
+                                yield chunk
+
+        # Handle any remaining text in the buffer as the last sentence
+        if buffer:
+            sentence = ' '.join(buffer)
+            audio_files = get_audio_deepgram(sentence, filename=filename)
+            
+            for audio_file in audio_files:
+                if audio_file is not None:
+                    async with aiofiles.open(audio_file, mode="rb") as file_like:
+                        while chunk := await file_like.read(1024):
+                            yield chunk
 
     return StreamingResponse(iterfile(), media_type="audio/wav")
+   
+    
 
 @app.get("/chat-stream")
-async def query_with_history_and_text_stream(user: str, query: str, id: str,  perform_rag: str, model_type: str = Query(default='text' ), ):
+async def query_with_history_and_text_stream(user: str, query: str, id: str,  perform_rag: str = Query(default='false'), model_type: str = Query(default='text' ), ):
     if not query:
         return ''
     embed_model = get_embed_model()    
-    return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag), media_type="text/event-stream")
+    return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag=perform_rag), media_type="text/event-stream")
 
 
 @app.post("/analyze-image")

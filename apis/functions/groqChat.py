@@ -117,7 +117,7 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     return assistant_response
 
-def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_model, perform_rag: str):
+async def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_model, perform_rag: str):
     if perform_rag == "true":
         similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
         similarText = list_to_numbered_string(similarDocs)
@@ -140,9 +140,6 @@ def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_m
     # Add the current user query to the chat history
     chat_history.append({"role": "user", "content": query})
 
-    # Check if roles are valid before calling Groq API
-    print("Formatted chat history:", chat_history)
-
     # Make the API call and stream the response
     response = client.chat.completions.create(
         model="llama-3.2-90b-text-preview",
@@ -152,17 +149,18 @@ def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_m
     )
     assistant_response=""
 
-    # Print the incremental deltas returned by the LLM. 
     for chunk in response:
-        if(chunk.choices[0].delta.content == None):
-            store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
-            store_chat_history(username=user, conversation_id=id, text=assistant_response, role="assistant", r=r)   
-            yield None 
-            break
+        text = chunk.choices[0].delta.content
+        print(text, end="")
 
-            
+        if chunk.choices[0].finish_reason:
+            store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
+            store_chat_history(username=user, conversation_id=id, text=assistant_response, role="assistant", r=r)
+            break
         else:
-            assistant_response += chunk.choices[0].delta.content
-            yield chunk.choices[0].delta.content
+            assistant_response += text
+            yield text
+
+    
 
    

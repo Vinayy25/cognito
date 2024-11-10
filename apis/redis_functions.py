@@ -19,8 +19,11 @@ def store_chat_history(username, conversation_id, text, role, r):
 
     # Store updated chat history back to Redis
     r.set(key, json.dumps(chat_history))
-
 def get_chat_history(username, conversation_id, r):
+    if r is None or not r.ping():  # Check if r is None or disconnected
+        print("Redis client is not connected.")
+        return []  # Return an empty list if Redis connection fails
+
     key = f"{username}:{conversation_id}"
     stored_data = r.get(key)
     if stored_data:

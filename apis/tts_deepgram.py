@@ -13,10 +13,12 @@ load_dotenv()
 
 #should return a audio file 
 def get_audio_deepgram(text : str, filename: str):
+    if(text == None or text == ""):
+        return None
     try:
         # STEP 1: Create a Deepgram client using the API key from environment variables
         deepgram = DeepgramClient(api_key=os.getenv("DEEPGRAM_API_KEY"))
-
+ 
         # STEP 2: Configure the options (such as model choice, audio configuration, etc.)
         options = SpeakOptions(
             model="aura-zeus-en",
@@ -31,7 +33,8 @@ def get_audio_deepgram(text : str, filename: str):
         response = deepgram.speak.v("1").save(filename, SPEAK_OPTIONS, options)
         print(response.to_json(indent=4))
         #return audio response
-        return response.filename
+        return response
+    
 
 
     except Exception as e:
