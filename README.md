@@ -108,7 +108,8 @@ To run the project, ensure the following are installed:
 
  **Run Uvicorn inside tmux**:
    ```bash
-   uvicorn your_app:app --host 127.0.0.1 --port 3000
+   cd cognito
+   sh server.sh
    ```
 
  **Detach from tmux**:
