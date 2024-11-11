@@ -31,7 +31,6 @@ def get_audio_deepgram(text : str, filename: str):
 
         # STEP 3: Call the save method on the speak property
         response = deepgram.speak.v("1").save(filename, SPEAK_OPTIONS, options)
-        print(response.to_json(indent=4))
         #return audio response
         return response
     

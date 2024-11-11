@@ -3,6 +3,8 @@
 
 import json 
 from typing import Any, List
+
+from redis import Redis
 def store_chat_history(username, conversation_id, text, role, r):
     key = f"{username}:{conversation_id}"
     
@@ -19,11 +21,11 @@ def store_chat_history(username, conversation_id, text, role, r):
 
     # Store updated chat history back to Redis
     r.set(key, json.dumps(chat_history))
-def get_chat_history(username, conversation_id, r):
+def get_chat_history(username : str, conversation_id : str, r : Redis):
     if r is None or not r.ping():  # Check if r is None or disconnected
         print("Redis client is not connected.")
-        return []  # Return an empty list if Redis connection fails
-
+        print(r)
+        
     key = f"{username}:{conversation_id}"
     stored_data = r.get(key)
     if stored_data:

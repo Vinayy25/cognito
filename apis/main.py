@@ -405,17 +405,17 @@ async def query_with_history_and_audio_stream(user: str, query: str, id: str, mo
     buffer = []
     filename = f"uploads/{user}_{id}_audio.wav"
     async def iterfile():
-        async for chunk in stream_groq_response(user, id, query, None, embed_model, perform_rag=perform_rag):
+        async for chunk in stream_groq_response(user, id, query, r , embed_model, perform_rag=perform_rag):
             buffer.append(chunk)
             if chunk.endswith('.'):
                 sentence = ' '.join(buffer)
                 buffer.clear()
                 audio_files = get_audio_deepgram(sentence, filename=filename)
                 
-                for audio_file in audio_files:
-                    if audio_file is not None:
-                        async with aiofiles.open(audio_file, mode="rb") as file_like:
-                            while chunk := await file_like.read(1024):
+                
+                if audio_files is not None:
+                    async with aiofiles.open(filename, mode="rb") as file_like:
+                        while chunk := await file_like.read(1024):
                                 yield chunk
 
         # Handle any remaining text in the buffer as the last sentence
@@ -423,11 +423,10 @@ async def query_with_history_and_audio_stream(user: str, query: str, id: str, mo
             sentence = ' '.join(buffer)
             audio_files = get_audio_deepgram(sentence, filename=filename)
             
-            for audio_file in audio_files:
-                if audio_file is not None:
-                    async with aiofiles.open(audio_file, mode="rb") as file_like:
-                        while chunk := await file_like.read(1024):
-                            yield chunk
+            if audio_files is not None:
+                async with aiofiles.open(filename, mode="rb") as file_like:
+                    while chunk := await file_like.read(1024):
+                        yield chunk
 
     return StreamingResponse(iterfile(), media_type="audio/wav")
    

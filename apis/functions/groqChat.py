@@ -117,7 +117,7 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     return assistant_response
 
-async def stream_groq_response(user: str, id: str, query: str, r: redis.Redis, embed_model, perform_rag: str):
+async def stream_groq_response(user: str, id: str, query: str, r : redis.Redis, embed_model, perform_rag: str):
     if perform_rag == "true":
         similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
         similarText = list_to_numbered_string(similarDocs)
