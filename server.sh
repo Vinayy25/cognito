@@ -7,11 +7,6 @@ if ! command -v jq &> /dev/null; then
     sudo apt-get install -y jq
 fi
 
-# Use machine's IP instead of ngrok URL
-server_url="http://206.1.35.50:8000"  # Replace YOUR_MACHINE_IP with the actual IP
-
-# Print the server URL
-echo "Server URL: $server_url"
 
 
 
@@ -19,4 +14,4 @@ echo "Server URL: $server_url"
 cd apis
 
 # Start the FastAPI server using uvicorn with 2 workers
-uvicorn main:app --host 0.0.0.0 --port 3000 --workers 2 --reload 
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2 --reload 
