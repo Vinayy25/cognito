@@ -44,7 +44,6 @@ nltk.download('averaged_perceptron_tagger')
 from functions.similaritySearch import getSimilarity
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # embed_model = HuggingFaceEmbeddings(
