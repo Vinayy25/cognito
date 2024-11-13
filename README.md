@@ -73,10 +73,11 @@ To run the project, ensure the following are installed:
    python3 -m venv venv
    source venv/bin/activate # On Windows: venv\Scripts\activate
    ```
-
+  sudo apt update
+  sudo apt install python3-pip
 3. **Install Required Packages**
    ```bash
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt
    ```
 
 4. **Environment Variables**

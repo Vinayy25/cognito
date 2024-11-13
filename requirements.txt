@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-whisper
+
 voyageai
 redis
 sentence-transformers
