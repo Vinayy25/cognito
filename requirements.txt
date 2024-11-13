@@ -9,7 +9,7 @@ python-dotenv
 groq
 requests
 numpy
-
+deepgram-sdk
 Jinja2
 google-api-python-client
 google-auth
