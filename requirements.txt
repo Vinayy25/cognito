@@ -3,7 +3,7 @@ uvicorn
 
 voyageai
 redis
-sentence-transformers
+
 openai
 python-dotenv
 groq
