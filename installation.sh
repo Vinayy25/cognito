@@ -85,6 +85,6 @@ pip3 install uvicorn
 
 # Start a tmux session and run the server
 echo "Starting a tmux session and running the server..."
-tmux new -d -s my_session 'cd cognito && sh start.sh'
+tmux new -d -s my_session 'cd cognito && mkdir uploads && sh start.sh '
 
 echo "All necessary services have been installed and started successfully."

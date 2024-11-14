@@ -1,6 +1,6 @@
 apis/__pycache__
 apis/myvenv/
-apis/uploads/
+apis/uploads
 .env
 
 readme
@@ -26,7 +26,7 @@ apis/testgemini.py
 apis/t1.py
 apis/testingalibaba.py
 apis/testingMilvius.py
-apis/audios/
+apis/audios
 apis/geminiFunctionCalling.py
 
 

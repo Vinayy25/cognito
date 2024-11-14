@@ -159,6 +159,12 @@ To run the project, ensure the following are installed:
    ```bash
    sudo nginx -t
    sudo systemctl reload nginx
+   sudo ufw allow 'Nginx Full'
+
+  sudo nano /etc/nginx/sites-available/cognito.fun
+
+  sudo ln -s /etc/nginx/sites-available/cognito.fun /etc/nginx/sites-enabled/
+
    ```
 
 
