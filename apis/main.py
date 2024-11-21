@@ -459,7 +459,7 @@ async def analyze_image_endpoint(file: UploadFile = File(...), prompt: str = Que
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/groq/transcribe/")
-async def transcribe_audio(file: UploadFile = File(...)):
+async def transcribe_audio(audio_file: UploadFile = File(...)):
     try:
         # Save the uploaded file to a temporary location
         temp_file_path = f"uploads/{file.filename}"
