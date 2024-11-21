@@ -20,7 +20,7 @@ def getAudioFromNeets(text : str, filename : str):
         },
         json={
             "text": text,
-            "voice_id": "andrew-tate",
+            "voice_id": "vits-eng-1",
             "params": {
                 "model": "ar-diff-50k"
             }
