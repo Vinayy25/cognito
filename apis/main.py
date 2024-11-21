@@ -407,8 +407,10 @@ async def query_with_history_and_audio_stream(user: str, id: str, model_type: st
     with open(temp_file_path, "wb") as temp_file:
         temp_file.write(await audio_file.read())
 
-        # Call the translate_audio function
     query = translate_audio(temp_file_path)
+        
+
+
     if not query:
         return ''
     async def iterfile():
