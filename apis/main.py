@@ -462,9 +462,9 @@ async def analyze_image_endpoint(file: UploadFile = File(...), prompt: str = Que
 async def transcribe_audio(audio_file: UploadFile = File(...)):
     try:
         # Save the uploaded file to a temporary location
-        temp_file_path = f"uploads/{file.filename}"
+        temp_file_path = f"uploads/{audio_file.filename}"
         with open(temp_file_path, "wb") as temp_file:
-            temp_file.write(await file.read())
+            temp_file.write(await audio_file.read())
 
         # Call the translate_audio function
         transcription_text = translate_audio(temp_file_path)
