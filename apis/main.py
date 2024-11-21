@@ -20,8 +20,9 @@ from functions.groqAudio import translate_audio
 from helpers.formatting import list_to_numbered_string
 from tts_deepgram import get_audio_deepgram
 from functions.groqVision import analyze_image
+from fastapi.responses import HTMLResponse
 
-
+import markdown
 from models import  ChatResponse
 from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt
@@ -397,13 +398,19 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
     )
 
 @app.get("/audio-chat-stream")
-async def query_with_history_and_audio_stream(user: str, audio_file : UploadFile, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false')):
-    if not query:
-        return ''
+async def query_with_history_and_audio_stream(user: str, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false'), audio_file: UploadFile = File(...)):
     embed_model = get_embed_model()
     buffer = []
     filename = f"uploads/{user}_{id}_audio.wav"
-    query = translate_audio(audio_file)
+    
+    temp_file_path = f"uploads/{audio_file.filename}"
+    with open(temp_file_path, "wb") as temp_file:
+        temp_file.write(await audio_file.read())
+
+        # Call the translate_audio function
+    query = translate_audio(temp_file_path)
+    if not query:
+        return ''
     async def iterfile():
         async for chunk in stream_groq_response(user, id, query, r , embed_model, perform_rag=perform_rag):
             buffer.append(chunk)
@@ -608,6 +615,22 @@ async def get_chat_history_as_text(username: str, conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
     
 
+# Route to render the documentation
+@app.get("/documentation", response_class=HTMLResponse)
+async def custom_docs():
+    with open("docs.md", "r") as f:
+        content = f.read()
+    html_content = markdown.markdown(content)
+    return f"""
+    <!DOCTYPE html>
+    <html>
+
+    <body>
+       
+        {html_content}
+    </body>
+    </html>
+    """
 
 @app.get('/voyage/embed')
 async def voyage_embed(query: str):
