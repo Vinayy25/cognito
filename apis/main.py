@@ -397,12 +397,13 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
     )
 
 @app.get("/audio-chat-stream")
-async def query_with_history_and_audio_stream(user: str, query: str, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false')):
+async def query_with_history_and_audio_stream(user: str, audio_file : UploadFile, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false')):
     if not query:
         return ''
     embed_model = get_embed_model()
     buffer = []
     filename = f"uploads/{user}_{id}_audio.wav"
+    query = translate_audio(audio_file)
     async def iterfile():
         async for chunk in stream_groq_response(user, id, query, r , embed_model, perform_rag=perform_rag):
             buffer.append(chunk)
