@@ -1,6 +1,8 @@
 apis/__pycache__
 apis/myvenv/
 apis/uploads
+apis/static
+apis/filescheck
 .env
 
 readme
