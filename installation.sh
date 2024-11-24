@@ -83,8 +83,15 @@ pip3 install -r requirements.txt
 echo "Installing Uvicorn..."
 sudo pip3 install uvicorn
 
+
+
 # Start a tmux session and run the server
 echo "Starting a tmux session and running the server..."
-tmux new -d -s my_session 'cd cognito && mkdir uploads && mkdir audios && sh start.sh '
+tmux new -d -s my_session 'cd cognito && cd apis && mkdir uploads && mkdir audios && sh start.sh '
+
+#cd into functions and create collection folder
+echo "cd into functions and create collection folder"
+cd cognito/apis/functions
+mkdir collection
 
 echo "All necessary services have been installed and started successfully."

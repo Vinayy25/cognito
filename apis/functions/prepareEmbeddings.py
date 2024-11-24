@@ -29,3 +29,11 @@ def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_mo
 
 
 
+
+
+def create_new_user(user: str, conversation_id: str, embed_model):
+    faiss_index_file = os.path.join(os.path.dirname(__file__), 'collection',  '_'+user+'_'+conversation_id)
+    db = FAISS.from_texts([smvitm_data],embed_model)
+    db.save_local(faiss_index_file)
+
+    

@@ -4,6 +4,7 @@ import os , faiss
 from langchain_community.vectorstores import FAISS
 
 from langchain_huggingface import HuggingFaceEmbeddings
+from functions.prepareEmbeddings import create_new_user
 
 
 
@@ -17,9 +18,8 @@ def getSimilarity(query: str , user: str,conversation_id:str, embed_model):
     if os.path.exists(faiss_index_file)==False:
         # print("User does not exist")
         print ("reached user does not exist in ", faiss_index_file)
+        create_new_user(user, conversation_id, embed_model)
         
-        
-        return ""
     
        
 
