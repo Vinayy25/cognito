@@ -8,8 +8,8 @@ from templates import smvitm_data
 
 def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_model):
 
-    collections_folder = os.path.join(os.path.dirname(__file__), '..', 'collection')
-    faiss_index_file = os.path.join(collections_folder, user, conversation_id)
+     # collections_folder = os.path.join(os.path.dirname(__file__), '..', 'collection')
+    faiss_index_file = os.path.join(os.path.dirname(__file__), 'collection',  '_'+user+'_'+conversation_id)
 
     
     if os.path.exists(faiss_index_file)==False:

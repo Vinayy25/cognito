@@ -397,7 +397,7 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
         filename=filename,
     )
 
-@app.get("/audio-chat-stream")
+@app.post("/audio-chat-stream")
 async def query_with_history_and_audio_stream(user: str, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false'), audio_file: UploadFile = File(...)):
     embed_model = get_embed_model()
     buffer = []

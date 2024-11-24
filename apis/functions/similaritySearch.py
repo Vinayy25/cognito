@@ -9,12 +9,18 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 def getSimilarity(query: str , user: str,conversation_id:str, embed_model):
 
-    collections_folder = os.path.join(os.path.dirname(__file__), '..', 'collection')
-    faiss_index_file = os.path.join(collections_folder, user,conversation_id)
+    
+    # faiss_index_file = os.path.join(collections_folder, user,conversation_id)
+    faiss_index_file     = os.path.join(os.path.dirname(__file__), 'collection' , '_'+user+'_'+conversation_id)
+    # faiss_index_file = os.path.join(collections_folder, user, conversation_id)
 
     if os.path.exists(faiss_index_file)==False:
-        print("User does not exist")
+        # print("User does not exist")
+        print ("reached user does not exist in ", faiss_index_file)
+        
+        
         return ""
+    
        
 
     db = FAISS.load_local(faiss_index_file , embed_model, allow_dangerous_deserialization=True  )
