@@ -1,8 +1,9 @@
 import os, faiss
 from typing import List
 from langchain_community.vectorstores import FAISS
+from templates import smvitm_data
 
-from langchain_huggingface import HuggingFaceEmbeddings
+
 
 
 def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_model):
@@ -13,7 +14,7 @@ def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_mo
     
     if os.path.exists(faiss_index_file)==False:
         print("User does not exist")
-        db = FAISS.from_texts(["vvv"],embed_model)
+        db = FAISS.from_texts([smvitm_data],embed_model)
         db.save_local(faiss_index_file)
         print("User created")
 
