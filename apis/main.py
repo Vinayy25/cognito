@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File,Query
+from fastapi import FastAPI, HTTPException, UploadFile, File,Query, Request
 import json,os,time,voyageai,asyncio,markdown2,redis
 from typing import List
 from fastapi.responses import FileResponse, JSONResponse
@@ -318,7 +318,7 @@ def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assi
                     "content": message,
                 }
                     ],
-                    model="llama-3.2-90b-text-preview",
+                    model="llama-3.2-90b-vision-preview",
                     )
             return JSONResponse(status_code=200, content={ "response": groq_chat_completion.choices[0].message.content,})
             
@@ -397,8 +397,11 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
         filename=filename,
     )
 
-@app.post("/audio-chat-stream")
-async def query_with_history_and_audio_stream(user: str, id: str, model_type: str = Query(default='text'), perform_rag: str = Query(default='false'), audio_file: UploadFile = File(...)):
+
+
+
+@app.post("/audio-chat-stream", response_class=StreamingResponse)
+async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: UploadFile = File(...), model_type: str = Query(default='text'),perform_rag: str = Query(default='false'),):
     embed_model = get_embed_model()
     buffer = []
     filename = f"uploads/{user}_{id}_audio.wav"
@@ -418,8 +421,11 @@ async def query_with_history_and_audio_stream(user: str, id: str, model_type: st
     async def iterfile():
         async for chunk in stream_groq_response(user, id, query, r , embed_model, perform_rag=perform_rag):
             buffer.append(chunk)
-            if chunk.endswith('.'):
+            # in the if condition make sure to not break sentances that have a decimal number in them as . is a valid character in a decimal number not only .0
+            if chunk.endswith('.') and not chunk.endswith('.0'):
                 sentence = ' '.join(buffer)
+                
+                print("sentence ",sentence)
                 buffer.clear()
                 audio_files = get_audio_deepgram(sentence, filename=filename)
                 
@@ -677,6 +683,19 @@ def removeEmpty(paragraph):
     non_empty_lines = [line for line in lines if line.strip() != '']
     cleaned_paragraph = '\n'.join(non_empty_lines)
     return cleaned_paragraph
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    # Log the request method and URL
+    print(f"Incoming request: {request.method} {request.url}")
+    
+    # Log headers for further investigation
+    print(f"Headers: {request.headers}")
+    
+    # Process the request
+    response = await call_next(request)
+    
+    return response
 
 if __name__ == "__main__":
     import uvicorn

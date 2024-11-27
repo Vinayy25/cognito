@@ -174,7 +174,7 @@ Generate audio responses using history.
 
 ---
 
-### GET `/audio-chat-stream`
+### POST `/audio-chat-stream`
 Stream audio responses using history.
 
 #### Request Parameters
@@ -182,6 +182,8 @@ Stream audio responses using history.
 - `id` (str): Conversation ID.
 - `model_type` (str): Model type (default: "text").
 - `perform_rag` (str): Perform RAG (default: "false").
+
+body:
 - `audio_file` (UploadFile): Input audio file.
 
 #### Response

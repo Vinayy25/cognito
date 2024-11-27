@@ -3,9 +3,6 @@ from typing import List
 from langchain_community.vectorstores import FAISS
 from templates import smvitm_data
 
-
-
-
 def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_model):
 
      # collections_folder = os.path.join(os.path.dirname(__file__), '..', 'collection')
@@ -18,17 +15,11 @@ def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_mo
         db.save_local(faiss_index_file)
         print("User created")
 
-
-
-
     db = FAISS.load_local(faiss_index_file , embed_model, allow_dangerous_deserialization=True  )
     db.add_texts(text)
 
 
     db.save_local(faiss_index_file)
-
-
-
 
 
 def create_new_user(user: str, conversation_id: str, embed_model):
