@@ -2,6 +2,7 @@ import pigpio
 import pyaudio
 import wave
 
+from request_server import send_audio_and_get_response_play
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1  # Mono input
@@ -36,6 +37,7 @@ def gpio_callback(gpio, level, tick):
         stream = None
         isRecording = False
 
+
         # Save the recorded audio to a .wav file
         with wave.open(OUTPUT_FILENAME, 'wb') as wf:
             wf.setnchannels(CHANNELS)
@@ -43,6 +45,7 @@ def gpio_callback(gpio, level, tick):
             wf.setframerate(RATE)
             wf.writeframes(b''.join(frames))
         print(f"Audio saved to {OUTPUT_FILENAME}")
+        send_audio_and_get_response_play(OUTPUT_FILENAME)
 
 # Connect to pigpio daemon
 pi = pigpio.pi()
