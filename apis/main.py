@@ -141,9 +141,10 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
 
         # Call the transcription function with the file path
         transcription = translate_audio(file_path)
+        
    
         # Return the transcription as a JSON response
-        return {"transcription": transcription["text"]}
+        return {"transcription": transcription}
     except Exception as e:
         print("error in transcribe ",e)
         return JSONResponse(status_code=500, content={"message": str(e)})
@@ -179,14 +180,15 @@ async def transcribe_and_save(user: str, conversation_id:str ,audio_file: Upload
             "\u3002",  # Ideographic full stop
             "",
         ],)
-        text = text_splitter.split_text(transcription["text"])
+        text = text_splitter.split_text(transcription)
+        print ("reached here")
         
         print("text ",text)
         embed_model = get_embed_model()
         save_embeddings(text, user, conversation_id, embed_model=embed_model)
 
         # Return the transcription as a JSON response
-        return JSONResponse(status_code=200, content={"transcription": transcription["text"]})
+        return JSONResponse(status_code=200, content={"transcription": transcription})
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": str(e)})
     
@@ -219,7 +221,7 @@ async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_fi
             "\u3002",  # Ideographic full stop
             "",
         ],)
-        texts = text_splitter.split_text(transcription["text"])
+        texts = text_splitter.split_text(transcription)
         print("texts ",texts)
 
         summarized_text = getSummaryUsingGroq(texts)
@@ -227,7 +229,7 @@ async def transcribe_summarize_and_save(user: str, conversation_id:str ,audio_fi
         save_embeddings(summarized_text, user, conversation_id, embed_model=embed_model)
 
         # Return the transcription as a JSON response
-        return JSONResponse(status_code=200, content={"transcription": transcription["text"]})
+        return JSONResponse(status_code=200, content={"transcription": transcription})
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": str(e)})
     

@@ -22,5 +22,6 @@ def translate_audio(file_path):
             temperature=0.0,  # Optional
           
         )
+        print("translation", translation)
         # Return the translation text
         return translation.text
