@@ -4,6 +4,7 @@ apis/uploads
 apis/static
 apis/filescheck
 .env
+apis/myenv
 
 readme
 chroma.log

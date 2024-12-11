@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pathlib import Path
+from apis.Groqqle_web_tool import Groqqle_web_tool
 from functions.genModel import get_generative_model, get_embed_model
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from functions.prepareEmbeddings import save_embeddings
@@ -21,9 +22,10 @@ from helpers.formatting import list_to_numbered_string
 from tts_deepgram import get_audio_deepgram
 from functions.groqVision import analyze_image
 from fastapi.responses import HTMLResponse
+from functions.search import search_web
 
 import markdown
-from models import  ChatResponse
+from models import  ChatResponse, SearchRequest
 from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt
 
@@ -647,6 +649,10 @@ async def voyage_embed(query: str):
     return vo.embed(query,model="voyage-large-2-instruct")
 
 
+@app.post("/search")
+async def search(request: SearchRequest):
+    res = await search_web(request)
+    return JSONResponse(status_code=200, content={"results": res})
 async def generate_content_stream(model, prompt):
     # Simulate streaming by breaking response into chunks
     response = model.generate_content(prompt)
