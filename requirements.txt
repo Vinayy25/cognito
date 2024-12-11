@@ -29,3 +29,16 @@ vertexai
 llama_parse
 openai-whisper
 python-multipart
+
+streamlit
+Pillow
+
+requests
+beautifulsoup4
+anthropic
+fastapi
+uvicorn
+Flask
+pocketgroq>=0.1.5
+tldextract
+html2text

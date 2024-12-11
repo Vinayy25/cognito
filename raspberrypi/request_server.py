@@ -8,7 +8,7 @@ USER_ID = "user123"  # Replace with actual user ID
 CONVERSATION_ID = "conv456"  # Replace with actual conversation ID
 MODEL_TYPE = "text"  # Default: "text"
 PERFORM_RAG = "false"  # Default: "false"
-API_ENDPOINT = "http://cognito.fun/audio-chat-stream"  # Replace with actual endpoint
+API_ENDPOINT = "http://cognito.fun/"  # Replace with actual endpoint
 
 
 
@@ -23,7 +23,7 @@ def send_audio_and_get_response(file_name):
             'model_type': MODEL_TYPE,
             'perform_rag': PERFORM_RAG
         }
-        response = requests.get(API_ENDPOINT, params=params, files=files, stream=True)
+        response = requests.get(API_ENDPOINT+'audio-chat-stream', params=params, files=files, stream=True)
 
     if response.status_code == 200:
         print("Audio response received.")
@@ -31,6 +31,24 @@ def send_audio_and_get_response(file_name):
     else:
         print(f"Error {response.status_code}: {response.text}")
         return None
+"""
+@app.post("/transcribe/save")
+async def transcribe_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):"""
+
+def send_audio_rag(file_name):
+    """
+    Sends the recorded audio to the API endpoint and streams the response.
+    """
+    print("Sending audio file to the server...")
+    with open(file_name, 'rb') as audio_file:
+        files = {'audio_file': audio_file}
+        params = {
+            'user': USER_ID,
+            'id': CONVERSATION_ID,
+            'model_type': MODEL_TYPE,
+            'perform_rag': PERFORM_RAG
+        }
+        requests.post(API_ENDPOINT+'transcribe/save',params=params,files=files)
 
 
 def play_audio_response(response, file_name):
