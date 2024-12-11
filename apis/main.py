@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pathlib import Path
-from apis.Groqqle_web_tool import Groqqle_web_tool
+from Groqqle_web_tool import Groqqle_web_tool
 from functions.genModel import get_generative_model, get_embed_model
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from functions.prepareEmbeddings import save_embeddings

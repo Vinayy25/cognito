@@ -91,7 +91,10 @@ tmux new -d -s my_session 'cd cognito && cd apis && mkdir uploads && mkdir audio
 
 #cd into functions and create collection folder
 echo "cd into functions and create collection folder"
-cd cognito/apis/functions
+cd apis/functions
 mkdir collection
 
+   sudo nginx -t
+   sudo systemctl reload nginx
+   sudo ufw allow 'Nginx Full'
 echo "All necessary services have been installed and started successfully."
