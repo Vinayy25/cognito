@@ -80,6 +80,7 @@ def play_audio_response(response, file_name):
 
 def send_audio_and_get_response_play(file_name):
     response = send_audio_and_get_response(file_name)
+    print(response)
     if response:
         play_audio_response(response)
 

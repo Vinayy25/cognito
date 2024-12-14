@@ -233,7 +233,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               // dismiss keyboard
                               SystemChannels.textInput
                                   .invokeMethod('TextInput.hide');
-                            },
+                            },      
                             controller: promptController,
                             onTap: () {
                               scrollController.jumpTo(

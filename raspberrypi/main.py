@@ -2,6 +2,8 @@ import pyaudio
 import wave
 import requests
 import pygame
+import sounddevice as sd
+from scipy.io.wavfile import write
 
 
 # Configuration
@@ -18,14 +20,26 @@ CHANNELS = 2
 RATE = 64000
 CHUNK = 1024
 RECORD_SECONDS = 5
-
+def record_audio_sounddevice(filename, duration, sample_rate=44100):
+    """
+    Records audio and saves it as a WAV file.
+    
+    :param filename: Name of the file to save (e.g., 'output.wav')
+    :param duration: Recording duration in seconds
+    :param sample_rate: Sample rate (default 44100 Hz)
+    """
+    print(f"Recording for {duration} seconds...")
+    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=2, dtype='int16')
+    sd.wait()  # Wait until recording is finished
+    write(filename, sample_rate, audio_data)
+    print(f"Recording saved to {filename}")
 def record_audio(file_name):
     """Records audio from the microphone and saves it to a file."""
     print("Recording...")
     audio = pyaudio.PyAudio()
-    stream = audio.open(format=FORMAT, channels=CHANNELS,
-
-    input_device_index=1,
+    stream = audio.open(format=FORMAT, 
+                        input_device_index=1,
+                        channels=CHANNELS,
                         rate=RATE, input=True, frames_per_buffer=CHUNK)
     frames = []
 

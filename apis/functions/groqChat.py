@@ -8,11 +8,11 @@ from helpers.formatting import list_to_numbered_string
 from groq import Groq
 
 from tts_deepgram import get_audio_deepgram
-
-
+from dotenv import load_dotenv
+load_dotenv()
 # Set up the Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-
+groq_model_name = os.environ.get("GROQ_MODEL")
 
 def stream_groq_response_with_audio(user: str, id: str, query: str, r: redis.Redis, embed_model):
     similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
@@ -105,7 +105,7 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     # Make the API call
     response = client.chat.completions.create(
-        model="llama-3.2-90b-vision-preview",
+        model=groq_model_name,
         messages=chat_history
     )
 
@@ -142,7 +142,9 @@ async def stream_groq_response(user: str, id: str, query: str, r : redis.Redis, 
 
     # Make the API call and stream the response
     response = client.chat.completions.create(
-        model="llama-3.2-90b-vision-preview",
+        model= groq_model_name,
+
+        
         messages=chat_history,
         stream=True,
         

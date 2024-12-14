@@ -409,14 +409,16 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
     embed_model = get_embed_model()
     buffer = []
     filename = f"uploads/{user}_{id}_audio.wav"
-    
+    print("filename ",filename)
     temp_file_path = f"uploads/{audio_file.filename}"
+    print("temp_file_path ",temp_file_path)
     with open(temp_file_path, "wb") as temp_file:
         temp_file.write(await audio_file.read())
 
 
 
     query = translate_audio(temp_file_path)
+    print("query ",query)
         
 
 
