@@ -9,6 +9,8 @@ from request_server import send_audio_and_get_response_play
 import pygame
 from main import record_audio_sounddevice
 
+prompt_audio_file = "prompt.wav"
+
 def play_my_sound():
     pygame.mixer.init()
     pygame.mixer.music.load("audio2.wav")
@@ -53,8 +55,8 @@ def main():
             if result >= 0:
                 print("Wake word detected!")
                 play_my_sound()
-                record_audio_sounddevice("audio_sounddevice.wav",5)
-                send_audio_and_get_response_play("audio_sounddevice.wav")
+                record_audio_sounddevice(prompt_audio_file,5)
+                send_audio_and_get_response_play(prompt_audio_file)
     except KeyboardInterrupt:
         print("Stopping...")
 

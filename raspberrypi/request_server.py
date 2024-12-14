@@ -23,7 +23,7 @@ def send_audio_and_get_response(file_name):
             'model_type': MODEL_TYPE,
             'perform_rag': PERFORM_RAG
         }
-        response = requests.get(API_ENDPOINT+'audio-chat-stream', params=params, files=files, stream=True)
+        response = requests.post(API_ENDPOINT+'audio-chat-stream', params=params, files=files, stream=True)
 
     if response.status_code == 200:
         print("Audio response received.")
