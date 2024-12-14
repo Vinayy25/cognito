@@ -403,22 +403,19 @@ async def query_with_history_and_audio(user: str,query: str,id: str,  model_type
 
 
 
-
 @app.post("/audio-chat-stream", response_class=StreamingResponse)
 async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: UploadFile = File(...), model_type: str = Query(default='text'),perform_rag: str = Query(default='false'),):
     embed_model = get_embed_model()
     buffer = []
     filename = f"uploads/{user}_{id}_audio.wav"
-    print("filename ",filename)
+    
     temp_file_path = f"uploads/{audio_file.filename}"
-    print("temp_file_path ",temp_file_path)
     with open(temp_file_path, "wb") as temp_file:
         temp_file.write(await audio_file.read())
 
 
 
     query = translate_audio(temp_file_path)
-    print("query ",query)
         
 
 
@@ -429,21 +426,22 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
             buffer.append(chunk)
             # in the if condition make sure to not break sentances that have a decimal number in them as . is a valid character in a decimal number not only .0
             if chunk.endswith('.') and not chunk.endswith('.0'):
-                sentence = ' '.join(buffer)
+                sentence = ''.join(buffer)
                 
                 print("sentence ",sentence)
                 buffer.clear()
                 audio_files = get_audio_deepgram(sentence, filename=filename)
                 
-                
+                    
                 if audio_files is not None:
                     async with aiofiles.open(filename, mode="rb") as file_like:
                         while chunk := await file_like.read(1024):
                                 yield chunk
 
         # Handle any remaining text in the buffer as the last sentence
+        print("reached pass the function")
         if buffer:
-            sentence = ' '.join(buffer)
+            sentence = ''.join(buffer)
             audio_files = get_audio_deepgram(sentence, filename=filename)
             
             if audio_files is not None:
@@ -453,14 +451,6 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
 
     return StreamingResponse(iterfile(), media_type="audio/wav")
    
-    
-
-@app.get("/chat-stream")
-async def query_with_history_and_text_stream(user: str, query: str, id: str,  perform_rag: str = Query(default='false'), model_type: str = Query(default='text' ), ):
-    if not query:
-        return ''
-    embed_model = get_embed_model()    
-    return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag=perform_rag), media_type="text/event-stream")
 
 
 @app.post("/analyze-image")

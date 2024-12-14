@@ -6,9 +6,10 @@ from functions.similaritySearch import getSimilarity
 from templates import gemini_system_prompt, system_prompt_without_rag
 from helpers.formatting import list_to_numbered_string
 from groq import Groq
-
+import asyncio
 from tts_deepgram import get_audio_deepgram
 from dotenv import load_dotenv
+
 load_dotenv()
 # Set up the Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
@@ -143,17 +144,17 @@ async def stream_groq_response(user: str, id: str, query: str, r : redis.Redis, 
     # Make the API call and stream the response
     response = client.chat.completions.create(
         model= groq_model_name,
-
-        
         messages=chat_history,
         stream=True,
         
     )
+    #add short delay
+    # await asyncio.sleep(0.1)
     assistant_response=""
 
     for chunk in response:
         text = chunk.choices[0].delta.content
-        print(text, end="")
+        
 
         if chunk.choices[0].finish_reason:
             store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
