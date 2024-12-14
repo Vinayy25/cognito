@@ -51,7 +51,7 @@ def send_audio_rag(file_name):
         requests.post(API_ENDPOINT+'transcribe/save',params=params,files=files)
 
 
-def play_audio_response(response, file_name):
+def play_audio_response(response):
     """Plays the audio response streamed from the server."""
     print("Playing audio response...")
 
