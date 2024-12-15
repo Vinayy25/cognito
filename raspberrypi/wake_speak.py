@@ -7,9 +7,10 @@ import threading
 from playsound import playsound
 from request_server import send_audio_and_get_response_play
 import pygame
-from main import record_audio_sounddevice
+from scipy.io.wavfile import write
+from main import record_audio_sounddevice, send_audio_rag, record_audio_sounddevice_for_rag
+import sounddevice as sd
 
-prompt_audio_file = "prompt.mp3"
 
 def play_my_sound():
     pygame.mixer.init()
@@ -25,10 +26,13 @@ def play_sound():
 
 def main():
     # Initialize Porcupine with a chosen wake word (e.g., "porcupine")
-
+    prompt_audio_file = "prompt.mp3"
+    rag_audio_file = "rag.mp3"
+    duration = 5
+    audio_data = None
     porcupine = pvporcupine.create(
         access_key='pFaTLsJqVDE6/uSXFftK07tDKzwK6JaLnVAGH5nwvAl3W+oF6sO58Q==',
-        keywords=['snowboy',]
+        keywords=['snowboy','jarvis']
     )
     
 
@@ -42,8 +46,6 @@ def main():
         frames_per_buffer=porcupine.frame_length
     )
 
-    print("Listening for wake word...")
-
     try:
         while True:
             # Read audio data from microphone
@@ -52,12 +54,24 @@ def main():
 
             # Check if the wake word is detected
             result = porcupine.process(pcm)
-            if result >= 0:
+            if result == 0:
                 print("Wake word detected!")
                 play_my_sound()
                 
                 record_audio_sounddevice(prompt_audio_file,10) 
                 send_audio_and_get_response_play(prompt_audio_file)
+
+            elif result == 1:
+                print("Jarvis detected!")
+                play_my_sound()
+                audio_data = sd.rec(int(duration * 44100), samplerate=44100, channels=2, dtype='int16')
+                sd.wait()
+                write(rag_audio_file, 44100, audio_data)
+                print(f"Recording saved to {rag_audio_file}")
+                play_my_sound()
+                send_audio_rag(rag_audio_file, "user123", "conv456")
+                play_my_sound()
+                
     except KeyboardInterrupt:
         print("Stopping...")
 

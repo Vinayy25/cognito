@@ -3,7 +3,7 @@ import wave
 import requests
 import pygame
 import sounddevice as sd
-
+import threading
 import struct
 from scipy.io.wavfile import write
 from silence_detect import detect_silence_and_stop
@@ -15,7 +15,7 @@ CONVERSATION_ID = "conv456"  # Replace with actual conversation ID
 MODEL_TYPE = "text"  # Default: "text"
 PERFORM_RAG = "false"  # Default: "false"
 AUDIO_FILE_NAME = "testaudio.ogg"  # Temporary file for recorded audio
-API_ENDPOINT = "http://cognito.fun/audio-chat-stream"  # Replace with actual endpoint
+API_ENDPOINT = "http://cognito.fun/"  # Replace with actual endpoint
 
 # Audio settings
 FORMAT = pyaudio.paInt16
@@ -37,9 +37,27 @@ def record_audio_sounddevice(filename, duration, sample_rate=44100):
     
     sd.wait(detect_silence_and_stop())  # Wait until recording is finished
     
+    
+    write(filename, sample_rate, audio_data)
+    print(f"Recording saved to {filename}")
+
+
+def record_audio_sounddevice_for_rag(filename, duration, sample_rate=44100,):
+    """Records audio from the microphone and saves it to a file."""
+    print(f"Recording for {duration} seconds...")
+    #run it on a different thread
+   
+    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=2, dtype='int16')
+    # #wait for min of 1 sec before stopping
+
+    sd.wait(
+
+    )
+
 
     write(filename, sample_rate, audio_data)
     print(f"Recording saved to {filename}")
+
 def record_audio(file_name):
     """Records audio from the microphone and saves it to a file."""
     print("Recording...")
@@ -76,7 +94,8 @@ def send_audio_and_get_response(file_name):
             'model_type': MODEL_TYPE,
             'perform_rag': PERFORM_RAG
         }
-        response = requests.get(API_ENDPOINT, params=params, files=files, stream=True)
+        url = API_ENDPOINT + "audio-chat-stream"
+        response = requests.post(url, params=params, files=files, stream=True)
 
     if response.status_code == 200:
         print("Audio response received.")
@@ -170,6 +189,30 @@ def detect_silence(threshold=30, silence_duration= 0.5, sample_rate=16000, chunk
         stream.stop_stream()
         stream.close()
         pa.terminate()
+
+def send_audio_rag(file_path, user, conversation_id):
+    """
+    Sends an audio file to the /transcribe/save endpoint.
+
+    :param file_path: Path to the audio file to be sent
+    :param user: User identifier
+    :param conversation_id: Conversation identifier
+    :return: Response from the server
+    """
+    url = API_ENDPOINT + "transcribe/save"  # Replace with your actual server address
+    print(f"Sending audio file to {url}")
+    with open(file_path, 'rb') as audio_file:
+        files = {'audio_file': audio_file}
+        url = url + f"?user={user}&conversation_id={conversation_id}"
+        try:
+            response = requests.post(url, files=files)
+            response.raise_for_status()  # Raise an error for bad responses
+            print("Audio file sent successfully.")
+            return response.json()  # Assuming the response is in JSON format
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+            return None
+
 
 if __name__ == "__main__":
     main()
