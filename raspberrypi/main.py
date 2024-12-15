@@ -3,7 +3,10 @@ import wave
 import requests
 import pygame
 import sounddevice as sd
+
+import struct
 from scipy.io.wavfile import write
+from silence_detect import detect_silence_and_stop
 
 
 # Configuration
@@ -30,7 +33,11 @@ def record_audio_sounddevice(filename, duration, sample_rate=44100):
     """
     print(f"Recording for {duration} seconds...")
     audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=2, dtype='int16')
-    sd.wait()  # Wait until recording is finished
+    #wait for min of 1 sec before stopping
+    
+    sd.wait(detect_silence_and_stop)  # Wait until recording is finished
+    
+
     write(filename, sample_rate, audio_data)
     print(f"Recording saved to {filename}")
 def record_audio(file_name):
@@ -119,6 +126,50 @@ def main():
 
     except Exception as e:
         print("An error occurred:", str(e))
+
+
+def detect_silence(threshold=30, silence_duration= 0.5, sample_rate=16000, chunk_size=1024):
+    """
+    Detects silence in the audio stream.
+    
+    :param threshold: Amplitude below which audio is considered silence
+    :param silence_duration: Duration (in seconds) of continuous silence to stop detection
+    :param sample_rate: Audio sample rate (default: 16000 Hz)
+    :param chunk_size: Number of frames per buffer (default: 1024)
+    :return: None
+    """
+    pa = pyaudio.PyAudio()
+    stream = pa.open(
+        format=pyaudio.paInt16,
+        channels=1,
+        rate=sample_rate,
+        input=True,
+        frames_per_buffer=chunk_size
+    )
+
+    print("Listening for user prompt...")
+
+    try:
+        silent_chunks = 0
+        while True:
+            audio_data = stream.read(chunk_size, exception_on_overflow=False)
+            pcm = struct.unpack(f'{chunk_size}h', audio_data)
+            max_amplitude = max(abs(sample) for sample in pcm)
+
+            if max_amplitude < threshold:
+                silent_chunks += 1
+            else:
+                silent_chunks = 0
+
+            if silent_chunks >= silence_duration * (sample_rate / chunk_size):
+                print("Silence detected. Stopping...")
+                break
+    except KeyboardInterrupt:
+        print("Stopped manually.")
+    finally:
+        stream.stop_stream()
+        stream.close()
+        pa.terminate()
 
 if __name__ == "__main__":
     main()
