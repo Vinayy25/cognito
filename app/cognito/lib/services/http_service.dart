@@ -7,13 +7,9 @@ import 'package:http_parser/http_parser.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class HttpService {
-  String baseUrl;
+  String baseUrl = 'http://cognito.fun';
 
   HttpService({required this.baseUrl});
-  Future<String> getbaseUrl() async {
-    print("fetching ngrok url ");
-    return FirebaseService().getNgrokUrl();
-  }
 
   Future<String> queryWithHistory({
     required String user,
@@ -21,9 +17,6 @@ class HttpService {
     required String id,
     String modelType = 'text',
   }) async {
-    if (baseUrl == '') {
-      baseUrl = await getbaseUrl();
-    }
     final response = await http.get(
       Uri.parse('$baseUrl/gemini/with-history-no-stream')
           .replace(queryParameters: {
@@ -51,15 +44,11 @@ class HttpService {
     required String query,
     required String id,
     String modelType = 'text',
-    required bool performRAG, 
+    required bool performRAG,
     required bool performWebSearch,
   }) async* {
-    if (baseUrl == '') {
-      baseUrl = await getbaseUrl();
-    }
-
     final request = http.Request(
-      'GET',
+      '{POST}',
       Uri.parse('$baseUrl/groq/chat-stream/').replace(queryParameters: {
         'user': user,
         'query': query,
@@ -85,10 +74,6 @@ class HttpService {
     required String conversationId,
     required File audioFile,
   }) async {
-    if (baseUrl == '') {
-      baseUrl = await getbaseUrl();
-    }
-
     final request = http.MultipartRequest(
       'POST',
       Uri.parse('$baseUrl/transcribe/save').replace(queryParameters: {
@@ -121,10 +106,6 @@ class HttpService {
     required String conversationId,
     required File pdfFile,
   }) async {
-    if (baseUrl == '') {
-      baseUrl = await getbaseUrl();
-    }
-
     final request = http.MultipartRequest(
       'POST',
       Uri.parse('$baseUrl/upload/pdf'),
@@ -153,10 +134,6 @@ class HttpService {
     String user,
     String conversationId,
   ) async {
-    if (baseUrl == '') {
-      baseUrl = await getbaseUrl();
-    }
-
     final response = await http.get(
       Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
         'username': user,
@@ -193,11 +170,6 @@ class HttpService {
   }
 
   Future<bool> checkServerAvailavility() async {
-    if (baseUrl == '') {
-      print('Fetching base url');
-      baseUrl = await getbaseUrl();
-    }
-
     final response = await http.get(
       Uri.parse('$baseUrl/health'),
       headers: {

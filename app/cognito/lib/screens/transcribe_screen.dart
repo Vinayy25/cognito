@@ -6,7 +6,6 @@ import 'package:cognito/states/play_audio_provider.dart';
 import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/typing_text.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -72,25 +71,7 @@ class _TranscribeScreenState extends State<TranscribeScreen> {
                   color: Colors.white,
                 )),
             IconButton(
-                onPressed: () async {
-                  await FilePicker.platform
-                      .pickFiles(
-                          allowMultiple: false,
-                          dialogTitle: 'Please select an audio file',
-                          type: FileType.audio)
-                      .then((value) {
-                    if (value != null) {
-                      dataProvider.addChat(
-                        RecorderChatModel(
-                            audio: File(value.files.first.path!),
-                            time: TimeOfDay.now(),
-                            text: 'Transcribing...'),
-                         'vinay',
-                        widget.conversationId,
-                      );
-                    }
-                  });
-                },
+                onPressed: () async {},
                 icon: const Icon(
                   Icons.file_upload_outlined,
                   color: Colors.white,

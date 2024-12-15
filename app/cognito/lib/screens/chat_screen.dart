@@ -1,6 +1,5 @@
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/models/recorder_model.dart';
-import 'package:cognito/screens/demo.dart';
 import 'package:cognito/services/http_service.dart';
 import 'package:cognito/states/chat_state.dart';
 import 'package:cognito/states/data_provider.dart';
@@ -9,7 +8,6 @@ import 'package:cognito/utils/colors.dart';
 import 'package:cognito/utils/text.dart';
 import 'package:cognito/widgets/chat_card.dart';
 import 'package:cognito/widgets/welcome_message.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -59,9 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
-    dataProvider.baseUrl = ((widget.chatModelProvider.baseUrl != '')
-        ? widget.chatModelProvider.baseUrl
-        : HttpService(baseUrl: '').getbaseUrl() as String?);
+    dataProvider.baseUrl = 'http://cognito.fun';
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {

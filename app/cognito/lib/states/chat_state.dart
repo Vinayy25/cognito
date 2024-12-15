@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -67,7 +66,7 @@ class ChatState extends ChangeNotifier {
   }
 
   Future<void> initializeData() async {
-    baseUrl = await HttpService(baseUrl: '').getbaseUrl();
+    baseUrl = 'http://cognito.fun';
     print(baseUrl);
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
     print(x);
@@ -147,24 +146,9 @@ class ChatState extends ChangeNotifier {
   Future<void> pickAndUploadFile(String user, String conversationId) async {
     try {
       // Pick a PDF file
-      FilePickerResult? result = await FilePicker.platform
-          .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+      
 
-      if (result != null) {
-        File file = File(result.files.single.path!);
-
-        // Upload the file
-        String responseMessage = await HttpService(baseUrl: baseUrl).uploadPdf(
-          user: user,
-          conversationId: conversationId,
-          pdfFile: file,
-        );
-
-        // Show a success message
-        print(responseMessage);
-      } else {
-        print('User canceled the picker');
-      }
+    
     } catch (e) {
       print('Error picking or uploading file: $e');
       print(

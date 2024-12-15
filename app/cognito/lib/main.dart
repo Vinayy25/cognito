@@ -9,7 +9,7 @@ import 'package:cognito/states/play_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ola_maps/ola_maps.dart';
+
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -19,7 +19,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Olamaps.instance.initialize("BQZPdb7TwcDIj1mvJ7tmo5d4gTWXEWqmJlRZFrKb");
 
   runApp(const MyApp());
 }
