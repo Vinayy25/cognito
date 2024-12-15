@@ -27,7 +27,7 @@ from functions.search import search_web
 import markdown
 from models import  ChatResponse, SearchRequest
 from  redis_functions import get_chat_history, store_chat_history
-from templates import gemini_system_prompt
+from templates import gemini_system_prompt, system_prompt_without_rag
 
 
 import os
@@ -41,8 +41,10 @@ from functions.groqChat import stream_groq_response
 import aiofiles
 import nltk
 
-nltk.download('averaged_perceptron_tagger')
+from dotenv import load_dotenv
 
+nltk.download('averaged_perceptron_tagger')
+load_dotenv()
 
 from functions.similaritySearch import getSimilarity
 app = FastAPI()
@@ -326,6 +328,30 @@ def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assi
                     )
             return JSONResponse(status_code=200, content={ "response": groq_chat_completion.choices[0].message.content,})
             
+        except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+            
+
+
+@app.get("/groq/chat-stream/", )
+async def groq_chat(user: str, query: str, id: str, modelType: str, performRAG: str, performWebSearch: str):
+        try:
+                # Generate chat completion using GROQ model
+            print("got a groq request ")
+
+            if performRAG == "true":
+                    embed_model = get_embed_model()
+                    similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
+                    similarText = list_to_numbered_string(similarDocs)
+                    systemMessage = gemini_system_prompt + similarText 
+            else :
+                systemMessage = system_prompt_without_rag
+
+            if performWebSearch == "true":
+                    res = await search_web(query)
+                    systemMessage = systemMessage +"here is the web search results " + res
+
+            return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag='false'), media_type='text/plain')
         except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
             

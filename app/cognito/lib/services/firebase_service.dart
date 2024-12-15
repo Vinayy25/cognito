@@ -104,6 +104,8 @@ class FirebaseService {
           .doc('id')
           .get();
 
+          print(documentSnapshot.data());
+
       if (!documentSnapshot.exists ||
           documentSnapshot.data()!['conversation_ids'] == null) {
             print("does not exist");

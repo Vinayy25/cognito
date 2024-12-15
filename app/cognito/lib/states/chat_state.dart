@@ -13,6 +13,7 @@ class ChatState extends ChangeNotifier {
   bool shouldRefresh = false;
   String baseUrl = '';
   bool performRAG = false;
+  bool performWebSearch = false;
   ChatState() {
     initializeData();
   }
@@ -69,6 +70,7 @@ class ChatState extends ChangeNotifier {
     baseUrl = await HttpService(baseUrl: '').getbaseUrl();
     print(baseUrl);
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
+    print(x);
 
     List<dynamic> conversationIds = x['conversation_ids'];
     Map<String, dynamic> conversationDetails = x['conversation_details'][0];
@@ -192,7 +194,10 @@ class ChatState extends ChangeNotifier {
               user: email!,
               query: message,
               id: conversationId,
-              performRAG: performRAG);
+              performRAG: performRAG,
+              performWebSearch: performWebSearch
+              
+              );
 
       String accumulatedResponse = '';
       Chat modelChat =

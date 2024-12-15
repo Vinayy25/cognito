@@ -343,7 +343,7 @@ class _RegisterState extends State<Register> {
                           newEmailController.text, newPasswordController.text);
                       
                       
-                      Future.delayed(const Duration(seconds: 3), () {
+                      await Future.delayed(const Duration(seconds: 3), () {
                         initializeConversations(newEmailController.text);
                         authProvider.isNewUser = true;
                       });

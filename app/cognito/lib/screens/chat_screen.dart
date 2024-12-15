@@ -214,9 +214,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                   color: AppColor.iconColor,
                                 )),
                             IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Iconsax.microphone5,
-                                    color: AppColor.iconColor)),
+                                onPressed: () {
+                                  widget.chatModelProvider.performWebSearch =
+                                      !widget
+                                          .chatModelProvider.performWebSearch;
+                                  setState(() {
+                                      
+                                  });
+                                },
+                                icon: Icon(Iconsax.global_search,
+                                    color: widget
+                                            .chatModelProvider.performWebSearch
+                                        ? AppColor.iconColor
+                                        : AppColor.secondaryTextColor)),
                           ],
                         ),
                       ),
@@ -233,7 +243,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               // dismiss keyboard
                               SystemChannels.textInput
                                   .invokeMethod('TextInput.hide');
-                            },      
+                            },
                             controller: promptController,
                             onTap: () {
                               scrollController.jumpTo(
@@ -261,14 +271,22 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       ),
-                      CupertinoSwitch(
-                        value: widget.chatModelProvider.performRAG,
-                        activeColor: AppColor.iconColor,
-                        onChanged: (bool value) {
-                          setState(() {
-                            widget.chatModelProvider.setPerformRAG(value);
-                          });
-                        },
+                      Column(
+                        children: [
+                          CupertinoSwitch(
+                            value: widget.chatModelProvider.performRAG,
+                            activeTrackColor: AppColor.iconColor,
+                            onChanged: (bool value) {
+                              setState(() {
+                                widget.chatModelProvider.setPerformRAG(value);
+                              });
+                            },
+                          ),
+                          AppText(
+                              text: "RAG",
+                              fontsize: 12,
+                              color: AppColor.primaryTextColor),
+                        ],
                       ),
                       IconButton(
                           onPressed: () {
