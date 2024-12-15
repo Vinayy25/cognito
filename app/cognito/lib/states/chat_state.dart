@@ -11,7 +11,7 @@ class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
-  String baseUrl = '';
+  String baseUrl = 'http://cognito.fun';
   bool performRAG = false;
   bool performWebSearch = false;
   ChatState() {

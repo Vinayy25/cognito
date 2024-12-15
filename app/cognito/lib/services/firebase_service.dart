@@ -78,10 +78,11 @@ class FirebaseService {
   }
 
   Future<String> getNgrokUrl() async {
-    final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await _db.collection('ngrok_URLs').doc('url').get();
+    // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+    //     await _db.collection('ngrok_URLs').doc('url').get();
 
-    return documentSnapshot.data()!['url'];
+    // return documentSnapshot.data()!['url'];
+    return 'http://cognito.fun';
   }
 
   void createUserDocument() async {

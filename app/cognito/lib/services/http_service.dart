@@ -60,7 +60,7 @@ class HttpService {
 
     final request = http.Request(
       'GET',
-      Uri.parse('$baseUrl/chat-stream').replace(queryParameters: {
+      Uri.parse('$baseUrl/groq/chat-stream/').replace(queryParameters: {
         'user': user,
         'query': query,
         'id': id,
