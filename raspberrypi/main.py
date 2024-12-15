@@ -35,7 +35,7 @@ def record_audio_sounddevice(filename, duration, sample_rate=44100):
     audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=2, dtype='int16')
     #wait for min of 1 sec before stopping
     
-    sd.wait(detect_silence_and_stop)  # Wait until recording is finished
+    sd.wait(detect_silence_and_stop())  # Wait until recording is finished
     
 
     write(filename, sample_rate, audio_data)

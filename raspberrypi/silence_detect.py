@@ -2,7 +2,10 @@ import pyaudio
 import struct
 import sounddevice as sd
 import time
-def detect_silence_and_stop(threshold=3000, silence_duration= 0.5, sample_rate=16000, chunk_size=1024):
+import pygame
+
+def detect_silence_and_stop(threshold=3500, silence_duration= 0.5, sample_rate=16000, chunk_size=1024):
+    print("detecting silence")
     """
     Detects silence in the audio stream.
     
@@ -14,6 +17,7 @@ def detect_silence_and_stop(threshold=3000, silence_duration= 0.5, sample_rate=1
     """
     #wait for min of 1 sec before stopping
     time.sleep(1)
+    
     pa = pyaudio.PyAudio()
     stream = pa.open(
         format=pyaudio.paInt16,
@@ -40,6 +44,11 @@ def detect_silence_and_stop(threshold=3000, silence_duration= 0.5, sample_rate=1
             if silent_chunks >= silence_duration * (sample_rate / chunk_size):
                 print("Silence detected. Stopping...")
                 sd.stop()
+                pygame.mixer.init()
+                pygame.mixer.music.load("audio2.wav")
+                pygame.mixer.music.play()
+                #return a callback to sd.wait()
+                return True
                 break
     except KeyboardInterrupt:
         print("Stopped manually.")
@@ -49,5 +58,3 @@ def detect_silence_and_stop(threshold=3000, silence_duration= 0.5, sample_rate=1
         pa.terminate()
 
 
-if __name__ == "__main__":
-    detect_silence()

@@ -9,7 +9,7 @@ from request_server import send_audio_and_get_response_play
 import pygame
 from main import record_audio_sounddevice
 
-prompt_audio_file = "prompt.wav"
+prompt_audio_file = "prompt.mp3"
 
 def play_my_sound():
     pygame.mixer.init()
