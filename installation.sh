@@ -83,7 +83,7 @@ pip3 install -r requirements.txt
 echo "Installing Uvicorn..."
 sudo pip3 install uvicorn
 
-
+pip3 install pocketgroq
 
 # Start a tmux session and run the server
 echo "Starting a tmux session and running the server..."
