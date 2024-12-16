@@ -2,9 +2,45 @@
   "project_info": {
     "project_number": "513061587003",
     "project_id": "cognito-ai-vinay",
-    "storage_bucket": "cognito-ai-vinay.appspot.com"
+    "storage_bucket": "cognito-ai-vinay.firebasestorage.app"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513061587003:android:e87bc86f82067e5842341e",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513061587003-oputcflrguh73k1licrn7rbnjssdo8nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADYbewKFmF3BW2_VUbG-BK20RLIYNPkWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "513061587003-oputcflrguh73k1licrn7rbnjssdo8nu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "513061587003-d2nlmntud718c4af8nv1mc71bci1ooc7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cognitov2"
+              }
+            }
+          ]
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:513061587003:android:1182cd5b9384853c42341e",
@@ -39,10 +75,46 @@
               "client_type": 3
             },
             {
-              "client_id": "513061587003-juso494huh1b0eg3anur9aurm7qrklj1.apps.googleusercontent.com",
+              "client_id": "513061587003-d2nlmntud718c4af8nv1mc71bci1ooc7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.cognito"
+                "bundle_id": "com.example.cognitov2"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513061587003:android:c0ec3b4b6c9a609442341e",
+        "android_client_info": {
+          "package_name": "com.example.cognitov2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513061587003-oputcflrguh73k1licrn7rbnjssdo8nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADYbewKFmF3BW2_VUbG-BK20RLIYNPkWA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "513061587003-oputcflrguh73k1licrn7rbnjssdo8nu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "513061587003-d2nlmntud718c4af8nv1mc71bci1ooc7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cognitov2"
               }
             }
           ]

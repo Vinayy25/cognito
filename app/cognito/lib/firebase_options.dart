@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -49,7 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '513061587003',
     projectId: 'cognito-ai-vinay',
     authDomain: 'cognito-ai-vinay.firebaseapp.com',
-    storageBucket: 'cognito-ai-vinay.appspot.com',
+    storageBucket: 'cognito-ai-vinay.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -57,7 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:513061587003:android:1182cd5b9384853c42341e',
     messagingSenderId: '513061587003',
     projectId: 'cognito-ai-vinay',
-    storageBucket: 'cognito-ai-vinay.appspot.com',
+    storageBucket: 'cognito-ai-vinay.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -65,7 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:513061587003:ios:dccb395e2f42d9af42341e',
     messagingSenderId: '513061587003',
     projectId: 'cognito-ai-vinay',
-    storageBucket: 'cognito-ai-vinay.appspot.com',
+    storageBucket: 'cognito-ai-vinay.firebasestorage.app',
     androidClientId: '513061587003-6njjqv6r50vagsjf0r69p64rl3i1ilg6.apps.googleusercontent.com',
     iosClientId: '513061587003-juso494huh1b0eg3anur9aurm7qrklj1.apps.googleusercontent.com',
     iosBundleId: 'com.example.cognito',
@@ -73,12 +70,22 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyA6jjEDqM1aPTnZiwN0vMWMxQsulgmibTE',
-    appId: '1:513061587003:ios:b861caef122d806742341e',
+    appId: '1:513061587003:ios:dccb395e2f42d9af42341e',
     messagingSenderId: '513061587003',
     projectId: 'cognito-ai-vinay',
-    storageBucket: 'cognito-ai-vinay.appspot.com',
+    storageBucket: 'cognito-ai-vinay.firebasestorage.app',
     androidClientId: '513061587003-6njjqv6r50vagsjf0r69p64rl3i1ilg6.apps.googleusercontent.com',
-    iosClientId: '513061587003-qc5h4e7hnq7g7k3enibgsao39tusi3rr.apps.googleusercontent.com',
-    iosBundleId: 'com.example.cognito.RunnerTests',
+    iosClientId: '513061587003-juso494huh1b0eg3anur9aurm7qrklj1.apps.googleusercontent.com',
+    iosBundleId: 'com.example.cognito',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyC8G5dEesxigaYWc6wNcVHkltRueaWQQeg',
+    appId: '1:513061587003:web:274922b0825aa56042341e',
+    messagingSenderId: '513061587003',
+    projectId: 'cognito-ai-vinay',
+    authDomain: 'cognito-ai-vinay.firebaseapp.com',
+    storageBucket: 'cognito-ai-vinay.firebasestorage.app',
+  );
+
 }

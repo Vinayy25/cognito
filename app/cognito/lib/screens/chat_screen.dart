@@ -38,10 +38,10 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      viewScrollController
-          .jumpTo(viewScrollController.position.maxScrollExtent);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   viewScrollController
+    //       .jumpTo(viewScrollController.position.maxScrollExtent);
+    // });
 
     super.initState();
   }
@@ -55,7 +55,7 @@ class _ChatScreenState extends State<ChatScreen> {
         AdvancedDrawerController();
     final ScrollController scrollController = ScrollController();
 
-    final playProvider = Provider.of<PlayAudioProvider>(context);
+    // final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
     dataProvider.baseUrl = 'http://cognito.fun';
 
@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
         widget.chatModelProvider.chatStream(message, widget.conversationId);
         promptController.clear();
       }
-      setState(() {});
+      // setState(() {});
     }
 
     var myChat = (widget
@@ -139,10 +139,10 @@ class _ChatScreenState extends State<ChatScreen> {
               unwantedWidget(myChat.length),
               Consumer<ChatState>(builder: (context, value, child) {
                 if (value.shouldRefresh == true) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    viewScrollController
-                        .jumpTo(viewScrollController.position.maxScrollExtent);
-                  });
+                  // WidgetsBinding.instance.addPostFrameCallback((_) {
+                  //   viewScrollController
+                  //       .jumpTo(viewScrollController.position.maxScrollExtent);
+                  // });
                   value.shouldRefresh = false;
                 }
 
@@ -214,9 +214,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                   widget.chatModelProvider.performWebSearch =
                                       !widget
                                           .chatModelProvider.performWebSearch;
-                                  setState(() {
+                                  // setState(() {
                                       
-                                  });
+                                  // });
                                 },
                                 icon: Icon(Iconsax.global_search,
                                     color: widget
@@ -246,19 +246,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                   scrollController.position.maxScrollExtent);
                             },
                             textInputAction: TextInputAction.send,
-                            onSubmitted: (value) {
-                              sendMessage(promptController.text);
+                            onSubmitted: (value)  {
+                               sendMessage(promptController.text);
 
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                if (viewScrollController.hasClients) {
-                                  viewScrollController.animateTo(
-                                    viewScrollController
-                                        .position.maxScrollExtent,
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeOut,
-                                  );
-                                }
-                              });
+                              // WidgetsBinding.instance.addPostFrameCallback((_) {
+                              //   if (viewScrollController.hasClients) {
+                              //     viewScrollController.animateTo(
+                              //       viewScrollController
+                              //           .position.maxScrollExtent,
+                              //       duration: const Duration(milliseconds: 300),
+                              //       curve: Curves.easeOut,
+                              //     );
+                              //   }
+                              // });
                             },
                             decoration: const InputDecoration(
                                 border: InputBorder.none,

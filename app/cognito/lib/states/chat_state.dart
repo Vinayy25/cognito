@@ -25,48 +25,48 @@ class ChatState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void checkForSummary() async {
-    bool changesMade = false;
+  // void checkForSummary() async {
+  //   bool changesMade = false;
 
-    List<Conversations> previousChatSummaryAndTitle = chatModel.conversations;
-    for (int conversationIndex = 0;
-        conversationIndex < chatModel.conversations.length;
-        conversationIndex++) {
-      var x = chatModel.conversations[conversationIndex];
-      if (x.chats.length == 4 ||
-          x.chats.length % 10 == 0 ||
-          x.conversationName == null) {
-        print(x.conversationName);
-        Map<String, String> topicsAndSummary =
-            await HttpService(baseUrl: baseUrl)
-                .getTopicsAndSummary(email!, x.conversationId);
+  //   List<Conversations> previousChatSummaryAndTitle = chatModel.conversations;
+  //   for (int conversationIndex = 0;
+  //       conversationIndex < chatModel.conversations.length;
+  //       conversationIndex++) {
+  //     var x = chatModel.conversations[conversationIndex];
+  //     if (x.chats.length == 4 ||
+  //         x.chats.length % 10 == 0 ||
+  //         x.conversationName == null) {
+  //       print(x.conversationName);
+  //       Map<String, String> topicsAndSummary =
+  //           await HttpService(baseUrl: baseUrl)
+  //               .getTopicsAndSummary(email!, x.conversationId);
 
-        if (topicsAndSummary['title'] == null ||
-            topicsAndSummary['summary'] == null ||
-            topicsAndSummary['title'] == '' ||
-            topicsAndSummary['summary'] == '') {
-          x.conversationName =
-              previousChatSummaryAndTitle[conversationIndex].conversationName;
-          x.conversationSummary = previousChatSummaryAndTitle[conversationIndex]
-              .conversationSummary;
-        } else {
-          x.conversationName = topicsAndSummary['title'];
-          x.conversationSummary = topicsAndSummary['summary'];
+  //       if (topicsAndSummary['title'] == null ||
+  //           topicsAndSummary['summary'] == null ||
+  //           topicsAndSummary['title'] == '' ||
+  //           topicsAndSummary['summary'] == '') {
+  //         x.conversationName =
+  //             previousChatSummaryAndTitle[conversationIndex].conversationName;
+  //         x.conversationSummary = previousChatSummaryAndTitle[conversationIndex]
+  //             .conversationSummary;
+  //       } else {
+  //         x.conversationName = topicsAndSummary['title'];
+  //         x.conversationSummary = topicsAndSummary['summary'];
 
-          changesMade = true;
-        }
-      }
-      if (changesMade == true) {
-        await FirebaseService().saveSummaryAndTitle(chatModel);
-      }
-      notifyListeners();
-    }
+  //         changesMade = true;
+  //       }
+  //     }
+  //     if (changesMade == true) {
+  //       await FirebaseService().saveSummaryAndTitle(chatModel);
+  //     }
+  //     notifyListeners();
+  //   }
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   Future<void> initializeData() async {
-    baseUrl = 'http://cognito.fun';
+
     print(baseUrl);
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
     print(x);
@@ -84,54 +84,54 @@ class ChatState extends ChangeNotifier {
       );
       chatModel.conversations.add(conversation);
     }
-    checkForSummary();
+    // checkForSummary();
     notifyListeners();
   }
 
-  void chat(String message, String conversationId) async {
-    final chat = Chat(
-      message: message,
-      sender: 'user',
-      time: DateTime.now().toString(),
-    );
+  // void chat(String message, String conversationId) async {
+  //   final chat = Chat(
+  //     message: message,
+  //     sender: 'user',
+  //     time: DateTime.now().toString(),
+  //   );
 
-    final conversationIndex = chatModel.conversations.indexWhere(
-      (element) => element.conversationId == conversationId,
-    );
+  //   final conversationIndex = chatModel.conversations.indexWhere(
+  //     (element) => element.conversationId == conversationId,
+  //   );
 
-    if (conversationIndex != -1) {
-      chatModel.conversations[conversationIndex].chats.add(chat);
-      notifyListeners();
+  //   if (conversationIndex != -1) {
+  //     chatModel.conversations[conversationIndex].chats.add(chat);
+  //     notifyListeners();
 
-      final chatResponse = await HttpService(baseUrl: baseUrl).queryWithHistory(
-        user: email!,
-        query: message,
-        id: conversationId,
-      );
+  //     final chatResponse = await HttpService(baseUrl: baseUrl).queryWithHistoryAndText(
+  //       user: email!,
+  //       query: message,
+  //       id: conversationId,
+  //     );
 
-      final modelChat = Chat(
-        message: chatResponse,
-        sender: 'model',
-        time: DateTime.now().toString(),
-      );
+  //     final modelChat = Chat(
+  //       message: chatResponse,
+  //       sender: 'model',
+  //       time: DateTime.now().toString(),
+  //     );
 
-      chatModel.conversations[conversationIndex].chats.add(modelChat);
-      shouldRefresh = true;
-      notifyListeners();
-      await FirebaseService().addChat(conversationId, chat);
-      await FirebaseService().addChat(conversationId, modelChat);
-    } else {
-      final conversation = Conversations(
-        chats: [chat],
-        conversationId: conversationId,
-      );
+  //     chatModel.conversations[conversationIndex].chats.add(modelChat);
+  //     shouldRefresh = true;
+  //     notifyListeners();
+  //     await FirebaseService().addChat(conversationId, chat);
+  //     await FirebaseService().addChat(conversationId, modelChat);
+  //   } else {
+  //     final conversation = Conversations(
+  //       chats: [chat],
+  //       conversationId: conversationId,
+  //     );
 
-      chatModel.conversations.add(conversation);
-      shouldRefresh = true;
-      notifyListeners();
-      await FirebaseService().addChat(conversationId, chat);
-    }
-  }
+  //     chatModel.conversations.add(conversation);
+  //     shouldRefresh = true;
+  //     notifyListeners();
+  //     await FirebaseService().addChat(conversationId, chat);
+  //   }
+  // }
 
   void addConversationId(String conversationId) async {
     final conversation = Conversations(
@@ -173,7 +173,7 @@ class ChatState extends ChangeNotifier {
       notifyListeners();
 
       // Start streaming chat response
-      final chatResponseStream = HttpService(baseUrl: baseUrl)
+      final chatResponseStream = HttpService()
           .queryWithHistoryAndTextStream(
               user: email!,
               query: message,

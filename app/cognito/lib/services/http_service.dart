@@ -7,37 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class HttpService {
-  String baseUrl = 'http://cognito.fun';
-
-  HttpService({required this.baseUrl});
-
-  Future<String> queryWithHistory({
-    required String user,
-    required String query,
-    required String id,
-    String modelType = 'text',
-  }) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/gemini/with-history-no-stream')
-          .replace(queryParameters: {
-        'user': user,
-        'query': query,
-        'id': id,
-        'model_type': modelType,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
-
-      return modelResponse['response'];
-    } else {
-      throw Exception('Failed to query with history: ${response.statusCode}');
-    }
-  }
+  String baseUrl = 'http://103.248.82.186';
 
   Stream<String> queryWithHistoryAndTextStream({
     required String user,
@@ -47,23 +17,28 @@ class HttpService {
     required bool performRAG,
     required bool performWebSearch,
   }) async* {
-    final request = http.Request(
-      'GET',
-      Uri.parse('$baseUrl/groq/chat-stream/').replace(queryParameters: {
-        'user': user,
-        'query': query,
-        'id': id,
-        'model_type': modelType,
-        'perform_rag': performRAG.toString(),
-        'perform_web_search': performWebSearch.toString(),
-      }),
-    );
+    try {
+      final request = http.Request(
+        'GET',
+        Uri.parse('$baseUrl/groq/chat-stream/').replace(queryParameters: {
+          'user': user,
+          'query': query,
+          'id': id,
+          'model_type': modelType.toString(),
+          'perform_rag': performRAG.toString(),
+          'perform_web_search': performWebSearch.toString(),
+        }),
+      );
 
-    final response = await request.send();
-
-    await for (var chunk in response.stream.transform(utf8.decoder)) {
-      print(chunk);
-      yield chunk;
+      final response = await request.send();
+      print("response.statusCode: ${response.statusCode}");
+      await for (var chunk in response.stream.transform(utf8.decoder)) {
+        print(chunk);
+        yield chunk.toString();
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to query with history and text stream');
     }
   }
 
@@ -128,57 +103,47 @@ class HttpService {
     }
   }
 
-  Future<Map<String, String>> getTopicsAndSummary(
-    String user,
-    String conversationId,
-  ) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
-        'username': user,
-        'conversation_id': conversationId,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+  // Future<Map<String, String>> getTopicsAndSummary(
+  //   String user,
+  //   String conversationId,
+  // ) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
+  //         'username': user,
+  //       'conversation_id': conversationId,
+  //     }),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   );
 
-    if (response.statusCode == 200) {
-      final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
+  //   if (response.statusCode == 200) {
+  //     final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
 
-      return {
-        'title': modelResponse['title'],
-        'summary': modelResponse['summary'],
-      };
-    } else if (response.statusCode == 404) {
-      return {
-        'title': '',
-        'summary': '',
-      };
-    } else if (response.statusCode == 500 || response.statusCode == 502) {
-      return {
-        'title': '',
-        'summary': '',
-      };
-    } else {
-      throw Exception(
-          'Failed to query the summary and title: ${response.statusCode}');
-    }
+  //     return {
+  //       'title': modelResponse['title'],
+  //       'summary': modelResponse['summary'],
+  //     };
+  //   } else if (response.statusCode == 404) {
+  //     return {
+  //       'title': '',
+  //       'summary': '',
+  //     };
+  //   } else if (response.statusCode == 500 || response.statusCode == 502) {
+  //     return {
+  //       'title': '',
+  //       'summary': '',
+  //     };
+  //   } else {
+  //     throw Exception(
+  //         'Failed to query the summary and title: ${response.statusCode}');
+  //   }
+  //   } catch (e) {
+  //     print(e);
+  //     throw Exception('Failed to query the summary and title');
+  //   }
 
-    // add conversation details to db
-  }
-
-  Future<bool> checkServerAvailavility() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/health'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  //   // add conversation details to db
+  // }
 }

@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen>
       final String uuid = const Uuid().v4();
 
       widget.chatModelProvier.addConversationId(uuid);
-      widget.chatModelProvier.chat(value.toString(), uuid);
+      widget.chatModelProvier.chatStream(value.toString(), uuid);
 
       Navigator.push(
         context,

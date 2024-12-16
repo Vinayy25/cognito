@@ -82,12 +82,12 @@ class MyDrawer extends StatelessWidget {
             ),
             ListTile(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (_) => const TranscribeScreen(
-                                conversationId: '123',
-                              )));
+                  // Navigator.push(
+                      // context,
+                      // CupertinoPageRoute(
+                      //     builder: (_) => const TranscribeScreen(
+                      //           conversationId: '123',
+                      //         )));
                 },
                 title: const AppText(
                   text: 'Transcribe',

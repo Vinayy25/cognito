@@ -22,7 +22,7 @@ class Data extends ChangeNotifier  {
   fetchTrasnscription(String user, String id) async {
     requestPending = true;
     await HttpService(
-    baseUrl: baseUrl!
+    
     )
         .transcribeAndSave(
       user: user,

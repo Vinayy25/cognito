@@ -1,6 +1,7 @@
 import 'package:cognito/firebase_options.dart';
 import 'package:cognito/screens/auth_screen.dart';
 import 'package:cognito/screens/chat_screen.dart';
+import 'package:cognito/screens/dummy_chat_screen.dart';
 import 'package:cognito/screens/main_screen.dart';
 import 'package:cognito/states/auth_provider.dart';
 import 'package:cognito/states/chat_state.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthStateProvider()),
           ChangeNotifierProvider(create: (_) => ChatState()),
-          ChangeNotifierProvider(create: (_) => PlayAudioProvider()),
+          // ChangeNotifierProvider(create: (_) => PlayAudioProvider()),
           ChangeNotifierProvider(create: (_) => Data()),
         ],
         child: MaterialApp(
@@ -47,20 +48,21 @@ class MyApp extends StatelessWidget {
           home: Consumer<AuthStateProvider>(
             builder: (context, provider, child) {
               if (provider.isAuthenticated) {
-                return Consumer<ChatState>(
-                  builder: (context, chatState, child) {
-                    if (provider.isNewUser == true) {
-                      return ChatScreen(
-                        conversationId: provider.email,
-                        chatModelProvider: chatState,
-                      );
-                    } else {
-                      return MainScreen(
-                        chatModelProvier: chatState,
-                      );
-                    }
-                  },
-                );
+                return DummyChatScreen();
+                // return Consumer<ChatState>(
+                //   builder: (context, chatState, child) {
+                //     if (provider.isNewUser == true) {
+                //       return ChatScreen(
+                //         conversationId: provider.email,
+                //         chatModelProvider: chatState,
+                //       );
+                //     } else {
+                //       return MainScreen(
+                //         chatModelProvier: chatState,
+                //       );
+                //     }
+                //   },
+                // );
               } else {
                 return LoginPage(
                   authProvider: provider,
