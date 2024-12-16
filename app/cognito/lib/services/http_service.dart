@@ -48,7 +48,7 @@ class HttpService {
     required bool performWebSearch,
   }) async* {
     final request = http.Request(
-      '{POST}',
+      'GET',
       Uri.parse('$baseUrl/groq/chat-stream/').replace(queryParameters: {
         'user': user,
         'query': query,
@@ -58,8 +58,6 @@ class HttpService {
         'perform_web_search': performWebSearch.toString(),
       }),
     );
-
-    request.headers['Content-Type'] = 'application/json';
 
     final response = await request.send();
 
