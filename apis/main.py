@@ -334,20 +334,20 @@ def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assi
 
 
 @app.get("/groq/chat-stream/", )
-async def groq_chat(user: str, query: str, id: str, modelType: str, performRAG: str, performWebSearch: str):
+async def groq_chat(user: str, query: str, id: str, model_type: str, perform_rag: str, perform_web_search: str):
         try:
                 # Generate chat completion using GROQ model
             print("got a groq request ")
 
-            if performRAG == "true":
-                    embed_model = get_embed_model()
+            embed_model = get_embed_model()
+            if perform_rag == "true":
                     similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
                     similarText = list_to_numbered_string(similarDocs)
                     systemMessage = gemini_system_prompt + similarText 
             else :
                 systemMessage = system_prompt_without_rag
 
-            if performWebSearch == "true":
+            if perform_web_search == "true":
                     res = await search_web(query)
                     systemMessage = systemMessage +"here is the web search results " + res
 
