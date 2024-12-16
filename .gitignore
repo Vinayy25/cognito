@@ -41,3 +41,5 @@ Dockerfile
 .vscode
 notes.txt
 apis/functions/collection
+apis/providers
+apis/tools/web_tools
