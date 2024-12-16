@@ -103,47 +103,47 @@ class HttpService {
     }
   }
 
-  // Future<Map<String, String>> getTopicsAndSummary(
-  //   String user,
-  //   String conversationId,
-  // ) async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
-  //         'username': user,
-  //       'conversation_id': conversationId,
-  //     }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   );
+  Future<Map<String, String>> getTopicsAndSummary(
+    String user,
+    String conversationId,
+  ) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
+          'username': user,
+        'conversation_id': conversationId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
 
-  //   if (response.statusCode == 200) {
-  //     final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
 
-  //     return {
-  //       'title': modelResponse['title'],
-  //       'summary': modelResponse['summary'],
-  //     };
-  //   } else if (response.statusCode == 404) {
-  //     return {
-  //       'title': '',
-  //       'summary': '',
-  //     };
-  //   } else if (response.statusCode == 500 || response.statusCode == 502) {
-  //     return {
-  //       'title': '',
-  //       'summary': '',
-  //     };
-  //   } else {
-  //     throw Exception(
-  //         'Failed to query the summary and title: ${response.statusCode}');
-  //   }
-  //   } catch (e) {
-  //     print(e);
-  //     throw Exception('Failed to query the summary and title');
-  //   }
+      return {
+        'title': modelResponse['title'],
+        'summary': modelResponse['summary'],
+      };
+    } else if (response.statusCode == 404) {
+      return {
+        'title': '',
+        'summary': '',
+      };
+    } else if (response.statusCode == 500 || response.statusCode == 502) {
+      return {
+        'title': '',
+        'summary': '',
+      };
+    } else {
+      throw Exception(
+          'Failed to query the summary and title: ${response.statusCode}');
+    }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to query the summary and title');
+    }
 
-  //   // add conversation details to db
-  // }
+    // add conversation details to db
+  }
 }

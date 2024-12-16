@@ -23,7 +23,7 @@ dependencies:
     sdk: flutter
   flutter_advanced_drawer: ^1.3.6
   flutter_markdown: ^0.7.3
-  google_fonts: ^6.2.1
+  
   google_generative_ai: ^0.4.3
   google_sign_in: ^6.2.1
   http: ^1.2.1
@@ -73,3 +73,11 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Montserrat-Italic.ttf
+          style: italic

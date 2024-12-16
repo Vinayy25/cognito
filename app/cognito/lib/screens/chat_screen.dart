@@ -38,10 +38,10 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   viewScrollController
-    //       .jumpTo(viewScrollController.position.maxScrollExtent);
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      viewScrollController
+          .jumpTo(viewScrollController.position.maxScrollExtent);
+    });
 
     super.initState();
   }
@@ -139,10 +139,10 @@ class _ChatScreenState extends State<ChatScreen> {
               unwantedWidget(myChat.length),
               Consumer<ChatState>(builder: (context, value, child) {
                 if (value.shouldRefresh == true) {
-                  // WidgetsBinding.instance.addPostFrameCallback((_) {
-                  //   viewScrollController
-                  //       .jumpTo(viewScrollController.position.maxScrollExtent);
-                  // });
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    viewScrollController
+                        .jumpTo(viewScrollController.position.maxScrollExtent);
+                  });
                   value.shouldRefresh = false;
                 }
 
@@ -214,9 +214,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                   widget.chatModelProvider.performWebSearch =
                                       !widget
                                           .chatModelProvider.performWebSearch;
-                                  // setState(() {
+                                  setState(() {
                                       
-                                  // });
+                                  });
                                 },
                                 icon: Icon(Iconsax.global_search,
                                     color: widget
@@ -249,16 +249,16 @@ class _ChatScreenState extends State<ChatScreen> {
                             onSubmitted: (value)  {
                                sendMessage(promptController.text);
 
-                              // WidgetsBinding.instance.addPostFrameCallback((_) {
-                              //   if (viewScrollController.hasClients) {
-                              //     viewScrollController.animateTo(
-                              //       viewScrollController
-                              //           .position.maxScrollExtent,
-                              //       duration: const Duration(milliseconds: 300),
-                              //       curve: Curves.easeOut,
-                              //     );
-                              //   }
-                              // });
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (viewScrollController.hasClients) {
+                                  viewScrollController.animateTo(
+                                    viewScrollController
+                                        .position.maxScrollExtent,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOut,
+                                  );
+                                }
+                              });
                             },
                             decoration: const InputDecoration(
                                 border: InputBorder.none,

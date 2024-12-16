@@ -9,8 +9,7 @@ import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
+  
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -43,26 +42,26 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
-            fontFamily: GoogleFonts.montserrat().fontFamily,
+            fontFamily: 'Montserrat',
           ),
           home: Consumer<AuthStateProvider>(
             builder: (context, provider, child) {
               if (provider.isAuthenticated) {
-                return DummyChatScreen();
-                // return Consumer<ChatState>(
-                //   builder: (context, chatState, child) {
-                //     if (provider.isNewUser == true) {
-                //       return ChatScreen(
-                //         conversationId: provider.email,
-                //         chatModelProvider: chatState,
-                //       );
-                //     } else {
-                //       return MainScreen(
-                //         chatModelProvier: chatState,
-                //       );
-                //     }
-                //   },
-                // );
+               
+                return Consumer<ChatState>(
+                  builder: (context, chatState, child) {
+                    if (provider.isNewUser == true) {
+                      return ChatScreen(
+                        conversationId: provider.email,
+                        chatModelProvider: chatState,
+                      );
+                    } else {
+                      return MainScreen(
+                        chatModelProvier: chatState,
+                      );
+                    }
+                  },
+                );
               } else {
                 return LoginPage(
                   authProvider: provider,

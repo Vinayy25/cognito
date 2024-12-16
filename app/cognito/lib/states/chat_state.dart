@@ -25,45 +25,45 @@ class ChatState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void checkForSummary() async {
-  //   bool changesMade = false;
+  void checkForSummary() async {
+    bool changesMade = false;
 
-  //   List<Conversations> previousChatSummaryAndTitle = chatModel.conversations;
-  //   for (int conversationIndex = 0;
-  //       conversationIndex < chatModel.conversations.length;
-  //       conversationIndex++) {
-  //     var x = chatModel.conversations[conversationIndex];
-  //     if (x.chats.length == 4 ||
-  //         x.chats.length % 10 == 0 ||
-  //         x.conversationName == null) {
-  //       print(x.conversationName);
-  //       Map<String, String> topicsAndSummary =
-  //           await HttpService(baseUrl: baseUrl)
-  //               .getTopicsAndSummary(email!, x.conversationId);
+    List<Conversations> previousChatSummaryAndTitle = chatModel.conversations;
+    for (int conversationIndex = 0;
+        conversationIndex < chatModel.conversations.length;
+        conversationIndex++) {
+      var x = chatModel.conversations[conversationIndex];
+      if (x.chats.length == 4 ||
+          x.chats.length % 10 == 0 ||
+          x.conversationName == null) {
+        print(x.conversationName);
+        Map<String, String> topicsAndSummary =
+            await HttpService()
+                .getTopicsAndSummary(email!, x.conversationId);
 
-  //       if (topicsAndSummary['title'] == null ||
-  //           topicsAndSummary['summary'] == null ||
-  //           topicsAndSummary['title'] == '' ||
-  //           topicsAndSummary['summary'] == '') {
-  //         x.conversationName =
-  //             previousChatSummaryAndTitle[conversationIndex].conversationName;
-  //         x.conversationSummary = previousChatSummaryAndTitle[conversationIndex]
-  //             .conversationSummary;
-  //       } else {
-  //         x.conversationName = topicsAndSummary['title'];
-  //         x.conversationSummary = topicsAndSummary['summary'];
+        if (topicsAndSummary['title'] == null ||
+            topicsAndSummary['summary'] == null ||
+            topicsAndSummary['title'] == '' ||
+            topicsAndSummary['summary'] == '') {
+          x.conversationName =
+              previousChatSummaryAndTitle[conversationIndex].conversationName;
+          x.conversationSummary = previousChatSummaryAndTitle[conversationIndex]
+              .conversationSummary;
+        } else {
+          x.conversationName = topicsAndSummary['title'];
+          x.conversationSummary = topicsAndSummary['summary'];
 
-  //         changesMade = true;
-  //       }
-  //     }
-  //     if (changesMade == true) {
-  //       await FirebaseService().saveSummaryAndTitle(chatModel);
-  //     }
-  //     notifyListeners();
-  //   }
+          changesMade = true;
+        }
+      }
+      if (changesMade == true) {
+        await FirebaseService().saveSummaryAndTitle(chatModel);
+      }
+      notifyListeners();
+    }
 
-  //   notifyListeners();
-  // }
+    notifyListeners();
+  }
 
   Future<void> initializeData() async {
 
@@ -84,7 +84,7 @@ class ChatState extends ChangeNotifier {
       );
       chatModel.conversations.add(conversation);
     }
-    // checkForSummary();
+    checkForSummary();
     notifyListeners();
   }
 

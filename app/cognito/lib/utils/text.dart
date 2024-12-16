@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppText extends StatelessWidget {
   final String text;
@@ -21,7 +20,8 @@ class AppText extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: text,
-        style: GoogleFonts.montserrat(
+        style: TextStyle(
+          fontFamily: 'Montserrat',
           fontSize: fontsize,
           fontWeight: fontWeight,
           color: color,
@@ -52,9 +52,11 @@ class AppLargeText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
-      style: GoogleFonts.montserrat(
+      style: TextStyle(
+        fontFamily: 'Montserrat',
         fontSize: fontsize,
-        fontWeight: fontWeight,
+        fontWeight: fontWeight, // 700
+        
         color: color,
       ),
     );
@@ -111,7 +113,9 @@ class CurvedTextFields extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius!),
         ),
         child: TextField(
-            style: GoogleFonts.montserrat(),
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+            ),
             obscureText: obscureText,
             keyboardType: keyboardType,
             onChanged: (value) {
@@ -123,7 +127,8 @@ class CurvedTextFields extends StatelessWidget {
               prefixIcon: icon,
               border: InputBorder.none,
               hintText: hintText,
-              hintStyle: GoogleFonts.montserrat(
+              hintStyle: TextStyle(
+                fontFamily: 'Montserrat',
                 fontSize: fontSize,
                 fontWeight: fontWeight,
                 color: hintColor,
