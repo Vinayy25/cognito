@@ -4,15 +4,15 @@ import pygame
 
 
 # Configuration
-USER_ID = "user123"  # Replace with actual user ID
-CONVERSATION_ID = "conv456"  # Replace with actual conversation ID
+USER_ID = "vinay"  # Replace with actual user ID
+CONVERSATION_ID = "12345"  # Replace with actual conversation ID
 MODEL_TYPE = "text"  # Default: "text"
 PERFORM_RAG = "false"  # Default: "false"
 API_ENDPOINT = "http://cognito.fun/"  # Replace with actual endpoint
 
 
 
-def send_audio_and_get_response(file_name):
+def send_audio_and_get_response(file_name, RAG: bool):
     """Sends the recorded audio to the API endpoint and streams the response."""
     print("Sending audio file to the server...")
     with open(file_name, 'rb') as audio_file:
@@ -21,7 +21,7 @@ def send_audio_and_get_response(file_name):
             'user': USER_ID,
             'id': CONVERSATION_ID,
             'model_type': MODEL_TYPE,
-            'perform_rag': PERFORM_RAG
+            'perform_rag': str(RAG)
         }
         response = requests.post(API_ENDPOINT+'audio-chat-stream', params=params, files=files, stream=True)
 
@@ -78,8 +78,8 @@ def play_audio_response(response):
     pygame.mixer.quit()
 
 
-def send_audio_and_get_response_play(file_name):
-    response = send_audio_and_get_response(file_name)
+def send_audio_and_get_response_play(file_name, RAG: bool):
+    response = send_audio_and_get_response(file_name, RAG)
     print(response)
     if response:
         play_audio_response(response)

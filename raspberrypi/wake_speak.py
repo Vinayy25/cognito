@@ -28,11 +28,11 @@ def main():
     # Initialize Porcupine with a chosen wake word (e.g., "porcupine")
     prompt_audio_file = "prompt.mp3"
     rag_audio_file = "rag.mp3"
-    duration = 5
+    duration = 10
     audio_data = None
     porcupine = pvporcupine.create(
         access_key='pFaTLsJqVDE6/uSXFftK07tDKzwK6JaLnVAGH5nwvAl3W+oF6sO58Q==',
-        keywords=['snowboy','jarvis']
+        keywords=['snowboy','jarvis', 'computer']
     )
     
 
@@ -58,7 +58,7 @@ def main():
                 print("Wake word detected!")
                 play_my_sound()
                 
-                record_audio_sounddevice(prompt_audio_file,10) 
+                record_audio_sounddevice(prompt_audio_file,6) 
                 send_audio_and_get_response_play(prompt_audio_file)
 
             elif result == 1:
@@ -71,6 +71,14 @@ def main():
                 play_my_sound()
                 send_audio_rag(rag_audio_file, "user123", "conv456")
                 play_my_sound()
+
+            elif result == 2:
+                
+                print("Computer detected!")
+                play_my_sound()
+                
+                record_audio_sounddevice(prompt_audio_file,6) 
+                send_audio_and_get_response_play(prompt_audio_file, RAG=True)
                 
     except KeyboardInterrupt:
         print("Stopping...")
