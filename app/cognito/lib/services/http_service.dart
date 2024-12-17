@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class HttpService {
-  String baseUrl = 'http://103.248.82.186';
+  String baseUrl = 'http://103.248.82.185';
 
   Stream<String> queryWithHistoryAndTextStream({
     required String user,
