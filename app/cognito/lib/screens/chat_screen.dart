@@ -109,6 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
+    
         backgroundColor: AppColor.backgroundColor,
         centerTitle: true,
         title: const AppText(

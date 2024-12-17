@@ -27,7 +27,7 @@ class ChatState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void checkForSummary() async {
+  void checkForSummary(bool isForced) async {
     bool changesMade = false;
 
     List<Conversations> previousChatSummaryAndTitle = chatModel.conversations;
@@ -37,7 +37,8 @@ class ChatState extends ChangeNotifier {
       var x = chatModel.conversations[conversationIndex];
       if (x.chats.length == 4 ||
           x.chats.length % 10 == 0 ||
-          x.conversationName == null) {
+          x.conversationName == null ||
+          isForced == true) {
         print(x.conversationName);
         Map<String, String> topicsAndSummary =
             await HttpService().getTopicsAndSummary(email!, x.conversationId);
@@ -84,7 +85,7 @@ class ChatState extends ChangeNotifier {
       );
       chatModel.conversations.add(conversation);
     }
-    checkForSummary();
+    checkForSummary(false);
     notifyListeners();
   }
 
@@ -142,7 +143,8 @@ class ChatState extends ChangeNotifier {
     await FirebaseService().addConversationId(conversationId);
     notifyListeners();
   }
-Future<void> pickAndUploadFile(
+
+  Future<void> pickAndUploadFile(
     String user,
     String conversationId,
     int conversationIndex,
@@ -215,7 +217,6 @@ Future<void> pickAndUploadFile(
     return source ?? ImageSource.gallery; // Default to gallery if no selection
   }
 
-
   void chatStream(String message, String conversationId) async {
     final chat = Chat(
       message: message,
@@ -259,6 +260,7 @@ Future<void> pickAndUploadFile(
       }, onDone: () async {
         shouldRefresh = true;
         await FirebaseService().addChat(conversationId, chat);
+        await FirebaseService().addChat(conversationId, modelChat);
         notifyListeners();
       }, onError: (error) {
         print('Error receiving chat stream: $error');
