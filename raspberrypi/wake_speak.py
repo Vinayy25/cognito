@@ -59,7 +59,7 @@ def main():
                 play_my_sound()
                 
                 record_audio_sounddevice(prompt_audio_file,6) 
-                send_audio_and_get_response_play(prompt_audio_file)
+                send_audio_and_get_response_play(prompt_audio_file, RAG=False)
 
             elif result == 1:
                 print("Jarvis detected!")
