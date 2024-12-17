@@ -42,3 +42,4 @@ Flask
 pocketgroq>=0.1.5
 tldextract
 html2text
+pillow

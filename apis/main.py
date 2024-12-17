@@ -29,7 +29,7 @@ from models import  ChatResponse, SearchRequest
 from  redis_functions import get_chat_history, store_chat_history
 from templates import gemini_system_prompt, system_prompt_without_rag
 
-
+from PIL import Image
 import os
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import JSONResponse
@@ -40,6 +40,7 @@ from llama_parse import LlamaParse
 from functions.groqChat import stream_groq_response
 import aiofiles
 import nltk
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from dotenv import load_dotenv
 
@@ -50,6 +51,15 @@ from functions.similaritySearch import getSimilarity
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
+from starlette.middleware.gzip import GZipMiddleware
+
+app.add_middleware(GZipMiddleware)
+
+# Set maximum file size
+MAX_UPLOAD_SIZE = 20 * 1024 * 1024  # 20 MB
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
 
 # embed_model = HuggingFaceEmbeddings(
 #     model_name="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
@@ -480,13 +490,15 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
 
 
 @app.post("/analyze-image")
-async def analyze_image_endpoint(user: str, conversation_id: str, file: UploadFile = File(...), prompt: str = Query(default='What is in this image?')):
+async def analyze_image_endpoint(user: str, conversation_id: str, file: UploadFile = File(...), prompt: str = Query(default='Analyze the image and describe it in detail in strictly less than 100 words')):
     try:
         # Save the uploaded file to a temporary location
         temp_file_path = f"uploads/{file.filename}"
         with open(temp_file_path, "wb") as temp_file:
             temp_file.write(await file.read())
-
+        #if the image is larger than 4mb compress it
+        if os.path.getsize(temp_file_path) > 4 * 1024 * 1024:
+            compress_image(temp_file_path, temp_file_path, max_size_mb=4)
         # Call the analyze_image function
         response_content = analyze_image(temp_file_path, prompt)
 
@@ -733,3 +745,32 @@ def is_valid_json(text):
         return True
     except ValueError:
         return False
+
+
+def compress_image(input_path, output_path, max_size_mb=4):
+    """
+    Compress an image to ensure its size is below the specified max size in MB.
+    
+    Args:
+        input_path (str): Path to the input image.
+        output_path (str): Path to save the compressed image.
+        max_size_mb (int): Maximum allowed size in MB.
+    """
+    max_size_bytes = max_size_mb * 1024 * 1024  # Convert MB to bytes
+    quality = 95  # Initial quality for compression
+
+    # Open the image
+    img = Image.open(input_path)
+    
+    # Check the file size
+    img.save(output_path, format=img.format, quality=quality)
+    while os.path.getsize(output_path) > max_size_bytes:
+        # Reduce quality
+        quality -= 5
+        if quality < 10:  # Prevent going too low in quality
+            raise ValueError("Cannot compress image to below 4MB without significant quality loss.")
+        
+        # Save the image with reduced quality
+        img.save(output_path, format=img.format, quality=quality)
+
+    print(f"Image compressed to {os.path.getsize(output_path) / (1024 * 1024):.2f} MB at quality {quality}")
