@@ -57,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     // final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
-    dataProvider.baseUrl = 'http://cognito.fun';
+    dataProvider.baseUrl = 'http://206.1.53.47';
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
@@ -203,7 +203,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 onPressed: () {
                                   widget.chatModelProvider.pickAndUploadFile(
                                       widget.chatModelProvider.email ?? '',
-                                      widget.conversationId);
+                                      widget.conversationId,
+                                      widget.chatModelProvider.chatModel.conversations.indexWhere(
+      (element) => element.conversationId == widget.conversationId,
+    ));
                                 },
                                 icon: const Icon(
                                   Iconsax.camera4,

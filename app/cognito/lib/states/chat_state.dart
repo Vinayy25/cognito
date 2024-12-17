@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cognito/main.dart';
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service.dart';
@@ -11,7 +12,7 @@ class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
-  String baseUrl = 'http://cognito.fun';
+  String baseUrl = 'http://206.1.53.47';
   bool performRAG = false;
   bool performWebSearch = false;
   ChatState() {
@@ -39,8 +40,7 @@ class ChatState extends ChangeNotifier {
           x.conversationName == null) {
         print(x.conversationName);
         Map<String, String> topicsAndSummary =
-            await HttpService()
-                .getTopicsAndSummary(email!, x.conversationId);
+            await HttpService().getTopicsAndSummary(email!, x.conversationId);
 
         if (topicsAndSummary['title'] == null ||
             topicsAndSummary['summary'] == null ||
@@ -67,7 +67,6 @@ class ChatState extends ChangeNotifier {
   }
 
   Future<void> initializeData() async {
-
     print(baseUrl);
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
     print(x);
@@ -143,28 +142,79 @@ class ChatState extends ChangeNotifier {
     await FirebaseService().addConversationId(conversationId);
     notifyListeners();
   }
-
-  Future<void> pickAndUploadFile(String user, String conversationId) async {
+Future<void> pickAndUploadFile(
+    String user,
+    String conversationId,
+    int conversationIndex,
+  ) async {
     try {
-      // Pick a PDF file
-      final file = await ImagePicker().pickImage(source: ImageSource.camera);
+      // Allow user to choose between camera or gallery
+      final ImagePicker picker = ImagePicker();
+      final XFile? file = await picker.pickImage(
+        source:
+            await _selectImageSource(), // Helper function to select image source
+      );
+
       if (file == null) {
+        print('No file selected');
         return;
       }
+
+      // Upload the selected image
       final response = await HttpService().uploadFile(
         user: user,
         conversationId: conversationId,
-        pdfFile: File(file.path),
+        imageFile: File(file.path),
+        prompt:
+            "Analyze the image and provide a short summary of the content in less than 100 words.",
       );
-      print(response);
-    } catch (e) {
+
+      print('Upload response: $response');
+
+      // Create a chat object for the response
+      final chat = Chat(
+        message: response,
+        sender: 'model',
+        time: DateTime.now().toString(),
+      );
+
+      // Add chat to the conversation at the given index
+      chatModel.conversations[conversationIndex].chats.add(chat);
+      notifyListeners();
     } catch (e) {
       print('Error picking or uploading file: $e');
-      print(
-        'Error picking or uploading file: $e',
-      );
     }
   }
+
+// Helper function to select the image source (camera or gallery)
+  Future<ImageSource> _selectImageSource() async {
+    final source = await showDialog<ImageSource>(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Camera'),
+                onTap: () => Navigator.pop(context, ImageSource.camera),
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Gallery'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    return source ?? ImageSource.gallery; // Default to gallery if no selection
+  }
+
 
   void chatStream(String message, String conversationId) async {
     final chat = Chat(
@@ -182,15 +232,12 @@ class ChatState extends ChangeNotifier {
       notifyListeners();
 
       // Start streaming chat response
-      final chatResponseStream = HttpService()
-          .queryWithHistoryAndTextStream(
-              user: email!,
-              query: message,
-              id: conversationId,
-              performRAG: performRAG,
-              performWebSearch: performWebSearch
-              
-              );
+      final chatResponseStream = HttpService().queryWithHistoryAndTextStream(
+          user: email!,
+          query: message,
+          id: conversationId,
+          performRAG: performRAG,
+          performWebSearch: performWebSearch);
 
       String accumulatedResponse = '';
       Chat modelChat =

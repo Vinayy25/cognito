@@ -119,6 +119,7 @@ class _MainScreenState extends State<MainScreen>
                             const Text(
                               'Welcome to AI Chat',
                               style: TextStyle(
+                                fontFamily: 'Montserrat',
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF454A60),
@@ -146,6 +147,7 @@ class _MainScreenState extends State<MainScreen>
                                       decoration: const InputDecoration(
                                         hintText: 'Ask me anything...',
                                         hintStyle: TextStyle(
+                                            fontFamily: 'Montserrat',
                                             color: Color.fromARGB(
                                                 255, 251, 251, 251)),
                                         border: InputBorder.none,
@@ -192,6 +194,7 @@ class _MainScreenState extends State<MainScreen>
                                       SizedBox(width: 8),
                                       Text('Contents',
                                           style: TextStyle(
+                                              fontFamily: 'Montserrat',
                                               color: Color.fromARGB(
                                                   255, 250, 251, 254))),
                                     ],
@@ -216,6 +219,7 @@ class _MainScreenState extends State<MainScreen>
                                       SizedBox(width: 8),
                                       Text('Recordings',
                                           style: TextStyle(
+                                              fontFamily: 'Montserrat',
                                               color: Color.fromARGB(
                                                   255, 250, 251, 254))),
                                     ],
@@ -296,6 +300,7 @@ class _MainScreenState extends State<MainScreen>
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Color.fromARGB(255, 250, 251, 254),
+                                      fontFamily: 'Montserrat',
                                     ),
                                   ),
                                 ),
@@ -305,6 +310,7 @@ class _MainScreenState extends State<MainScreen>
                               child: Text(
                                 conversationSummary,
                                 style: const TextStyle(
+                                  fontFamily: 'Montserrat',
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 250, 251, 254),
                                 ),

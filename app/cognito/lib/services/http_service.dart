@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:cognito/services/firebase_service.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-
+import 'package:image/image.dart' as img;
 class HttpService {
-  String baseUrl = 'http://103.248.82.185';
+  String baseUrl = 'http://206.1.53.47';
 
   Stream<String> queryWithHistoryAndTextStream({
     required String user,
@@ -74,28 +74,32 @@ class HttpService {
     }
   }
 
-
-
-  Future<String> uploadFile({
+Future<String> uploadFile({
     required String user,
     required String conversationId,
-    required File pdfFile,
+    required File imageFile,
+    required String prompt,
   }) async {
+    // Construct the URL with query parameters
+    final url = Uri.parse(
+      '$baseUrl/analyze-image?user=$user&conversation_id=$conversationId&prompt=${Uri.encodeComponent(prompt)}',
+    );
+
+    // Construct the multipart request
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('$baseUrl/analyze-image'),
-    )
-      ..fields['user'] = user
-      ..fields['conversation_id'] = conversationId
-      ..files.add(await http.MultipartFile.fromPath(
-        'file',
-        pdfFile.path,
-        contentType: MediaType('application', 'image'),
-      ))
-      ..headers['Content-Type'] = 'multipart/form-data';
+      url,
+    )..files.add(await http.MultipartFile.fromPath(
+        'file', // Ensure this matches the backend `file` parameter
+        imageFile.path,
+        contentType:
+            MediaType('image', 'jpeg'), // Update based on your file type
+      ));
 
+    // Send the request
     final response = await request.send();
 
+    // Handle the response
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       final responseJson = jsonDecode(responseBody);
@@ -105,6 +109,7 @@ class HttpService {
     }
   }
 
+
   Future<Map<String, String>> getTopicsAndSummary(
     String user,
     String conversationId,
@@ -113,34 +118,34 @@ class HttpService {
       final response = await http.get(
         Uri.parse('$baseUrl/chat-summary-title/').replace(queryParameters: {
           'username': user,
-        'conversation_id': conversationId,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
+          'conversation_id': conversationId,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
+      if (response.statusCode == 200) {
+        final modelResponse = jsonDecode(utf8.decode(response.bodyBytes));
 
-      return {
-        'title': modelResponse['title'],
-        'summary': modelResponse['summary'],
-      };
-    } else if (response.statusCode == 404) {
-      return {
-        'title': '',
-        'summary': '',
-      };
-    } else if (response.statusCode == 500 || response.statusCode == 502) {
-      return {
-        'title': '',
-        'summary': '',
-      };
-    } else {
-      throw Exception(
-          'Failed to query the summary and title: ${response.statusCode}');
-    }
+        return {
+          'title': modelResponse['title'],
+          'summary': modelResponse['summary'],
+        };
+      } else if (response.statusCode == 404) {
+        return {
+          'title': '',
+          'summary': '',
+        };
+      } else if (response.statusCode == 500 || response.statusCode == 502) {
+        return {
+          'title': '',
+          'summary': '',
+        };
+      } else {
+        throw Exception(
+            'Failed to query the summary and title: ${response.statusCode}');
+      }
     } catch (e) {
       print(e);
       throw Exception('Failed to query the summary and title');
@@ -148,4 +153,23 @@ class HttpService {
 
     // add conversation details to db
   }
+}
+
+Future<File> compressImage(File file, int maxSizeBytes) async {
+  final image = img.decodeImage(file.readAsBytesSync());
+  if (image == null) throw Exception('Invalid image file');
+
+  int quality = 100; // Start with max quality
+  File compressedFile = file;
+
+  do {
+    // Compress the image
+    final compressedBytes = img.encodeJpg(image, quality: quality);
+    compressedFile = File('${file.path}_compressed.jpg')
+      ..writeAsBytesSync(compressedBytes);
+
+    quality -= 10; // Reduce quality incrementally
+  } while (compressedFile.lengthSync() > maxSizeBytes && quality > 0);
+
+  return compressedFile;
 }
