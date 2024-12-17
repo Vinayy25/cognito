@@ -5,6 +5,7 @@ import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
@@ -146,9 +147,17 @@ class ChatState extends ChangeNotifier {
   Future<void> pickAndUploadFile(String user, String conversationId) async {
     try {
       // Pick a PDF file
-      
-
-    
+      final file = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (file == null) {
+        return;
+      }
+      final response = await HttpService().uploadFile(
+        user: user,
+        conversationId: conversationId,
+        pdfFile: File(file.path),
+      );
+      print(response);
+    } catch (e) {
     } catch (e) {
       print('Error picking or uploading file: $e');
       print(

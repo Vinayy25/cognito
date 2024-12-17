@@ -74,21 +74,23 @@ class HttpService {
     }
   }
 
-  Future<String> uploadPdf({
+
+
+  Future<String> uploadFile({
     required String user,
     required String conversationId,
     required File pdfFile,
   }) async {
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('$baseUrl/upload/pdf'),
+      Uri.parse('$baseUrl/analyze-image'),
     )
       ..fields['user'] = user
       ..fields['conversation_id'] = conversationId
       ..files.add(await http.MultipartFile.fromPath(
-        'pdf_file',
+        'file',
         pdfFile.path,
-        contentType: MediaType('application', 'pdf'),
+        contentType: MediaType('application', 'image'),
       ))
       ..headers['Content-Type'] = 'multipart/form-data';
 
@@ -97,9 +99,9 @@ class HttpService {
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
       final responseJson = jsonDecode(responseBody);
-      return responseJson['message'];
+      return responseJson['response'];
     } else {
-      throw Exception('Failed to upload PDF: ${response.statusCode}');
+      throw Exception('Failed to upload image: ${response.statusCode}');
     }
   }
 

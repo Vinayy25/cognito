@@ -206,7 +206,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       widget.conversationId);
                                 },
                                 icon: const Icon(
-                                  Iconsax.folder_add5,
+                                  Iconsax.camera4,
                                   color: AppColor.iconColor,
                                 )),
                             IconButton(
@@ -214,9 +214,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   widget.chatModelProvider.performWebSearch =
                                       !widget
                                           .chatModelProvider.performWebSearch;
-                                  setState(() {
-                                      
-                                  });
+                                  setState(() {});
                                 },
                                 icon: Icon(Iconsax.global_search,
                                     color: widget
@@ -246,8 +244,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                   scrollController.position.maxScrollExtent);
                             },
                             textInputAction: TextInputAction.send,
-                            onSubmitted: (value)  {
-                               sendMessage(promptController.text);
+                            onSubmitted: (value) {
+                              sendMessage(promptController.text);
 
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 if (viewScrollController.hasClients) {
