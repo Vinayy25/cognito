@@ -22,6 +22,10 @@ void main() async {
 
   runApp(const MyApp());
 }
+class NavigationService {
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -37,6 +41,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => Data()),
         ],
         child: MaterialApp(
+          navigatorKey: NavigationService.navigatorKey,
           debugShowCheckedModeBanner: false,
           title: 'Chat app',
           theme: ThemeData(
