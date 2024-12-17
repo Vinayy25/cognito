@@ -480,7 +480,7 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
 
 
 @app.post("/analyze-image")
-async def analyze_image_endpoint(file: UploadFile = File(...), prompt: str = Query(default='What is in this image?')):
+async def analyze_image_endpoint(user: str, conversation_id: str, file: UploadFile = File(...), prompt: str = Query(default='What is in this image?')):
     try:
         # Save the uploaded file to a temporary location
         temp_file_path = f"uploads/{file.filename}"

@@ -31,7 +31,7 @@ def analyze_image(image_path, prompt):
                 ],
             }
         ],
-        model="llama-3.2-11b-vision-preview",
+        model="llama-3.2-90b-vision-preview",
     )
 
     # Return the response content
