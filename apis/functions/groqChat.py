@@ -118,15 +118,15 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     return assistant_response
 
-async def stream_groq_response(user: str, id: str, query: str, r : redis.Redis, embed_model, perform_rag: str):
+async def stream_groq_response(user: str, id: str, query: str,word_length: int, r : redis.Redis, embed_model, perform_rag: str):
     if perform_rag == "true":
         similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
         similarText = list_to_numbered_string(similarDocs)
-        systemMessage = gemini_system_prompt + similarText 
+        systemMessage = gemini_system_prompt + similarText   + " Make sure to answer in less than " + str(word_length) + " words"
     else:
-        systemMessage = system_prompt_without_rag
+        systemMessage = gemini_system_prompt + " Make sure to answer in less than " + str(word_length) + " words"
 
-    # Initialize chat history with system message for Groq
+    # Initialize chat history with system message for Groq  
     chat_history = [{"role": "system", "content": systemMessage}]
     
     # Load previous chat history from Redis and format for Groq

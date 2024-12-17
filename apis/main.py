@@ -341,29 +341,49 @@ def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assi
                 raise HTTPException(status_code=500, detail=str(e))
             
 
-
-@app.get("/groq/chat-stream/", )
+@app.get("/groq/chat-stream/")
 async def groq_chat(user: str, query: str, id: str, model_type: str, perform_rag: str, perform_web_search: str):
-        try:
-                # Generate chat completion using GROQ model
-            print("got a groq request ")
+    try:
+        # Generate chat completion using GROQ model
+        print("got a groq request")
+        if perform_rag == "true" or perform_web_search == "true":
+            word_length = 1000
+        else:
+            word_length = 100
+        embed_model = get_embed_model()
+        
+        if perform_web_search == "true":
+            print("performing web search")
+            res = await search_web(
+                SearchRequest(
+                    query=query,
+                    num_results=10,
+                    max_tokens=4096,
+                    model='llama3-8b-8192',
+                    temperature=0.5,
+                    comprehension_grade=8
+                )
+            )
+            print("res ", res)
 
-            embed_model = get_embed_model()
-            if perform_rag == "true":
-                    similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
-                    similarText = list_to_numbered_string(similarDocs)
-                    systemMessage = gemini_system_prompt + similarText 
-            else :
-                systemMessage = system_prompt_without_rag
+            # Process the web search results
+            res_string = "\n".join(
+                f"Title: {entry.get('title', 'N/A')}\n"
+                f"Description: {entry.get('description', 'N/A')}\n"
+                f"URL: {entry.get('url', 'N/A')}\n"
+                for entry in res
+            )
 
-            if perform_web_search == "true":
-                    res = await search_web(query)
-                    systemMessage = systemMessage +"here is the web search results " + res
 
-            return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag=perform_rag), media_type='text/plain')
-        except Exception as e:
-                raise HTTPException(status_code=500, detail=str(e))
-            
+            query  = f"{query} \nHere are the web search results for you to refer to\n{res_string}"
+          
+        return StreamingResponse(
+            #giving perform rag as false because we are already doing it before
+            stream_groq_response(user, id, query,word_length,  r, embed_model, perform_rag=perform_rag),
+            media_type='text/plain'
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
@@ -451,13 +471,16 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
 
 
     query = translate_audio(temp_file_path)
-        
-
+    
+    if perform_rag == "true":
+        word_length = 500
+    else:
+        word_length = 100
 
     if not query:
         return ''
     async def iterfile():
-        async for chunk in stream_groq_response(user, id, query, r , embed_model, perform_rag=perform_rag):
+        async for chunk in stream_groq_response(user, id, query, word_length, r , embed_model, perform_rag=perform_rag):
             buffer.append(chunk)
             # in the if condition make sure to not break sentances that have a decimal number in them as . is a valid character in a decimal number not only .0
             if chunk.endswith('.') and not chunk.endswith('.0'):
@@ -467,7 +490,6 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
                 buffer.clear()
                 audio_files = get_audio_deepgram(sentence, filename=filename)
                 
-                    
                 if audio_files is not None:
                     async with aiofiles.open(filename, mode="rb") as file_like:
                         while chunk := await file_like.read(1024):

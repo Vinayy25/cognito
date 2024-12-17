@@ -17,6 +17,7 @@ async def search_web(request: SearchRequest):
             temperature=request.temperature,
             comprehension_grade=request.comprehension_grade
         )
+        print("performing web search inside")
 
         # Perform the web search
         results = groqqle_tool.run(request.query)
