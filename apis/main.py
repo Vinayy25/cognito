@@ -163,7 +163,6 @@ async def transcribe_audio_endpoint(audio_file: UploadFile = File(...)):
     
 
 
-
 @app.post("/transcribe/save")
 async def transcribe_and_save(user: str, conversation_id:str ,audio_file: UploadFile = File(...), ):
     try:
@@ -361,7 +360,7 @@ async def groq_chat(user: str, query: str, id: str, model_type: str, perform_rag
                     res = await search_web(query)
                     systemMessage = systemMessage +"here is the web search results " + res
 
-            return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag='false'), media_type='text/plain')
+            return StreamingResponse(stream_groq_response(user, id, query, r, embed_model, perform_rag=perform_rag), media_type='text/plain')
         except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
             

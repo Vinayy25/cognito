@@ -10,7 +10,8 @@ from functions.prepareEmbeddings import create_new_user
 
 def getSimilarity(query: str , user: str,conversation_id:str, embed_model):
 
-    
+    user = 'vinay'
+    conversation_id = '12345'
     # faiss_index_file = os.path.join(collections_folder, user,conversation_id)
     faiss_index_file     = os.path.join(os.path.dirname(__file__), 'collection' , '_'+user+'_'+conversation_id)
     # faiss_index_file = os.path.join(collections_folder, user, conversation_id)
