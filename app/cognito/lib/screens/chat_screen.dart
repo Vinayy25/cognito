@@ -57,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     // final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
-    dataProvider.baseUrl = 'http://206.1.53.47';
+    dataProvider.baseUrl = 'http://206.1.53.59';
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {
@@ -109,7 +109,6 @@ class _ChatScreenState extends State<ChatScreen> {
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       backgroundColor: AppColor.backgroundColor,
       appBar: AppBar(
-    
         backgroundColor: AppColor.backgroundColor,
         centerTitle: true,
         title: const AppText(
@@ -205,9 +204,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                   widget.chatModelProvider.pickAndUploadFile(
                                       widget.chatModelProvider.email ?? '',
                                       widget.conversationId,
-                                      widget.chatModelProvider.chatModel.conversations.indexWhere(
-      (element) => element.conversationId == widget.conversationId,
-    ));
+                                      widget.chatModelProvider.chatModel
+                                          .conversations
+                                          .indexWhere(
+                                        (element) =>
+                                            element.conversationId ==
+                                            widget.conversationId,
+                                      ));
                                 },
                                 icon: const Icon(
                                   Iconsax.camera4,

@@ -6,8 +6,9 @@ import 'package:cognito/services/firebase_service.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image/image.dart' as img;
+
 class HttpService {
-  String baseUrl = 'http://206.1.53.47';
+  String baseUrl = 'http://206.1.53.59';
 
   Stream<String> queryWithHistoryAndTextStream({
     required String user,
@@ -74,7 +75,7 @@ class HttpService {
     }
   }
 
-Future<String> uploadFile({
+  Future<String> uploadFile({
     required String user,
     required String conversationId,
     required File imageFile,
@@ -108,7 +109,6 @@ Future<String> uploadFile({
       throw Exception('Failed to upload image: ${response.statusCode}');
     }
   }
-
 
   Future<Map<String, String>> getTopicsAndSummary(
     String user,

@@ -9,7 +9,7 @@ import 'package:cognito/states/data_provider.dart';
 import 'package:cognito/states/play_audio_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-  
+
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -19,9 +19,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
   runApp(const MyApp());
 }
+
 class NavigationService {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
@@ -52,7 +52,8 @@ class MyApp extends StatelessWidget {
           home: Consumer<AuthStateProvider>(
             builder: (context, provider, child) {
               if (provider.isAuthenticated) {
-               
+                print("isNewUser: ${provider.email}");
+
                 return Consumer<ChatState>(
                   builder: (context, chatState, child) {
                     if (provider.isNewUser == true) {

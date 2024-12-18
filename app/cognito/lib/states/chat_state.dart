@@ -12,7 +12,7 @@ class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
-  String baseUrl = 'http://206.1.53.47';
+  String baseUrl = 'http://206.1.53.59';
   bool performRAG = false;
   bool performWebSearch = false;
   ChatState() {
