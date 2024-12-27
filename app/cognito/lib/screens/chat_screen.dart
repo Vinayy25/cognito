@@ -57,7 +57,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     // final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
-    dataProvider.baseUrl = 'http://206.1.53.59';
+    dataProvider.baseUrl = 'http://206.1.53.54';
 
     void sendMessage(String message) {
       if (message.trim().isNotEmpty) {

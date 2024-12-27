@@ -8,7 +8,8 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image/image.dart' as img;
 
 class HttpService {
-  String baseUrl = 'http://206.1.53.59';
+  String baseUrl =
+      'http://206.1.53.54';
 
   Stream<String> queryWithHistoryAndTextStream({
     required String user,

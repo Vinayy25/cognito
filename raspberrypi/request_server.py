@@ -8,7 +8,7 @@ USER_ID = "vinay"  # Replace with actual user ID
 CONVERSATION_ID = "12345"  # Replace with actual conversation ID
 MODEL_TYPE = "text"  # Default: "text"
 PERFORM_RAG = "false"  # Default: "false"
-API_ENDPOINT = "http://cognito.fun/"  # Replace with actual endpoint
+API_ENDPOINT = "http://206.1.53.54/"  # Replace with actual endpoint
 
 
 
@@ -17,11 +17,15 @@ def send_audio_and_get_response(file_name, RAG: bool):
     print("Sending audio file to the server...")
     with open(file_name, 'rb') as audio_file:
         files = {'audio_file': audio_file}
+        if RAG is True:
+            perform_rag = "true"
+        else:
+            perform_rag = "false"
         params = {
             'user': USER_ID,
             'id': CONVERSATION_ID,
             'model_type': MODEL_TYPE,
-            'perform_rag': str(RAG)
+            'perform_rag': perform_rag
         }
         response = requests.post(API_ENDPOINT+'audio-chat-stream', params=params, files=files, stream=True)
 

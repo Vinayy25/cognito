@@ -1,0 +1,43 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Flutter
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'
+
+    # Install dependencies
+    - name: Install dependencies
+      run: flutter pub get
+
+    # Run tests
+    - name: Run tests
+      run: flutter test
+
+    # Build APK (for Android)
+    - name: Build APK
+      run: flutter build apk --release
+
+    # Build IPA (for iOS, optional)
+    # Note: Requires macOS runner
+    # - name: Build IPA
+    #   run: flutter build ipa --release
+- name: Deploy to Firebase
+  run: |
+    curl -sL https://firebase.tools | bash
+    firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app 1:513061587003:android:1182cd5b9384853c42341e --token ${{ secrets.FIREBASE_TOKEN }}

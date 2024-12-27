@@ -4,7 +4,7 @@ import sounddevice as sd
 import time
 import pygame
 
-def detect_silence_and_stop(threshold=3500, silence_duration= 0.5, sample_rate=16000, chunk_size=1024):
+def detect_silence_and_stop(threshold=200, silence_duration= 0.5, sample_rate=16000, chunk_size=1024):
     print("detecting silence")
     """
     Detects silence in the audio stream.
