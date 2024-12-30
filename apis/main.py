@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File,Query, Request
+from fastapi import FastAPI, HTTPException, UploadFile, File,Query, Request, WebSocket, WebSocketDisconnect
 import json,os,time,voyageai,asyncio,markdown2,redis
 from typing import List
 from fastapi.responses import FileResponse, JSONResponse
@@ -64,6 +64,11 @@ app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
 # embed_model = HuggingFaceEmbeddings(
 #     model_name="Alibaba-NLP/gte-Qwen2-1.5B-instruct",
 # )
+
+
+# Set up the Groq client
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+groq_model_name = os.environ.get("GROQ_MODEL")
 
 
 
@@ -340,6 +345,100 @@ def groq_chat(message: str, systemMessage: str = "you are a very helpful ai assi
         except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
             
+@app.websocket("/groq/chat-stream/ws")
+async def groq_chat_websocket(
+    websocket: WebSocket, 
+    user: str, 
+    query: str, 
+    id: str, 
+    model_type: str, 
+    perform_rag: str, 
+    perform_web_search: str
+):
+    await websocket.accept()
+    try:
+        # Initial configuration
+        print("Got a GROQ WebSocket request")
+        if perform_rag == "true" or perform_web_search == "true":
+            word_length = 1000
+        else:
+            word_length = 100
+
+        embed_model = get_embed_model()
+
+        if perform_web_search == "true":
+            print("Performing web search")
+            res = await search_web(
+                SearchRequest(
+                    query=query,
+                    num_results=10,
+                    max_tokens=4096,
+                    model="llama3-8b-8192",
+                    temperature=0.5,
+                    comprehension_grade=8,
+                )
+            )
+            print("res", res)
+
+            # Process the web search results
+            res_string = "\n".join(
+                f"Title: {entry.get('title', 'N/A')}\n"
+                f"Description: {entry.get('description', 'N/A')}\n"
+                f"URL: {entry.get('url', 'N/A')}\n"
+                for entry in res
+            )
+
+            query = f"{query} \nHere are the web search results for you to refer to\n{res_string}"
+        if perform_rag == "true":
+            similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
+            similarText = list_to_numbered_string(similarDocs)
+            systemMessage = gemini_system_prompt + similarText   + " Make sure to answer in less than " + str(word_length) + " words"
+        else:
+            systemMessage = gemini_system_prompt + " Make sure to answer in less than " + str(word_length) + " words"
+
+        # Initialize chat history with system message for Groq  
+        chat_history = [{"role": "system", "content": systemMessage}]
+        
+        # Load previous chat history from Redis and format for Groq
+        previous_chats = get_chat_history(user, id, r)
+        for entry in previous_chats:
+            role = entry.get("role")
+            if role not in {"user", "assistant"}:
+                print(f"Invalid role '{role}' in chat history. Skipping this entry.")
+                continue
+            chat_history.append({"role": role, "content": entry["parts"][0]["text"]})
+        
+        # Add the current user query to the chat history
+        chat_history.append({"role": "user", "content": query})
+
+        # Make the API call and stream the response
+        response = client.chat.completions.create(
+            model= groq_model_name,
+            messages=chat_history,
+            stream=True,
+            
+        )
+
+        assistant_response=""
+
+        for chunk in response:
+            text = chunk.choices[0].delta.content
+            if chunk.choices[0].finish_reason:
+                store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
+                store_chat_history(username=user, conversation_id=id, text=assistant_response, role="assistant", r=r)
+                break
+            else:
+                assistant_response += text
+                await websocket.send_json({"type": "content", "data": text})
+    except WebSocketDisconnect:
+        print("WebSocket disconnected")
+    except Exception as e:
+        await websocket.send_text(f"Error: {str(e)}")
+        print("Exception occurred:", str(e))
+    finally:
+        await websocket.close()
+
+
 
 @app.get("/groq/chat-stream/")
 async def groq_chat(user: str, query: str, id: str, model_type: str, perform_rag: str, perform_web_search: str):
