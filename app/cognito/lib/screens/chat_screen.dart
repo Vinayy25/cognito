@@ -33,7 +33,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final ScrollController viewScrollController = ScrollController();
-
+  final TextEditingController promptController = TextEditingController();
+final FocusNode focusNode = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -45,12 +46,29 @@ class _ChatScreenState extends State<ChatScreen> {
 
     super.initState();
   }
+  void sendMessage(String message) {
+    print('Sending message: $message');
+    if (message.trim().isNotEmpty) {
+      widget.chatModelProvider.chatStream(message, widget.conversationId);
+      promptController.clear();
+      focusNode.unfocus();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (viewScrollController.hasClients) {
+          viewScrollController.animateTo(
+            viewScrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final TextEditingController promptController = TextEditingController();
     final AdvancedDrawerController drawerController =
         AdvancedDrawerController();
     final ScrollController scrollController = ScrollController();
@@ -59,13 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final dataProvider = Provider.of<Data>(context, listen: true);
     dataProvider.baseUrl = 'http://206.1.53.54';
 
-    void sendMessage(String message) {
-      if (message.trim().isNotEmpty) {
-        widget.chatModelProvider.chatStream(message, widget.conversationId);
-        promptController.clear();
-      }
-      // setState(() {});
-    }
+
 
     var myChat = (widget
         .chatModelProvider
@@ -240,6 +252,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all()),
                           child: TextField(
+                            focusNode:  focusNode,
                             onTapOutside: (value) {
                               // dismiss keyboard
                               SystemChannels.textInput
@@ -247,7 +260,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             },
                             controller: promptController,
                             onTap: () {
-                              scrollController.jumpTo(
+                             scrollController.jumpTo(
                                   scrollController.position.maxScrollExtent);
                             },
                             textInputAction: TextInputAction.send,
