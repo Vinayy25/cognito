@@ -8,7 +8,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image/image.dart' as img;
 
 class HttpService {
-  String baseUrl = 'http://cognito.fun';
+  String baseUrl = 'http://13.127.29.64';
 
   Stream<String> queryWithHistoryAndTextStream({
     required String user,

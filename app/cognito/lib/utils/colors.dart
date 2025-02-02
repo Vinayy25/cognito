@@ -13,6 +13,5 @@ class AppColor {
   static const Color scaffoldColor = Color(0xFF00B87C);
   static const Color appBarColor = Color.fromARGB(255, 217, 236, 248);
   static const Color iconBackgroundColor = Colors.white;
-  static const Color thinkingColor =
-      Color(0x334D4D4D); 
+  static const Color thinkingColor = Color.fromARGB(51, 46, 17, 133);
 }
