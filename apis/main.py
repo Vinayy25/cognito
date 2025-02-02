@@ -70,6 +70,8 @@ app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 groq_model_name = os.environ.get("GROQ_MODEL")
 
+secondary_groq_model = os.environ.get("SECONDARY_GROQ_MODEL")
+
 
 
 origins = ["http://127.0.0.1:8000"]
@@ -762,7 +764,7 @@ async def get_chat_history_as_text(username: str, conversation_id: str):
                     "content": formatted_chat_history,
                 }
                     ],
-                    model="llama3-70b-8192",
+                    model=secondary_groq_model,
                     )
         chat_summary_and_title= groq_chat_completion.choices[0].message.content
        

@@ -8,7 +8,7 @@ USER_ID = "vinay"  # Replace with actual user ID
 CONVERSATION_ID = "12345"  # Replace with actual conversation ID
 MODEL_TYPE = "text"  # Default: "text"
 PERFORM_RAG = "false"  # Default: "false"
-API_ENDPOINT = "http://206.1.53.54/"  # Replace with actual endpoint
+API_ENDPOINT = "http://cognito.fun/"  # Replace with actual endpoint
 
 
 

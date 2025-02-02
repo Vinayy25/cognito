@@ -7,12 +7,13 @@ import 'package:cognito/services/http_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
-  String baseUrl = 'http://cognito.fun';
+  final String baseUrl = dotenv.env['BASE_URL']!;
   bool performRAG = false;
   bool performWebSearch = false;
   ChatState() {
@@ -72,8 +73,10 @@ class ChatState extends ChangeNotifier {
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
     print(x);
 
-    List<dynamic> conversationIds = x['conversation_ids'];
-    Map<String, dynamic> conversationDetails = x['conversation_details'][0];
+    List<dynamic> conversationIds =
+        (x['conversation_ids'] != null) ? x['conversation_ids'] : [];
+    Map<String, dynamic> conversationDetails =
+        (x['conversation_details'] == null) ? {} : x['conversation_details'][0];
 
     for (String conversationId in conversationIds) {
       List<Chat> chats = await FirebaseService().getChats(conversationId);
