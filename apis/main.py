@@ -774,7 +774,7 @@ async def get_chat_history_as_text(username: str, conversation_id: str):
             chat_summary_and_title_json = json.loads(chat_summary_and_title)
 
         else :
-            print("is not valid")        
+            print("is not valid " , chat_summary_and_title)        
         
         print("text_context_response ", chat_summary_and_title_json)
         return JSONResponse(status_code=200, content={ "summary": chat_summary_and_title_json['summary'], "title": chat_summary_and_title_json['title']})
