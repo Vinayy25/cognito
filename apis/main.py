@@ -754,6 +754,7 @@ async def get_chat_history_as_text(username: str, conversation_id: str):
         system_message_for_groq = "Given the following conversation data , generate a small summary of less than 10 words and a title for showing the chat preview ALSO in JSON format with keys summary and title, do not include any other text or body , respond only with json of summary and title"
         
         groq_chat_completion = groq_client.chat.completions.create(
+                response_format={"type": "json_object"},
                 messages=[
                 {
                     "role": "system",
