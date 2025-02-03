@@ -8,6 +8,12 @@ from redis import Redis
 def store_chat_history(username, conversation_id, text, role, r):
     key = f"{username}:{conversation_id}"
     
+    # If the marker </think> is present, remove everything before it (including the marker)
+    marker = "</think>"
+    if marker in text:
+        # Split once at the marker and take the part after it
+        text = text.split(marker, 1)[1]
+    
     # Retrieve existing chat history
     existing_history = r.get(key)
     if existing_history:
