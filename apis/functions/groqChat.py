@@ -174,7 +174,7 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
     chat_history.append({"role": "user", "content": query})
     
     # Truncate the chat history if it exceeds the token limit of 6000
-    chat_history = truncate_chat_history(chat_history, max_tokens=6000)
+    chat_history = truncate_chat_history(chat_history, max_tokens=5000)
 
     # Make the API call and stream the response
     response = client.chat.completions.create(
