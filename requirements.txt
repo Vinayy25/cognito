@@ -27,7 +27,7 @@ unstructured
 markdown2
 vertexai
 llama_parse
-openai-whisper
+# openai-whisper
 python-multipart
 
 streamlit

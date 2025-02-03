@@ -1,8 +1,4 @@
 #!/bin/bash
-
-
-
-
 # Execute ngrok in a new terminal window
 gnome-terminal -- ngrok http 8000
 

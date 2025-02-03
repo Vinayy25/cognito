@@ -157,7 +157,7 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
     else:
         systemMessage = gemini_system_prompt + " Make sure to answer in less than " + str(word_length) + " words"
 
-    # Build the full chat history
+    # Initialize chat history with system message for Groq  
     chat_history = [{"role": "system", "content": systemMessage}]
     
     # Load previous chat history from Redis and format for Groq
@@ -173,10 +173,9 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
     # Add the current user query to the chat history
     chat_history.append({"role": "user", "content": query})
     
-    # Truncate the chat history if it exceeds the token limit of 5000
+    # Truncate the chat history if it exceeds the token limit of 6000
     chat_history = truncate_chat_history(chat_history, max_tokens=5000)
-    
-    try:
+    try :
         # Make the API call and stream the response
         response = client.chat.completions.create(
             model=groq_model_name,
@@ -185,7 +184,8 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
         )
         
         assistant_response = ""
-        async for chunk in response:
+
+        for chunk in response:
             text = chunk.choices[0].delta.content
 
             if chunk.choices[0].finish_reason:
@@ -195,50 +195,7 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
             else:
                 assistant_response += text
                 yield text
-
     except Exception as e:
-        # Check if the error is a 413 (Payload Too Large)
-        error_str = str(e)
-        is_413 = False
+        print("Error in streaming response: ", e)
+        raise HTTPException(status_code=500, detail="Error in streaming response")
 
-        # If your client provides an HTTP status code attribute, use that:
-        if hasattr(e, "response") and hasattr(e.response, "status_code"):
-            is_413 = (e.response.status_code == 413)
-        else:
-            # Fallback: check error string for "413"
-            is_413 = "413" in error_str
-
-        if is_413:
-            print("Received 413 error. Retrying without previous chat history.")
-            # Retry without adding previous history (only system message and current query)
-            minimal_history = [
-                {"role": "system", "content": systemMessage},
-                {"role": "user", "content": query},
-            ]
-            try:
-                response = client.chat.completions.create(
-                    model=groq_model_name,
-                    messages=minimal_history,
-                    stream=True,
-                )
-                
-                assistant_response = ""
-                async for chunk in response:
-                    text = chunk.choices[0].delta.content
-
-                    if chunk.choices[0].finish_reason:
-                        store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
-                        store_chat_history(username=user, conversation_id=id, text=assistant_response, role="assistant", r=r)
-                        break
-                    else:
-                        assistant_response += text
-                        yield text
-            except Exception as e2:
-                print("Error in retrying without chat history: ", e2)
-                raise HTTPException(status_code=500, detail="Error in streaming response on retry")
-        else:
-            print("Error in streaming response: ", e)
-            raise HTTPException(status_code=500, detail="Error in streaming response")
-
-
-   

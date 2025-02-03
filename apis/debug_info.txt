@@ -202,3 +202,27 @@ Entering provider_factory.py
 Current working directory: /home/vinay/seriousProjects/cognito/apis
 Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/.local/bin', '/usr/lib64/python312.zip', '/usr/lib64/python3.12', '/usr/lib64/python3.12/lib-dynload', '/home/vinay/.local/lib/python3.12/site-packages', '/usr/local/lib64/python3.12/site-packages', '/usr/local/lib/python3.12/site-packages', '/usr/lib64/python3.12/site-packages', '/usr/lib/python3.12/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
 Exiting provider_factory.py
+Entering provider_factory.py
+Current working directory: /home/vinay/seriousProjects/cognito/apis
+Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/myenv/bin', '/usr/lib64/python313.zip', '/usr/lib64/python3.13', '/usr/lib64/python3.13/lib-dynload', '/home/vinay/seriousProjects/cognito/myenv/lib64/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/myenv/lib/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
+Exiting provider_factory.py
+Entering provider_factory.py
+Current working directory: /home/vinay/seriousProjects/cognito/apis
+Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/myenv/bin', '/usr/lib64/python313.zip', '/usr/lib64/python3.13', '/usr/lib64/python3.13/lib-dynload', '/home/vinay/seriousProjects/cognito/myenv/lib64/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/myenv/lib/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
+Exiting provider_factory.py
+Entering provider_factory.py
+Current working directory: /home/vinay/seriousProjects/cognito/apis
+Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/myenv/bin', '/usr/lib64/python313.zip', '/usr/lib64/python3.13', '/usr/lib64/python3.13/lib-dynload', '/home/vinay/seriousProjects/cognito/myenv/lib64/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/myenv/lib/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
+Exiting provider_factory.py
+Entering provider_factory.py
+Current working directory: /home/vinay/seriousProjects/cognito/apis
+Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/myenv/bin', '/usr/lib64/python313.zip', '/usr/lib64/python3.13', '/usr/lib64/python3.13/lib-dynload', '/home/vinay/seriousProjects/cognito/myenv/lib64/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/myenv/lib/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
+Exiting provider_factory.py
+Entering provider_factory.py
+Current working directory: /home/vinay/seriousProjects/cognito/apis
+Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/myenv/bin', '/usr/lib64/python313.zip', '/usr/lib64/python3.13', '/usr/lib64/python3.13/lib-dynload', '/home/vinay/seriousProjects/cognito/myenv/lib64/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/myenv/lib/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
+Exiting provider_factory.py
+Entering provider_factory.py
+Current working directory: /home/vinay/seriousProjects/cognito/apis
+Current sys.path: ['/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/myenv/bin', '/usr/lib64/python313.zip', '/usr/lib64/python3.13', '/usr/lib64/python3.13/lib-dynload', '/home/vinay/seriousProjects/cognito/myenv/lib64/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/myenv/lib/python3.13/site-packages', '/home/vinay/seriousProjects/cognito/apis', '/home/vinay/seriousProjects/cognito/apis']
+Exiting provider_factory.py
