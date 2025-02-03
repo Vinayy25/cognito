@@ -118,11 +118,42 @@ def groqResponse(user: str, id: str, query: str, r: redis.Redis, embed_model):
 
     return assistant_response
 
-async def stream_groq_response(user: str, id: str, query: str,word_length: int, r : redis.Redis, embed_model, perform_rag: str):
+def count_tokens(text: str) -> int:
+    """
+    Stub function to count tokens in a text.
+    Replace this with your actual token counting logic.
+    """
+    # For example, assume one token per word (this is a rough approximation)
+    return len(text.split())
+
+def total_tokens_in_chat(chat_history: list) -> int:
+    """
+    Returns the total token count for the entire chat history.
+    """
+    return sum(count_tokens(message["content"]) for message in chat_history)
+
+def truncate_chat_history(chat_history: list, max_tokens: int = 6000) -> list:
+    """
+    Truncates the chat history by removing the oldest non-system messages
+    until the total token count is less than or equal to max_tokens.
+    The system message is preserved.
+    """
+    # Keep the system message (assumed to be the first message)
+    system_message = chat_history[0]
+    other_messages = chat_history[1:]
+    
+    # Remove oldest messages until within token limit.
+    while other_messages and (count := total_tokens_in_chat([system_message] + other_messages)) > max_tokens:
+        # Remove the oldest message (first in list)
+        other_messages.pop(0)
+    
+    return [system_message] + other_messages
+
+async def stream_groq_response(user: str, id: str, query: str, word_length: int, r: redis.Redis, embed_model, perform_rag: str):
     if perform_rag == "true":
         similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
         similarText = list_to_numbered_string(similarDocs)
-        systemMessage = gemini_system_prompt + similarText   + " Make sure to answer in less than " + str(word_length) + " words"
+        systemMessage = gemini_system_prompt + similarText + " Make sure to answer in less than " + str(word_length) + " words"
     else:
         systemMessage = gemini_system_prompt + " Make sure to answer in less than " + str(word_length) + " words"
 
@@ -136,25 +167,26 @@ async def stream_groq_response(user: str, id: str, query: str,word_length: int, 
         if role not in {"user", "assistant"}:
             print(f"Invalid role '{role}' in chat history. Skipping this entry.")
             continue
+        # Assuming that each entry has at least one part with a "text" key
         chat_history.append({"role": role, "content": entry["parts"][0]["text"]})
     
     # Add the current user query to the chat history
     chat_history.append({"role": "user", "content": query})
+    
+    # Truncate the chat history if it exceeds the token limit of 6000
+    chat_history = truncate_chat_history(chat_history, max_tokens=6000)
 
     # Make the API call and stream the response
     response = client.chat.completions.create(
-        model= groq_model_name,
+        model=groq_model_name,
         messages=chat_history,
         stream=True,
-        
     )
-    #add short delay
-    # await asyncio.sleep(0.1)
-    assistant_response=""
+    
+    assistant_response = ""
 
     for chunk in response:
         text = chunk.choices[0].delta.content
-        
 
         if chunk.choices[0].finish_reason:
             store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
@@ -164,6 +196,5 @@ async def stream_groq_response(user: str, id: str, query: str,word_length: int, 
             assistant_response += text
             yield text
 
-    
 
    

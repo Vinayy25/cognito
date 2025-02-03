@@ -119,7 +119,6 @@ class _ChatCardState extends State<ChatCard> {
                   : const SizedBox.shrink(),
             ),
           ],
-
           // Always Visible Response
           Padding(
             padding: const EdgeInsets.only(top: 16),
