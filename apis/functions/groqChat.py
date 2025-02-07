@@ -14,6 +14,7 @@ load_dotenv()
 # Set up the Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 groq_model_name = os.environ.get("GROQ_MODEL")
+non_reasoning_model = os.environ.get("GROQ_MODEL_WITHOUT_REASONING")
 
 def stream_groq_response_with_audio(user: str, id: str, query: str, r: redis.Redis, embed_model):
     similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
@@ -150,7 +151,7 @@ def truncate_chat_history(chat_history: list, max_tokens: int = 6000) -> list:
     print("Mixed messages: ", mixed_messages)
     return mixed_messages
 
-async def stream_groq_response(user: str, id: str, query: str, word_length: int, r: redis.Redis, embed_model, perform_rag: str):
+async def stream_groq_response(user: str, id: str, query: str, word_length: int, r: redis.Redis, embed_model, perform_rag: str, reasoning: bool):
     if perform_rag == "true":
         similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
         similarText = list_to_numbered_string(similarDocs)
@@ -175,12 +176,13 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
     chat_history.append({"role": "user", "content": query})
     
     # Truncate the chat history if it exceeds the token limit of 6000
-    chat_history = truncate_chat_history(chat_history, max_tokens=5000)
+    chat_history = truncate_chat_history(chat_history, max_tokens=3000)
     
     try :
+        model = groq_model_name if reasoning else non_reasoning_model
         # Make the API call and stream the response
         response = client.chat.completions.create(
-            model=groq_model_name,
+            model=model,
             messages=chat_history,
             stream=True,
         )

@@ -480,7 +480,7 @@ async def groq_chat(user: str, query: str, id: str, model_type: str, perform_rag
           
         return StreamingResponse(
             #giving perform rag as false because we are already doing it before
-            stream_groq_response(user, id, query,word_length,  r, embed_model, perform_rag=perform_rag),
+            stream_groq_response(user, id, query,word_length,  r, embed_model, perform_rag=perform_rag, reasoning=True),
             media_type='text/plain'
         )
     except Exception as e:
@@ -581,7 +581,7 @@ async def query_with_history_and_audio_stream(user: str, id: str,  audio_file: U
     if not query:
         return ''
     async def iterfile():
-        async for chunk in stream_groq_response(user, id, query, word_length, r , embed_model, perform_rag=perform_rag):
+        async for chunk in stream_groq_response(user, id, query, word_length, r , embed_model, perform_rag=perform_rag, reasoning=False):
             buffer.append(chunk)
             # in the if condition make sure to not break sentances that have a decimal number in them as . is a valid character in a decimal number not only .0
             if chunk.endswith('.') and not chunk.endswith('.0'):

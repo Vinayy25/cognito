@@ -93,6 +93,7 @@ def send_audio_and_get_response(file_name):
             'id': CONVERSATION_ID,
             'model_type': MODEL_TYPE,
             'perform_rag': PERFORM_RAG
+
         }
         url = API_ENDPOINT + "audio-chat-stream"
         response = requests.post(url, params=params, files=files, stream=True)
