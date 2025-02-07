@@ -146,8 +146,9 @@ def truncate_chat_history(chat_history: list, max_tokens: int = 6000) -> list:
     while other_messages and (count := total_tokens_in_chat([system_message] + other_messages)) > max_tokens:
         # Remove the oldest message (first in list)
         other_messages.pop(0)
-    
-    return [system_message] + other_messages
+    mixed_messages = [system_message] + other_messages
+    print("Mixed messages: ", mixed_messages)
+    return mixed_messages
 
 async def stream_groq_response(user: str, id: str, query: str, word_length: int, r: redis.Redis, embed_model, perform_rag: str):
     if perform_rag == "true":
@@ -175,6 +176,7 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
     
     # Truncate the chat history if it exceeds the token limit of 6000
     chat_history = truncate_chat_history(chat_history, max_tokens=5000)
+    
     try :
         # Make the API call and stream the response
         response = client.chat.completions.create(

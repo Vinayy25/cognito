@@ -3,7 +3,7 @@ import wave
 import requests
 import pygame
 import sounddevice as sd
-import threading
+
 import struct
 from scipy.io.wavfile import write
 from silence_detect import detect_silence_and_stop

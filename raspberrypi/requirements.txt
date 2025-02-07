@@ -1,0 +1,7 @@
+pvporcupine
+pyaudio
+pygame
+scipy
+sounddevice
+requests
+playsound
