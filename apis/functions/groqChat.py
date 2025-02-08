@@ -158,7 +158,7 @@ async def stream_groq_response(user: str, id: str, query: str, word_length: int,
         systemMessage = gemini_system_prompt + similarText + " Make sure to answer in less than " + str(word_length) + " words"
     else:
         systemMessage = gemini_system_prompt + """ For straightforward questions, respond concisely in less than 50 words.
-For explanatory or complex questions, provide a detailed answer, but keep the response within 500 words.
+For explanatory or complex questions, provide a detailed answer, but keep the response within 200 words.
 Be mindful of clarity and precision in your explanations, ensuring all relevant details are covered within the word limit.
 """ 
 
