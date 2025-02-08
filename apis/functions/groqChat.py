@@ -182,12 +182,13 @@ Be mindful of clarity and precision in your explanations, ensuring all relevant 
     chat_history = truncate_chat_history(chat_history, max_tokens=3000)
     
     try :
-        model = groq_model_name if reasoning else non_reasoning_model
+        reasoning_format = 'raw' if reasoning else 'hidden'
         # Make the API call and stream the response
         response = client.chat.completions.create(
-            model=model,
+            model=groq_model_name,
             messages=chat_history,
             stream=True,
+            reasoning_format=reasoning_format
         )
         
         assistant_response = ""
