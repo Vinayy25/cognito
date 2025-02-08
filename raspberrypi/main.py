@@ -23,7 +23,7 @@ CHANNELS = 2
 RATE = 64000
 CHUNK = 1024
 RECORD_SECONDS = 5
-def record_audio_sounddevice(filename, duration, sample_rate=16000):
+def record_audio_sounddevice(filename, duration, sample_rate=8000):
     """
     Records audio and saves it as a WAV file.
     
