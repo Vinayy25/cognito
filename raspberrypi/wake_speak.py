@@ -31,7 +31,8 @@ def main():
     duration = 10
     audio_data = None
     porcupine = pvporcupine.create(
-        access_key='pFaTLsJqVDE6/uSXFftK07tDKzwK6JaLnVAGH5nwvAl3W+oF6sO58Q==',
+        #access_key='pFaTLsJqVDE6/uSXFftK07tDKzwK6JaLnVAGH5nwvAl3W+oF6sO58Q==',
+        access_key="lH2qVWwBT37IcqqB3rJEhEinpqAyx6UA/lmD40s6CJ71uUby4jcaXA==",
         keywords=['snowboy','jarvis', 'computer']
     )
     
