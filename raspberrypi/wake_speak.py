@@ -33,6 +33,7 @@ def main():
     porcupine = pvporcupine.create(
         #access_key='pFaTLsJqVDE6/uSXFftK07tDKzwK6JaLnVAGH5nwvAl3W+oF6sO58Q==',
         access_key="lH2qVWwBT37IcqqB3rJEhEinpqAyx6UA/lmD40s6CJ71uUby4jcaXA==",
+        #access_key="h/TKA31gbM5tgfRhlRxTg/uDKYTyDW0bVSb8Xe5q9vz3ifb8d3INiA==",
         keywords=['alexa','jarvis', 'computer']
     )
     

@@ -84,7 +84,6 @@ def play_audio_response(response):
 
 def send_audio_and_get_response_play(file_name, RAG: bool):
     response = send_audio_and_get_response(file_name, RAG)
-    print(response)
     if response:
         play_audio_response(response)
 
