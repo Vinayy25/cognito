@@ -13,7 +13,7 @@ class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
-  final String baseUrl = dotenv.env['BASE_URL']!;
+
   bool performRAG = false;
   bool performWebSearch = false;
   ChatState() {
@@ -69,7 +69,6 @@ class ChatState extends ChangeNotifier {
   }
 
   Future<void> initializeData() async {
-    print(baseUrl);
     Map<String, dynamic> x = await FirebaseService().getConversationIds();
     print(x);
 
@@ -175,16 +174,22 @@ class ChatState extends ChangeNotifier {
       );
 
       print('Upload response: $response');
-
+      final imageChat = Chat(
+        message: "Image Uploaded",
+        sender: 'user',
+        time: DateTime.now().toString(),
+      );
+      chatModel.conversations[conversationIndex].chats.add(imageChat);
       // Create a chat object for the response
       final chat = Chat(
         message: response,
         sender: 'model',
         time: DateTime.now().toString(),
       );
-
       // Add chat to the conversation at the given index
       chatModel.conversations[conversationIndex].chats.add(chat);
+      await FirebaseService().addChat(conversationId, chat);
+      await FirebaseService().addChat(conversationId, imageChat);
       notifyListeners();
     } catch (e) {
       print('Error picking or uploading file: $e');

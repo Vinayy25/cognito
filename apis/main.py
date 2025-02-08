@@ -624,7 +624,7 @@ async def analyze_image_endpoint(user: str, conversation_id: str, file: UploadFi
         # Call the analyze_image function
         response_content = analyze_image(temp_file_path, prompt)
 
-
+        store_chat_history(username=user, conversation_id=id, text="Image was uploaded and result: "+response_content, role="model", r=r)
         # Remove the temporary file
         os.remove(temp_file_path)
 

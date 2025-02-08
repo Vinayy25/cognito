@@ -34,7 +34,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final ScrollController viewScrollController = ScrollController();
   final TextEditingController promptController = TextEditingController();
-final FocusNode focusNode = FocusNode();
+  final FocusNode focusNode = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -46,6 +46,7 @@ final FocusNode focusNode = FocusNode();
 
     super.initState();
   }
+
   void sendMessage(String message) {
     print('Sending message: $message');
     if (message.trim().isNotEmpty) {
@@ -75,9 +76,7 @@ final FocusNode focusNode = FocusNode();
 
     // final playProvider = Provider.of<PlayAudioProvider>(context);
     final dataProvider = Provider.of<Data>(context, listen: true);
-    dataProvider.baseUrl = 'http://206.1.53.54';
-
-
+    dataProvider.baseUrl = 'http://cognito.fun';
 
     var myChat = (widget
         .chatModelProvider
@@ -252,7 +251,7 @@ final FocusNode focusNode = FocusNode();
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all()),
                           child: TextField(
-                            focusNode:  focusNode,
+                            focusNode: focusNode,
                             onTapOutside: (value) {
                               // dismiss keyboard
                               SystemChannels.textInput
@@ -260,7 +259,7 @@ final FocusNode focusNode = FocusNode();
                             },
                             controller: promptController,
                             onTap: () {
-                             scrollController.jumpTo(
+                              scrollController.jumpTo(
                                   scrollController.position.maxScrollExtent);
                             },
                             textInputAction: TextInputAction.send,
