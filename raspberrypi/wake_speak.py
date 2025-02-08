@@ -66,9 +66,9 @@ def main():
             elif result == 1:
                 print("Jarvis detected!")
                 play_my_sound()
-                audio_data = sd.rec(int(duration * 44100), samplerate=44100, channels=2, dtype='int16')
+                audio_data = sd.rec(int(duration * 8000), samplerate=8000, channels=2, dtype='int16')
                 sd.wait()
-                write(rag_audio_file, 44100, audio_data)
+                write(rag_audio_file, 8000, audio_data)
                 print(f"Recording saved to {rag_audio_file}")
                 play_my_sound()
                 send_audio_rag(rag_audio_file, "user123", "conv456")
@@ -92,7 +92,7 @@ def main():
         porcupine.delete()
 
 
-def detect_silence(threshold=30, silence_duration= 0.5, sample_rate=16000, chunk_size=1024):
+def detect_silence(threshold=30, silence_duration= 0.5, sample_rate=8000, chunk_size=1024):
     """
     Detects silence in the audio stream.
     
