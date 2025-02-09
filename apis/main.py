@@ -703,7 +703,7 @@ def stream_my_res(model,prompt, user , conversation_id, r):
     chat_parts = ""
 
     for chunk in model.send_message(
-        prompt=prompt,
+        prompt,
         stream=False,
         safety_settings= [
         {
