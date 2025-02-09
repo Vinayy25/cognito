@@ -89,13 +89,6 @@ app.add_middleware(
 )
 
 
-
-
-# generative_image_model = get_generative_model('gemini-pro-vision')
-# Initialize the model
-# model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-# whisper_model = whisper.load_model("base")
-
 r = redis.Redis(host='localhost', port=6379, db=0)
 
 groq_client = Groq(
@@ -112,16 +105,6 @@ openai = OpenAI(
     base_url="https://cloud.olakrutrim.com/v1",
 )
 
-
-# @app.post("/embeddings/")
-# async def get_embeddings(request: str):
-#     print("this is the request ",request)
-#     try:
-#         # Generate embeddings   
-#         embeddings = model.encode([request], show_progress_bar=True, prompt= '' )
-#         return EmbeddingResponse(embeddings=embeddings.tolist())
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat", response_model=ChatResponse)
 async def krutrim_chat(message: str, systemMessage : str ):
@@ -504,36 +487,82 @@ async def query(query: str, model_type: str = Query(default='text'), systemMessa
     
     return StreamingResponse( response_text, media_type='text/plain')
 
-
 @app.get("/gemini/with-history")
-async def query_with_history(user: str,query: str,id: str,  model_type: str = Query(default='text'), ):
+async def query_with_history(
+    user: str,
+    query: str,
+    id: str,
+    model_type: str = Query(default='text'),
+    perform_rag: str = Query(default="false"),
+    perform_web_search: str = Query(default="false")
+):
     if not query:
         return ''
-    embed_model = get_embed_model()
-    similarDocs = getSimilarity(query= query, user= user, conversation_id= id, embed_model= embed_model)
-
-    similarText = list_to_numbered_string(similarDocs)
-
     
+    # Optionally, adjust a word_length parameter similar to GROQ (even if not used later)
+    if perform_rag == "true" or perform_web_search == "true":
+        word_length = 1000
+    else:
+        word_length = 100
 
-    systemMessage = gemini_system_prompt + similarText 
-    print("system message: ",systemMessage)
-
+    embed_model = get_embed_model()
+    
+    # Get similar documents to prepare a system prompt
+    similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
+    similarText = list_to_numbered_string(similarDocs)
+    systemMessage = gemini_system_prompt + similarText
+    print("system message: ", systemMessage)
+    
+    # If a web search is requested, perform it and append the results to the query.
+    if perform_web_search == "true":
+        print("performing web search")
+        res = await search_web(
+            SearchRequest(
+                query=query,
+                num_results=10,
+                max_tokens=4096,
+                model='llama3-8b-8192',
+                temperature=0.5,
+                comprehension_grade=8
+            )
+        )
+        print("web search results: ", res)
+        # Process the web search results into a formatted string.
+        res_string = "\n".join(
+            f"Title: {entry.get('title', 'N/A')}\n"
+            f"Description: {entry.get('description', 'N/A')}\n"
+            f"URL: {entry.get('url', 'N/A')}\n"
+            for entry in res
+        )
+        query = f"{query}\nHere are the web search results for you to refer to:\n{res_string}"
+    
+    # Get the generative model for Gemini using the updated system message.
     generative_text_model = get_generative_model('gemini-2.0-flash', system_instruction=systemMessage)
     models = {'text': generative_text_model}
     model = models.get(model_type)
-
-    chat_history = get_chat_history(user, id, r)
-    model_history = [{"role": entry["role"], "parts": [{"text": part["text"]} for part in entry["parts"]]} for entry in chat_history]
-
-    chat = generative_text_model.start_chat(
-        history=model_history,
-       
-    )
     if not model:
         raise HTTPException(status_code=400, detail="Invalid model type")
-    prompt = query 
-    return StreamingResponse(stream_my_res(chat, prompt, user ,id , r), media_type='text/event-stream')
+    
+    # Get the chat history and prepare it in the required format.
+    chat_history = get_chat_history(user, id, r)
+    model_history = [
+        {
+            "role": entry["role"],
+            "parts": [{"text": part["text"]} for part in entry["parts"]]
+        }
+        for entry in chat_history
+    ]
+    
+    # Start a chat with the provided history.
+    chat = generative_text_model.start_chat(history=model_history)
+    prompt = query  # the final prompt includes the original query plus any appended web search results
+    
+    # Return a streaming response using the same helper as before.
+    return StreamingResponse(
+        stream_my_res(chat, prompt, user, id, r),
+        media_type='text/event-stream'
+    )
+
 
 @app.get("/audio-chat")
 async def query_with_history_and_audio(user: str,query: str,id: str,  model_type: str = Query(default='text')):
@@ -814,14 +843,6 @@ async def generate_content_stream(model, prompt):
         print(content[i:i+100])
         await asyncio.sleep(0.1)
 
-# @app.get("/embeddings/alibaba")
-# def get_alibaba_embeddings(request: str):
-#     try:
-#         # Generate embeddings   
-#         alibaba_embeddings = alibaba_model.encode([request],)
-#         return EmbeddingResponse(embeddings=alibaba_embeddings,)
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
 def to_html(markdown_format):
     return (
         markdown2.markdown(markdown_format)
