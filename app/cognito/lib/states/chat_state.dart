@@ -14,6 +14,7 @@ class ChatState extends ChangeNotifier {
   ChatModel chatModel = ChatModel(conversations: []);
   var email = FirebaseAuth.instance.currentUser!.email;
   bool shouldRefresh = false;
+  String selectedModel = "groq";
 
   bool performRAG = false;
   bool performWebSearch = false;
@@ -21,6 +22,11 @@ class ChatState extends ChangeNotifier {
     initializeData();
   }
   void refresh() {
+    notifyListeners();
+  }
+
+  void setSelectedModel(String val) {
+    selectedModel = val;
     notifyListeners();
   }
 
@@ -202,7 +208,8 @@ class ChatState extends ChangeNotifier {
           query: message,
           id: conversationId,
           performRAG: performRAG,
-          performWebSearch: performWebSearch);
+          performWebSearch: performWebSearch,
+          modelInUse: selectedModel);
 
       String accumulatedResponse = '';
       Chat modelChat =

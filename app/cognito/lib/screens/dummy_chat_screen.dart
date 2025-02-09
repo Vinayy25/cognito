@@ -23,6 +23,7 @@ class _DummyChatScreenState extends State<DummyChatScreen> {
 
   void _fetchStream(String query)  {
     final newStream =  HttpService().queryWithHistoryAndTextStream(
+      modelInUse: 'groq',
       user: '123',
       query: query,
       id: '123',

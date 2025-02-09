@@ -733,7 +733,7 @@ def stream_my_res(model,prompt, user , conversation_id, r):
 
     for chunk in model.send_message(
         prompt,
-        stream=False,
+        stream=True,
         safety_settings= [
         {
             "category": "HARM_CATEGORY_DANGEROUS",

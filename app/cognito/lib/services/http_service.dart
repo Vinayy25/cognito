@@ -17,11 +17,18 @@ class HttpService {
     String modelType = 'text',
     required bool performRAG,
     required bool performWebSearch,
+    required String modelInUse,
   }) async* {
+    String endpoint = "";
+    if (modelInUse == 'gemini') {
+      endpoint = "/gemini/with-history";
+    } else {
+      endpoint = "/groq/chat-stream/";
+    }
     try {
       final request = http.Request(
         'GET',
-        Uri.parse('$baseUrl/groq/chat-stream/').replace(queryParameters: {
+        Uri.parse('$baseUrl$endpoint').replace(queryParameters: {
           'user': user,
           'query': query,
           'id': id,
@@ -154,7 +161,7 @@ class HttpService {
     // add conversation details to db
   }
 
-   Future<String> uploadPDF({
+  Future<String> uploadPDF({
     required String user,
     required String conversationId,
     required File pdfFile,
@@ -164,7 +171,8 @@ class HttpService {
       var request = http.MultipartRequest("POST", uri)
         ..fields['user'] = 'vinay'
         ..fields['conversation_id'] = '12345'
-        ..files.add(await http.MultipartFile.fromPath('pdf_file', pdfFile.path));
+        ..files
+            .add(await http.MultipartFile.fromPath('pdf_file', pdfFile.path));
 
       final response = await request.send();
       if (response.statusCode == 200) {
@@ -177,13 +185,14 @@ class HttpService {
         var formattedRes = "<think>${jsonResponse["document"]}</think>";
         return formattedRes;
       } else {
-        throw Exception("Failed to upload PDF. Status code: ${response.statusCode}");
+        throw Exception(
+            "Failed to upload PDF. Status code: ${response.statusCode}");
       }
     } catch (e) {
       rethrow;
     }
   }
-  }
+}
 
 Future<File> compressImage(File file, int maxSizeBytes) async {
   final image = img.decodeImage(file.readAsBytesSync());
