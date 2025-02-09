@@ -506,13 +506,16 @@ async def query_with_history(
         word_length = 100
 
     embed_model = get_embed_model()
-    
-    # Get similar documents to prepare a system prompt
-    similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
-    similarText = list_to_numbered_string(similarDocs)
-    systemMessage = gemini_system_prompt + similarText
-    print("system message: ", systemMessage)
-    
+    if perform_rag == "true":
+         similarDocs = getSimilarity(query=query, user=user, conversation_id=id, embed_model=embed_model)
+         similarText = list_to_numbered_string(similarDocs)
+         systemMessage = gemini_system_prompt + similarText + " Make sure to answer in less than " + str(word_length) + " words"
+    else:
+         systemMessage = gemini_system_prompt + """ For straightforward questions, respond concisely in less than 50 words.
+For explanatory or complex questions, provide a detailed answer, but keep the response within 200 words.
+Be mindful of clarity and precision in your explanations, ensuring all relevant details are covered within the word limit.
+""" 
+
     # If a web search is requested, perform it and append the results to the query.
     if perform_web_search == "true":
         print("performing web search")
