@@ -285,7 +285,6 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
 
         # Save embeddings to vector store
         texts = [doc.page_content for doc in docs]
-        print("reached here " ,texts)
         embed_model = get_embed_model()
         await save_embeddings(texts, user, conversation_id, embed_model)
 

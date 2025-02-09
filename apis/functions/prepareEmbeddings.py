@@ -16,11 +16,11 @@ def save_embeddings(text : List[str] , user: str, conversation_id: str, embed_mo
         print("User created")
 
     db = FAISS.load_local(faiss_index_file , embed_model, allow_dangerous_deserialization=True  )
-    print("reached here")
     db.add_texts(text)
-
-
+    print("reached here")
     db.save_local(faiss_index_file)
+    print("Embeddings saved")
+
 
 
 def create_new_user(user: str, conversation_id: str, embed_model):
