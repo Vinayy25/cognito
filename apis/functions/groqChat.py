@@ -198,6 +198,9 @@ Be mindful of clarity and precision in your explanations, ensuring all relevant 
 
             if chunk.choices[0].finish_reason:
                 store_chat_history(username=user, conversation_id=id, text=query, role="user", r=r)
+                if "</think>" in assistant_response:
+                # Extract the text after the last occurrence of "</think>"
+                 assistant_response = assistant_response.split("</think>")[-1]
                 store_chat_history(username=user, conversation_id=id, text=assistant_response, role="assistant", r=r)
                 break
             else:

@@ -164,22 +164,26 @@ class HttpService {
       var request = http.MultipartRequest("POST", uri)
         ..fields['user'] = 'vinay'
         ..fields['conversation_id'] = '12345'
-        ..files
-            .add(await http.MultipartFile.fromPath('pdf_file', pdfFile.path));
+        ..files.add(await http.MultipartFile.fromPath('pdf_file', pdfFile.path));
 
       final response = await request.send();
       if (response.statusCode == 200) {
         final responseString = await response.stream.bytesToString();
-        return responseString;
+
+        // Decode the response string into a JSON map
+        final Map<String, dynamic> jsonResponse = jsonDecode(responseString);
+
+        // Access the "document" field from the JSON map and wrap it in <think> tags
+        var formattedRes = "<think>${jsonResponse["document"]}</think>";
+        return formattedRes;
       } else {
-        throw Exception(
-            "Failed to upload PDF. Status code: ${response.statusCode}");
+        throw Exception("Failed to upload PDF. Status code: ${response.statusCode}");
       }
     } catch (e) {
       rethrow;
     }
   }
-}
+  }
 
 Future<File> compressImage(File file, int maxSizeBytes) async {
   final image = img.decodeImage(file.readAsBytesSync());
