@@ -274,8 +274,6 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
         async with aiofiles.open(document_path, 'w') as f:
             await f.write(parsed_doc.text)
         print("reached to start")
-        
-        
         # Load the parsed document
         loader = UnstructuredMarkdownLoader(document_path)
         loaded_documents = loader.load()
@@ -624,7 +622,7 @@ async def analyze_image_endpoint(user: str, conversation_id: str, file: UploadFi
         # Call the analyze_image function
         response_content = analyze_image(temp_file_path, prompt)
 
-        store_chat_history(username=user, conversation_id=id, text="Image was uploaded and result: "+response_content, role="model", r=r)
+        store_chat_history(username=user, conversation_id=id, text="Image was uploaded and result was: "+response_content, role="model", r=r)
         # Remove the temporary file
         os.remove(temp_file_path)
 

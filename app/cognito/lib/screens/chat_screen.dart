@@ -133,6 +133,31 @@ class _ChatScreenState extends State<ChatScreen> {
           },
           icon: const Icon(Iconsax.arrow_left_2, color: AppColor.iconColor),
         ),
+        actions: [
+          // button to upload pdf
+          Container(
+            decoration: BoxDecoration(
+              color: AppColor.backgroundColor,
+              border: Border.all(color: Colors.white),
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: IconButton(
+                onPressed: () {
+                  widget.chatModelProvider.pickAndUploadPDF(
+                      widget.chatModelProvider.email ?? '',
+                      widget.conversationId,
+                      widget.chatModelProvider.chatModel.conversations
+                          .indexWhere(
+                        (element) =>
+                            element.conversationId == widget.conversationId,
+                      ));
+                },
+                icon: Icon(
+                  Iconsax.document,
+                  color: AppColor.iconColor,
+                )),
+          ),
+        ],
         automaticallyImplyLeading: true,
         forceMaterialTransparency: true,
         elevation: 0,

@@ -267,15 +267,19 @@ class _MainScreenState extends State<MainScreen>
                       mainAxisSpacing: 10,
                       childAspectRatio: 0.8),
                   itemBuilder: (context, index) {
+                    int reverseIndex =
+                        widget.chatModelProvier.chatModel.conversations.length -
+                            1 -
+                            index;
                     String conversationTitle = widget.chatModelProvier.chatModel
-                            .conversations[index].conversationName ??
+                            .conversations[reverseIndex].conversationName ??
                         "New chat";
                     String conversationSummary = widget
                             .chatModelProvier
                             .chatModel
-                            .conversations[index]
+                            .conversations[reverseIndex]
                             .conversationSummary ??
-                        "continue chating";
+                        "continue chatting";
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -284,7 +288,7 @@ class _MainScreenState extends State<MainScreen>
                                     conversationId: widget
                                         .chatModelProvier
                                         .chatModel
-                                        .conversations[index]
+                                        .conversations[reverseIndex]
                                         .conversationId,
                                     chatModelProvider: widget.chatModelProvier,
                                   )),

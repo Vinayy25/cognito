@@ -4,6 +4,7 @@ import 'package:cognito/main.dart';
 import 'package:cognito/models/chat_model.dart';
 import 'package:cognito/services/firebase_service.dart';
 import 'package:cognito/services/http_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -91,51 +92,6 @@ class ChatState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void chat(String message, String conversationId) async {
-  //   final chat = Chat(
-  //     message: message,
-  //     sender: 'user',
-  //     time: DateTime.now().toString(),
-  //   );
-
-  //   final conversationIndex = chatModel.conversations.indexWhere(
-  //     (element) => element.conversationId == conversationId,
-  //   );
-
-  //   if (conversationIndex != -1) {
-  //     chatModel.conversations[conversationIndex].chats.add(chat);
-  //     notifyListeners();
-
-  //     final chatResponse = await HttpService(baseUrl: baseUrl).queryWithHistoryAndText(
-  //       user: email!,
-  //       query: message,
-  //       id: conversationId,
-  //     );
-
-  //     final modelChat = Chat(
-  //       message: chatResponse,
-  //       sender: 'model',
-  //       time: DateTime.now().toString(),
-  //     );
-
-  //     chatModel.conversations[conversationIndex].chats.add(modelChat);
-  //     shouldRefresh = true;
-  //     notifyListeners();
-  //     await FirebaseService().addChat(conversationId, chat);
-  //     await FirebaseService().addChat(conversationId, modelChat);
-  //   } else {
-  //     final conversation = Conversations(
-  //       chats: [chat],
-  //       conversationId: conversationId,
-  //     );
-
-  //     chatModel.conversations.add(conversation);
-  //     shouldRefresh = true;
-  //     notifyListeners();
-  //     await FirebaseService().addChat(conversationId, chat);
-  //   }
-  // }
-
   void addConversationId(String conversationId) async {
     final conversation = Conversations(
       chats: [],
@@ -163,7 +119,12 @@ class ChatState extends ChangeNotifier {
         print('No file selected');
         return;
       }
-
+      final imageChat = Chat(
+        message: "Image Uploaded",
+        sender: 'user',
+        time: DateTime.now().toString(),
+      );
+      chatModel.conversations[conversationIndex].chats.add(imageChat);
       // Upload the selected image
       final response = await HttpService().uploadFile(
         user: user,
@@ -174,12 +135,7 @@ class ChatState extends ChangeNotifier {
       );
 
       print('Upload response: $response');
-      final imageChat = Chat(
-        message: "Image Uploaded",
-        sender: 'user',
-        time: DateTime.now().toString(),
-      );
-      chatModel.conversations[conversationIndex].chats.add(imageChat);
+
       // Create a chat object for the response
       final chat = Chat(
         message: response,
@@ -283,6 +239,62 @@ class ChatState extends ChangeNotifier {
       shouldRefresh = true;
       notifyListeners();
       await FirebaseService().addChat(conversationId, chat);
+    }
+  }
+
+  Future<void> pickAndUploadPDF(
+    String user,
+    String conversationId,
+    int conversationIndex,
+  ) async {
+    try {
+      // Pick a PDF file using FilePicker
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+      );
+
+      if (result == null || result.files.isEmpty) {
+        print('No file selected');
+        return;
+      }
+
+      final String? filePath = result.files.single.path;
+      if (filePath == null) {
+        print('File path is null');
+        return;
+      }
+
+      // Add a chat entry indicating that a PDF was uploaded
+      final pdfChat = Chat(
+        message: "PDF Uploaded",
+        sender: 'user',
+        time: DateTime.now().toString(),
+      );
+      chatModel.conversations[conversationIndex].chats.add(pdfChat);
+
+      // Upload the PDF file via your API endpoint
+      final response = await HttpService().uploadPDF(
+        user: user,
+        conversationId: conversationId,
+        pdfFile: File(filePath),
+      );
+      print('Upload PDF response: $response');
+
+      // Create a chat object with the response from the API
+      final chat = Chat(
+        message: response,
+        sender: 'model',
+        time: DateTime.now().toString(),
+      );
+
+      // Update the conversation with the new messages
+      chatModel.conversations[conversationIndex].chats.add(chat);
+      await FirebaseService().addChat(conversationId, pdfChat);
+      await FirebaseService().addChat(conversationId, chat);
+      notifyListeners();
+    } catch (e) {
+      print('Error picking or uploading PDF file: $e');
     }
   }
 }

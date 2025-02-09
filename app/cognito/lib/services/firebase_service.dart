@@ -214,11 +214,8 @@ class FirebaseService {
     }
   }
 
-  Future<void> saveSummaryAndTitle(
-    ChatModel chatModel,
-  ) async {
-    // Ref erence to the user's document
-
+ Future<void> saveSummaryAndTitle(ChatModel chatModel) async {
+    // Reference to the user's document
     DocumentReference documentReference = _db
         .collection('users')
         .doc(email)
@@ -227,59 +224,73 @@ class FirebaseService {
 
     DocumentSnapshot documentSnapshot = await documentReference.get();
 
-    if (documentSnapshot.exists &&
-        (documentSnapshot.data()
-                as Map<String, dynamic>)['conversation_details'] !=
-            null) {
-      List<dynamic> conversationDetails = (documentSnapshot.data()
-          as Map<String, dynamic>)['conversation_details'];
+    List<dynamic> conversationDetails = [];
 
-      conversationDetails = chatModel.conversations.map((conversation) {
-        if (conversation.conversationName == null ||
-            conversation.conversationSummary == null ||
-            conversation.conversationName == '' ||
-            conversation.conversationSummary == '') {
-          return {
-            'conversation_id': conversation.conversationId,
-            'title': 'New chat',
-            'summary': 'Continue with your conversation...',
-          };
-        }
-
-        return {
-          'conversation_id': conversation.conversationId,
-          'title': conversation.conversationName,
-          'summary': conversation.conversationSummary,
-        };
-      }).toList();
-
-      await documentReference.update(
-        {'conversation_details': conversationDetails},
-      );
-    } else {
-      try {
-        await documentReference.set({
-          'conversation_details': chatModel.conversations.map((conversation) {
-            if (conversation.conversationName == null ||
-                conversation.conversationSummary == null ||
-                conversation.conversationName == '' ||
-                conversation.conversationSummary == '') {
-              return {
-                'conversation_id': conversation.conversationId,
-                'title': 'New chat',
-                'summary': 'Continue with your conversation...',
-              };
-            }
-            return {
-              'conversation_id': conversation.conversationId,
-              'title': conversation.conversationName!,
-              'summary': conversation.conversationSummary!,
-            };
-          }).toList()
-        }, SetOptions(merge: true));
-      } catch (e) {
-        rethrow;
+    // If the document exists and conversation_details is available, use it.
+    if (documentSnapshot.exists) {
+      final data = documentSnapshot.data() as Map<String, dynamic>;
+      if (data['conversation_details'] != null) {
+        conversationDetails = List.from(data['conversation_details']);
       }
     }
+
+    // Create a lookup map for the conversations using dynamic since 'Conversation' isn't defined.
+    final Map<String, dynamic> chatConversationsMap = {
+      for (var conversation in chatModel.conversations)
+        conversation.conversationId: conversation,
+    };
+
+    // Update each existing conversation if there's a matching conversation in chatModel.
+    for (int i = 0; i < conversationDetails.length; i++) {
+      final convId = conversationDetails[i]['conversation_id'];
+      if (chatConversationsMap.containsKey(convId)) {
+        final conversation = chatConversationsMap[convId];
+        conversationDetails[i]['title'] =
+            (conversation.conversationName == null ||
+                    (conversation.conversationName is String &&
+                        conversation.conversationName.isEmpty))
+                ? 'New chat'
+                : conversation.conversationName;
+        conversationDetails[i]['summary'] =
+            (conversation.conversationSummary == null ||
+                    (conversation.conversationSummary is String &&
+                        conversation.conversationSummary.isEmpty))
+                ? 'Continue with your conversation...'
+                : conversation.conversationSummary;
+      }
+    }
+
+    // Add any new conversations from chatModel that are not yet in conversationDetails.
+    for (final conversation in chatModel.conversations) {
+      final exists = conversationDetails.any(
+          (detail) => detail['conversation_id'] == conversation.conversationId);
+      if (!exists) {
+        conversationDetails.add({
+          'conversation_id': conversation.conversationId,
+          'title': (conversation.conversationName == null ||
+                  (conversation.conversationName is String &&
+                      conversation.conversationName!.isEmpty))
+              ? 'New chat'
+              : conversation.conversationName,
+          'summary': (conversation.conversationSummary == null ||
+                  (conversation.conversationSummary is String &&
+                      conversation.conversationSummary!.isEmpty))
+              ? 'Continue with your conversation...'
+              : conversation.conversationSummary,
+        });
+      }
+    }
+
+    // Update the document with the modified conversation details.
+    try {
+      await documentReference.set(
+        {'conversation_details': conversationDetails},
+        SetOptions(merge: true),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
+
+
 }

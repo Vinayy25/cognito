@@ -153,6 +153,32 @@ class HttpService {
 
     // add conversation details to db
   }
+
+   Future<String> uploadPDF({
+    required String user,
+    required String conversationId,
+    required File pdfFile,
+  }) async {
+    try {
+      final uri = Uri.parse("$baseUrl/upload/pdf");
+      var request = http.MultipartRequest("POST", uri)
+        ..fields['user'] = 'vinay'
+        ..fields['conversation_id'] = '12345'
+        ..files
+            .add(await http.MultipartFile.fromPath('pdf_file', pdfFile.path));
+
+      final response = await request.send();
+      if (response.statusCode == 200) {
+        final responseString = await response.stream.bytesToString();
+        return responseString;
+      } else {
+        throw Exception(
+            "Failed to upload PDF. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 
 Future<File> compressImage(File file, int maxSizeBytes) async {
