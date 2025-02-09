@@ -29,9 +29,9 @@ class HttpService {
       final request = http.Request(
         'GET',
         Uri.parse('$baseUrl$endpoint').replace(queryParameters: {
-          'user': user,
+          'user': 'vinay',
           'query': query,
-          'id': id,
+          'id': '12345',
           'model_type': modelType.toString(),
           'perform_rag': performRAG.toString(),
           'perform_web_search': performWebSearch.toString(),

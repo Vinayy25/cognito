@@ -71,7 +71,7 @@ def main():
                 write(rag_audio_file, 8000, audio_data)
                 print(f"Recording saved to {rag_audio_file}")
                 play_my_sound()
-                send_audio_rag(rag_audio_file, "user123", "conv456")
+                send_audio_rag(rag_audio_file, "vinay", "12345")
                 play_my_sound()
 
             elif result == 2:

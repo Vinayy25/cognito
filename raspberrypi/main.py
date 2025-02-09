@@ -10,8 +10,8 @@ from silence_detect import detect_silence_and_stop
 
 
 # Configuration
-USER_ID = "user123"  # Replace with actual user ID
-CONVERSATION_ID = "conv456"  # Replace with actual conversation ID
+USER_ID = "vinay"  # Replace with actual user ID
+CONVERSATION_ID = "12345"  # Replace with actual conversation ID
 MODEL_TYPE = "text"  # Default: "text"
 PERFORM_RAG = "false"  # Default: "false"
 AUDIO_FILE_NAME = "testaudio.ogg"  # Temporary file for recorded audio
