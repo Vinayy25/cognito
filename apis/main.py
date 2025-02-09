@@ -519,7 +519,7 @@ async def query_with_history(user: str,query: str,id: str,  model_type: str = Qu
     systemMessage = gemini_system_prompt + similarText 
     print("system message: ",systemMessage)
 
-    generative_text_model = get_generative_model('gemini-1.5-pro-latest', system_instruction=systemMessage)
+    generative_text_model = get_generative_model('gemini-2.0-flash', system_instruction=systemMessage)
     models = {'text': generative_text_model}
     model = models.get(model_type)
 
