@@ -20,10 +20,10 @@ API_ENDPOINT = "http://cognito.fun/"  # Replace with actual endpoint
 # Audio settings
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
-RATE = 8000
+RATE = 16000
 CHUNK = 1024
 RECORD_SECONDS = 5
-def record_audio_sounddevice(filename, duration, sample_rate=8000):
+def record_audio_sounddevice(filename, duration, sample_rate=16000):
     """
     Records audio and saves it as a WAV file.
     
