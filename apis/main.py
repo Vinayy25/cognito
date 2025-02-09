@@ -286,7 +286,7 @@ async def upload_pdf(user: str = Form(...), conversation_id: str = Form(...), pd
         # Save embeddings to vector store
         texts = [doc.page_content for doc in docs]
         embed_model = get_embed_model()
-        await save_embeddings(texts, user, conversation_id, embed_model)
+        save_embeddings(texts, user, conversation_id, embed_model)
 
         return JSONResponse(status_code=200, content={"message": "PDF processed and embeddings saved successfully.", "document": parsed_doc.text})
     except Exception as e:
